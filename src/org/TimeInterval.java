@@ -1,189 +1,127 @@
 package org;
 
-
-
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+//This time interval class just signifies time intervals of 2 hours for insem and 3 hours for endsem. A slot will be
+// provided with 2 time intervals before/after lunch for insem.
+
 public class TimeInterval {
 
-	int day_no;
-	 int time_interval;
-	 ArrayList<Course> course_to_room;
-		Map<Integer,ArrayList<OccupationData>> map;
-		
-		ArrayList<Room> rooms;
-		
-	private final Connection con;
-		
-	public TimeInterval(int day_no,int time_interval) throws ClassNotFoundException, SQLException, DAOException
+	private int time_interval;
+	private Map<Integer,ArrayList<OccupationData>> map;//this map maps Room number to an 
+	//object(Course Name+ No_of_students of this course in this room )
+	private	ArrayList<Room> rooms;
+			
+	public TimeInterval(int time_interval) throws ClassNotFoundException, DAOException, SQLException
 	{
-		con=DBConnection.getInstance().getConnectionSchema("public"); 
-		System.out.println("Inside default constructor of TimeInterval");
-		this.day_no=day_no;
 		this.time_interval=time_interval;
-		course_to_room=new ArrayList<>();
-		map=new HashMap<>();
-		rooms=new ArrayList<>();
-		getRooms();
-//		rooms.add(new Room(110,98));
-//		rooms.add(new Room(108,60));
-//		rooms.add(new Room(106,65));
-//		rooms.add(new Room(103,60));
-//		rooms.add(new Room(104,28));
-		//addRooms();
+		this.map=new HashMap<>();
+		this.rooms=new ArrayList<>();
+		associateRooms();
 	}
 	
+	//copy constructor
 	public TimeInterval(TimeInterval other) throws ClassNotFoundException, SQLException
 	{
-		con=DBConnection.getInstance().getConnectionSchema("public"); 
-		System.out.println("Inside copy constructor of TimeInterval");
-		course_to_room=new ArrayList<>();
-		map=new HashMap<>();
-		rooms=new ArrayList<>();
-		this.day_no=other.day_no;
+		this.map=new HashMap<>();
+		this.rooms=new ArrayList<>();
 		this.time_interval=other.time_interval;
-		/*for(Course course:other.course_to_room)
+		
+		//deep cloning rooms
+		for(int i=0;i<other.getRooms().size();i++)
 		{
-			this.course_to_room.add((Course)course.clone());
-		}
-		*/
-		for(int i=0;i<other.rooms.size();i++)
-		{
-			System.out.println("Inside troublesome forloop");
-			Room tempRoom=new Room(other.rooms.get(i));
+			//called copy constructor of Room
+			Room tempRoom=new Room(other.getRooms().get(i));
 			this.rooms.add(tempRoom);
 		}
 		
-		this.map=new HashMap<>();
+		//deep cloning map
 		for(Integer key:other.map.keySet())
-		{
-			
-			ArrayList<Course> temp=other.map.get(key);
-			ArrayList<Course> newClone=new ArrayList<>();
-			for(Course course:temp)
+		{			
+			ArrayList<OccupationData> temp=other.getMap().get(key);// I have to make copy of temp
+			ArrayList<OccupationData> newClone=new ArrayList<>();
+			for(OccupationData od:temp)
 			{
-				newClone.add(new Course(course));
+				newClone.add(new OccupationData(od));//calling copy constructor of OccupationData
 			}
-			
-			
+						
 			this.map.put(key, newClone);
 		}
 	}
 	
+	public ArrayList<Room> getRooms() {
+		return rooms;
+	}
 	
-	 public ArrayList<Room> getRooms() throws DAOException {
-		 
-		
-		 Room room=null;
-		 try
-		 {	 
-			 
-			 Statement stmt=con.createStatement();
-			 ResultSet rs=stmt.executeQuery("Select * from Room");
-			 		
-			 while(rs.next())
-			 {
-				 
-				 int room_no=rs.getInt("room_no");
-				 int room_capacity=rs.getInt("room_capacity");
-				 
-				 
-				 rooms.add(new Room(room_no,room_capacity));
-			 }
-			 
-		 }
-		 catch(SQLException e)
-		 {
-			 throw new DAOException(e.getMessage());
-		 }
-		
-		 return rooms;
-	 
+	public Map<Integer, ArrayList<OccupationData>> getMap() {
+		return map;
+	}
+	public int getTime_interval() {
+		return time_interval;
+	}
+	// fetch rooms from database and associate rooms to this particular time interval
+	 public void associateRooms() throws DAOException, ClassNotFoundException, SQLException 
+	 {
+		this.rooms=GeneralDAO.getRooms();
 	 }
 	 
-	/*
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		// TODO Auto-generated method stub
-		TimeInterval cloned=(TimeInterval)super.clone();
-		
-		return cloned;
-	}*/
-	
-	
-	
-	public void addRoom(int room_no,int room_capacity) throws DAOException
-	{
-		 try
-		 {	 
-			 String sql="Insert into Room VALUES("+room_no+","+room_capacity+")";
-			 Statement stmt=con.createStatement();
-			 ResultSet rs=stmt.executeQuery(sql);
-			
-			 
-		 }
-		 catch(SQLException e)
+	 //adding capacities of each room. It will help to figure out courses requiring a lot of rooms.
+	 //I will compare a percentage of this capacity,say if 70% is enough to accomodate in a particular timeInterval
+	 //If not,switch the interval. It helps to alternate courses requiring a lot of rooms and in better invigilation
+	 //as big courses will be in alternate batches and small courses will get space with big courses and they will
+	 //ensure invigilation.
+	 public int totalCapacityOfRooms()
+	 {
+		 int capacity=0;
+		 for(Room room:rooms)
 		 {
-			 throw new DAOException(e.getMessage());
+			 capacity+=room.getCapacity();
 		 }
-		
+		 return capacity;
+	 }
+	 //this function assigns a particular course+allocated_strength(no of students from this course to be seated in 
+	 //this room) to a particular room in this time interval. 
+	 //If this room already contains course details,then this just appends a new course+allocated_strength
+	 public void assignCourse(int room_no,Course course,int allocated)
+	 {			System.out.println("Really assigning"+course);
+			if(map.containsKey(room_no))
+			{ 
+			ArrayList<OccupationData> temp=map.get(room_no);
+			temp.add(new OccupationData(course,allocated));
+			map.put(room_no, temp);
+			return;
+			}
+			ArrayList<OccupationData> newList=new ArrayList<>();
+			newList.add(new OccupationData(course,allocated));
+			map.put(room_no, newList);
 	}
-	
-	public void deleteRoom(int room_no) throws DAOException
-	{
-		 try
-		 {	 
-			 String sql="Delete from Room where room_no="+room_no;
-			 Statement stmt=con.createStatement();
-			 ResultSet rs=stmt.executeQuery(sql);
-			
-			 
-		 }
-		 catch(SQLException e)
-		 {
-			 throw new DAOException(e.getMessage());
-		 }
-		
-	}
-	
-	public void updateRoom(int room_no,int capacity) throws DAOException
-	{
-		 try
-		 {	 
-			 String sql="UPDATE Room SET room_capacity="+capacity+" WHERE room_no="+room_no;
-			 Statement stmt=con.createStatement();
-			 ResultSet rs=stmt.executeQuery(sql);
-			
-			 
-		 }
-		 catch(SQLException e)
-		 {
-			 throw new DAOException(e.getMessage());
-		 }
-		
-	}
-	
-	
-	public void addCourse(int room_no,Course course,int allocated)
-	{
-		System.out.println("Adding course:"+course+"room_no "+room_no+"in time interval "+this.time_interval);
-		if(map.containsKey(room_no))
-		{ 
-		ArrayList<OccupationData> temp=map.get(room_no);
-		temp.add(new OccupationData(course,allocated));
-		map.put(room_no, temp);
-		return;
-		}
-		ArrayList<Course> newList=new ArrayList<>();
-		newList.add(course);
-		map.put(room_no, newList);
-	}
+	 
+	 //this function makes a pattern where it sets some intial rooms as 'big' and later rooms as 'small'.
+	 //this is done to optimize allocation as allocation will be held for small side in the room as much as possible
+	 //if a room number 101 is marked as small,then left/right side is searched whose capacity is small(more students)
+	 //have been allocated at that side.
+	 public void smallBigPattern(int j)
+	 {
+		 System.out.println();;
+		 for (int i = 0; i < getRooms().size(); i++) // all the default sides to look for in class is big. Setting to small for some.
+			{
+			// System.out.println("Pattern code running for:"+(i+1));
+				if(i<j)
+				{	getRooms().get(i).setCheckBigCapacity(true);
+				System.out.print("B");
+				}
+				else
+				{
+				getRooms().get(i).setCheckBigCapacity(false);
+				System.out.print("S");
+				
+				}
+			}
+	 }
+	//printing timetable of this timeinterval
 	public void print()
 	{
 		System.out.println("Printing, time interval "+this.time_interval+"Map size: "+map.size());
@@ -192,8 +130,20 @@ public class TimeInterval {
 		{
 			System.out.println("Room No: "+key+" "+map.get(key));
 		}
+	}	
+	public String toString()
+	{
+		return time_interval+"";
 	}
-	
-	
-	
+	 public void setRooms(ArrayList<Room> rooms) {
+		this.rooms = rooms;
+	}
+	 
+	 public void printRooms()
+	 {
+		 for(Room room:this.rooms)
+		 {
+			 System.out.println(room.getRoom_no()+"leftStrength: "+room.getLeftStrength()+"rightStrength: "+room.getRightStrength());
+		 }
+	 }
 }

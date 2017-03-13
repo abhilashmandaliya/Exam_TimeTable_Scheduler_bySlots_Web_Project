@@ -1,67 +1,120 @@
 package org;
 
-
-
 public class Room{
 
-	int room_no;
+	private int room_no;
 	private int leftStrength; //number of students sitting on left side
 	private int rightStrength;//number of students sitting on right side
-	private int capacity;
-	private int timeSlot;
-	private boolean checkBig;
-	 boolean invigilanceRequired;
-	private int rightCapacity;
+	private int capacity;//total room capacity
+	private boolean checkBigCapacity;// if it's true, then check for that side of the bench where more number 
+	//of students are sitting
+	private boolean invigilanceRequired;// if true, no fixed faculty assigned yet, still requires invigilation
+	//even if some students are present in the room
+	private int rightCapacity;//number of people sitting on right side
 	private int leftCapacity;
+	
 	public Room(int room_no,int capacity)
 	{
-		System.out.println("Inside default constructor of Room");
 		this.room_no=room_no;
 		this.capacity=capacity;
-		rightStrength=0;
-		leftStrength=0;
-		timeSlot=0;
-		checkBig=true;
-		invigilanceRequired=true;
-		rightCapacity=capacity;
-		leftCapacity=capacity;
-		System.out.println("Room: "+room_no+"capacity: "+capacity);
+		this.rightStrength=0;
+		this.leftStrength=0;
+		this.checkBigCapacity=false;
+		this.invigilanceRequired=true;
+		this.rightCapacity=capacity;
+		this.leftCapacity=capacity;
 	}
 	
+	//copy constructor of the room
 	public Room(Room other)
 	{
-		System.out.println("Inside copy constructor of Room");
-		this.room_no=other.room_no;
-		this.capacity=other.capacity;
-		this.rightStrength=other.rightStrength;
-		this.leftStrength=other.leftStrength;
-		this.timeSlot=other.timeSlot;
-		this.checkBig=other.checkBig;
-		this.invigilanceRequired=other.invigilanceRequired;
-		this.rightCapacity=other.rightCapacity;
-		this.leftCapacity=other.leftCapacity;
+		this.room_no=other.getRoom_no();
+		this.capacity=other.getCapacity();
+		this.rightStrength=other.getRightStrength();
+		this.leftStrength=other.getLeftStrength();
+		this.checkBigCapacity=other.getCheckBigCapacity();
+		this.invigilanceRequired=other.getInvigilanceRequired();
+		this.rightCapacity=other.getRightCapacityGET();
+		this.leftCapacity=other.getLeftCapacityGET();
 	}
-	/*@Override
-	protected Object clone() throws CloneNotSupportedException {
-		// TODO Auto-generated method stub
-		return super.clone();
-	}*/
-	public int getRightCapacity()
+	
+	public int getCapacity() {
+		return capacity;
+	}
+	
+	public int getLeftCapacityGET()
 	{
-		return capacity-rightStrength;
+		return leftCapacity;
 	}
-	public int getLeftCapacity()
+	public int getRightCapacityGET()
 	{
-		return capacity-leftStrength;
+		return rightCapacity;
 	}
-	public boolean getCheckBig()
+	public int getLeftCapacity() {
+		leftCapacity=capacity-leftStrength;
+		return leftCapacity;
+	}
+	
+	public int getRightCapacity() {
+		rightCapacity=capacity-rightStrength;
+		return rightCapacity;
+	}
+	
+	public int getLeftStrength() {
+		return leftStrength;
+	}
+	
+	public int getRightStrength() {
+		return rightStrength;
+	}
+	
+	public int getRoom_no() {
+		return room_no;
+	}
+	
+	public boolean getInvigilanceRequired()
 	{
-		return checkBig;
+		return invigilanceRequired;
 	}
-	public void setCheckBig(boolean value)
+	
+	// by default,every room has no invigilation at start. So,invigilationRequired=true for all. But it may create
+	//undesirable effects if just this is checked. So, checking that at least one student is already assigned in that 
+	//room is required before processing invigilation.
+	//Undesirable effect: While traversing the rooms, if algorithm finds any empty room, it goes inside as room's 
+	// invigilation is required by default. But I may require invigilation in next interval for some room. So, in any case, 
+	//fresh whole allocation is given to CASE 2 only. invigilation just checks rooms with at least 1 student 
+	public boolean checkInvigilanceRequired()
 	{
-		this.checkBig=value;
+		if(invigilanceRequired==true && (rightStrength>0 || leftStrength>0))
+		return true;
+		else return false;
 	}
+	
+	public boolean getCheckBigCapacity()
+	{
+		return checkBigCapacity;
+	}
+	
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+	}
+	
+	public void setCheckBigCapacity(boolean checkBigCapacity) {
+		this.checkBigCapacity = checkBigCapacity;
+	}
+	
+	public void setInvigilanceRequired(boolean invigilanceRequired) {
+		this.invigilanceRequired = invigilanceRequired;
+	}
+	
+	public void setLeftCapacity(int leftCapacity) {
+		this.leftCapacity = leftCapacity;
+	}
+	
+	public void setRightCapacity(int rightCapacity) {
+		this.rightCapacity = rightCapacity;
+	}
+	
 	public void setLeftStrength(int num)
 	{
 		leftStrength=leftStrength+num;
@@ -71,24 +124,8 @@ public class Room{
 	{
 		rightStrength=rightStrength+num;
 	}
-
-	public int getLeftStrength()
+	public String toString()
 	{
-		return leftStrength;
-	}
-	
-	public int getRightStrength()
-	{
-		return rightStrength;
-	}
-	
-	public int getCapacity()
-	{
-		return capacity;
-	}
-	
-	public boolean getInvigilanceRequired()
-	{
-		return invigilanceRequired;
+		return this.room_no+"";
 	}
 }
