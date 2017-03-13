@@ -53,8 +53,8 @@ public class TimeTable {
 		slot.updateProcessCount();// increase process count as a course has been processed successfully.
 		ti.assignCourse(room.getRoom_no(), course,num_of_students);//refer TimeInterval class. Storing number 
 		//of students of a course in a room
-		System.out.println("Assigning"+course+" in "+room+" for "+num_of_students+"in slot"+slot+" in ti"+ti+"on side: "+side);
-		if(side.equals("right1"))//allocate on right side
+		//System.out.println("Assigning"+course+" in "+room+" for "+num_of_students+"in slot"+slot+" in ti"+ti+"on side: "+side);
+		if(side.equals("right"))//allocate on right side
 		{room.setRightStrength(num_of_students);}
 			
 		else if(side.equals("left"))//allocate on left side
@@ -70,12 +70,12 @@ public class TimeTable {
 			room.setRightStrength(deduct);
 			course.setUnallocatedStrength(deduct);
 			ti.assignCourse(room.getRoom_no(), course, deduct);
-			System.out.println("Splitted: Assigning"+course+" in "+room+" for "+deduct+"in slot"+slot+" in ti"+ti+"on side: right");
+		//	System.out.println("Splitted: Assigning"+course+" in "+room+" for "+deduct+"in slot"+slot+" in ti"+ti+"on side: right");
 			return 0;
 		} else {
 			// finish course.
 			
-			assignOnLeftRight(course,room,course.getUnallocated_strength(),slot,ti,"right1");	
+			assignOnLeftRight(course,room,course.getUnallocated_strength(),slot,ti,"right");	
 			return 1;			
 		}
 	} 
@@ -89,7 +89,7 @@ public class TimeTable {
 			room.setLeftStrength(deduct);
 			course.setUnallocatedStrength(deduct);
 			ti.assignCourse(room.getRoom_no(), course, deduct);
-			System.out.println(" Splitted Assigning"+course+" in "+room+" for "+deduct+"in slot"+slot+" in ti"+ti+"on side: left");
+			//System.out.println(" Splitted Assigning"+course+" in "+room+" for "+deduct+"in slot"+slot+" in ti"+ti+"on side: left");
 			return 0;
 		} else {
 			// finish course.
@@ -148,7 +148,7 @@ public class TimeTable {
 							//Maybe it was too small. Try doing on right side.
 						{
 						    flag=1;//course has been processed. jump to next course and dont run below cases.
-							assignOnLeftRight(course, proposedRoom,finalChunkStudents, slot, array[k], "right1");
+							assignOnLeftRight(course, proposedRoom,finalChunkStudents, slot, array[k], "right");
 							return flag;
 						}
 					} 
@@ -156,7 +156,7 @@ public class TimeTable {
 					{	if(finalChunkStudents <= proposedRoom.getRightCapacity())
 						{
 							flag=1;//course has been processed. jump to next course and dont run below cases.
-							assignOnLeftRight(course, proposedRoom,finalChunkStudents, slot, array[k], "right1");
+							assignOnLeftRight(course, proposedRoom,finalChunkStudents, slot, array[k], "right");
 							return flag;	
 						}
 						else if(finalChunkStudents <= proposedRoom.getLeftCapacity()) 
@@ -244,7 +244,7 @@ public class TimeTable {
 				int flagContinue = 0;
 				int flagContinue2 = 0;
 				Course tempCourse = slot.chosingCourse();//refer slot class for details
-				System.out.println(tempCourse);
+				//System.out.println(tempCourse);
 				//MAIN ALGORITHM:
 				// There are 3 cases. Each course visits all the 3 cases. If it gets allocated in CASE 1, it breaks
 				//the while loop and gives chance to next course. If it doesn't get allocated in CASE 1,then it tries for
@@ -292,8 +292,7 @@ public class TimeTable {
 	
 						int save4 = 0;
 						for (int i = 0; i < array[k].getRooms().size(); i++) //entering room for time1/time2 
-						{					System.out.println("j:"+j+"i: "+i);		
-							save4 = i;
+						{	save4 = i;
 							Room proposedRoom = array[k].getRooms().get(i);
 							int left = proposedRoom.getLeftStrength();
 							int right = proposedRoom.getRightStrength();
@@ -301,97 +300,29 @@ public class TimeTable {
 							boolean rightGo = false;
 							boolean tempCheckBigCapacity = array[k].getRooms().get(i).getCheckBigCapacity();// to determine what to check-small/big
 							//for this room,if tempCheckBig is true, so it will check for that side which has bigger capacity
-							if (tempCheckBigCapacity == false) {
-								if (left > right && left==proposedRoom.getCapacity()) {
-//									if (proposedRoom.getLeftCapacity() > 0) {
-//										leftGo = true;
-//										
-//									}
+							if (tempCheckBigCapacity == true) {
+								if (left >= right) {
+									if (proposedRoom.getLeftCapacity() > 0) {
+										leftGo = true;
+									}
 									rightGo = false;
-									leftGo=false;
-									break;
-								} 
-								else if(left>right && left<proposedRoom.getCapacity())
-								{
-									leftGo = true;
-									rightGo=false;
-//									if (proposedRoom.getRightCapacity() > 0) {
-//										rightGo = true;
-//									}
-								}
-								else if(left ==right && left==proposedRoom.getCapacity())
-								{
-									rightGo=false;
-									leftGo=false;
-									break;
-								}
-								else if(left==right && left==0)
-								{
-									rightGo=false;
-									leftGo=true;
-								}
-								else if (left < right && right==proposedRoom.getCapacity()) {
-//									if (proposedRoom.getLeftCapacity() > 0) {
-//									leftGo = true;
-//									
-//								}
-								rightGo = false;
-								leftGo=false;
-								break;
-								} 
-								else if(left < right && right<proposedRoom.getCapacity())
-								{
+								} else if (right > left) {
 									leftGo = false;
-									rightGo=true;
-	//								if (proposedRoom.getRightCapacity() > 0) {
-	//									rightGo = true;
-	//								}
+									if (proposedRoom.getRightCapacity() > 0) {
+										rightGo = true;
+									}
 								}
-							} else if (tempCheckBigCapacity == true) {
-								
-								if (left > right && left==proposedRoom.getCapacity()) {
-//									if (proposedRoom.getLeftCapacity() > 0) {
-//										leftGo = true;
-//										
-//									}
-									rightGo = true;
-									leftGo=false;
-								} 
-								else if(left>right && left<proposedRoom.getCapacity())
-								{
+							} else if (tempCheckBigCapacity == false) {
+								if (left >= right) {
 									leftGo = false;
-									rightGo=true;
-//									if (proposedRoom.getRightCapacity() > 0) {
-//										rightGo = true;
-//									}
-								}
-								else if(left ==right && left==proposedRoom.getCapacity())
-								{
-									System.out.println("creting hell");
-									rightGo=false;
-									leftGo=false;
-									break;
-								}
-								else if(left==right && left==0)
-								{
-									rightGo=false;
-									leftGo=true;
-								}
-								else if (left < right && right==proposedRoom.getCapacity()) {
-//									if (proposedRoom.getLeftCapacity() > 0) {
-//									leftGo = true;
-//									
-//								}
-								rightGo = false;
-								leftGo=true;
-								} 
-								else if(left < right && right<proposedRoom.getCapacity())
-								{
-									leftGo = true;
-									rightGo=false;
-	//								if (proposedRoom.getRightCapacity() > 0) {
-	//									rightGo = true;
-	//								}
+									if (proposedRoom.getRightCapacity() > 0) {
+										rightGo = true;
+									}
+								} else if (right > left) {
+									if (proposedRoom.getLeftCapacity() > 0) {
+										leftGo = true;
+									}
+									rightGo = false;
 								}
 							}
 	
@@ -401,7 +332,7 @@ public class TimeTable {
 								if(TT.rightGo(proposedRoom, tempCourse, array[k], slot)==1)
 								{
 									flag=1;
-									
+									break;
 								}								
 							} 
 							else if (leftGo) 
@@ -409,7 +340,7 @@ public class TimeTable {
 								if(TT.leftGo(proposedRoom, tempCourse, array[k], slot)==1)
 								{
 									flag=1;
-									
+									break;
 								}								
 							}	
 						}
@@ -420,14 +351,14 @@ public class TimeTable {
 						flagContinue2 = 0;
 						if (k == 0 && tempCourse.getUnallocated_strength() > 0) {//course still has some unallocated students in above
 							//case, so try other case and undo above operation
-							time1.printRooms();
+						//	time1.printRooms();
 							time1 = save1;
 							flagContinue = 1;
 							flagContinue2=1;
 							time2 = save2;
 							slot = save3;
 							tempCourse = slot.chosingCourse();
-							time1.printRooms();
+							//time1.printRooms();
 							//time1.setRooms(save5);
 							
 							// send to k1(check same pattern for next time interval)

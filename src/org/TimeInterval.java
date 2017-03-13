@@ -86,7 +86,7 @@ public class TimeInterval {
 	 //this room) to a particular room in this time interval. 
 	 //If this room already contains course details,then this just appends a new course+allocated_strength
 	 public void assignCourse(int room_no,Course course,int allocated)
-	 {			System.out.println("Really assigning"+course);
+	 {			//System.out.println("Really assigning"+course);
 			if(map.containsKey(room_no))
 			{ 
 			ArrayList<OccupationData> temp=map.get(room_no);
@@ -111,12 +111,12 @@ public class TimeInterval {
 			// System.out.println("Pattern code running for:"+(i+1));
 				if(i<j)
 				{	getRooms().get(i).setCheckBigCapacity(true);
-				System.out.print("B");
+				//System.out.print("B");
 				}
 				else
 				{
 				getRooms().get(i).setCheckBigCapacity(false);
-				System.out.print("S");
+				//System.out.print("S");
 				
 				}
 			}
