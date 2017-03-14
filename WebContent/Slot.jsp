@@ -11,7 +11,7 @@
 		<%
 			int slot_num = 1;
 			HttpSession crnt_session = request.getSession();
-
+	
 			Slot s = new Slot(slot_num);
 			// some method which will return slot count. store it in cnt
 			crnt_session.setAttribute(String.valueOf(slot_num), s);
@@ -23,8 +23,9 @@
 				<th>Course Name</th>
 				<th>Delete</th>
 			</tr>
-			<%
+			<%	s.refreshCourses();
 				ArrayList<Course> courses = s.getCourses();
+				
 				for (int i = 0; i < courses.size(); i++) {
 					out.write("<tr id='row" + i + "'><td>");
 					out.write(courses.get(i).getCourse_id() + "</td><td>" + courses.get(i).getCourse_name() + "</td>");

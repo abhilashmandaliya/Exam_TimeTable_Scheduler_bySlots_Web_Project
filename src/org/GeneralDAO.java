@@ -97,7 +97,7 @@ public class GeneralDAO {
 			 try
 			 {	 		 
 				 Statement stmt=con.createStatement();
-				 ResultSet rs=stmt.executeQuery("Select * from Room");
+				 ResultSet rs=stmt.executeQuery("Select * from Course");
 				 		
 				 while(rs.next())
 				 {				 

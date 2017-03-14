@@ -233,6 +233,8 @@ public class TimeTable {
 		//Running main algorithm for all the slots.It creates timetable of all the slots separately.
 		for(int h=0;h<TT.getSlot().length;h++)// 
 		{ 
+			System.out.println("**************************SLOT NO: "+(h+1)+"****************************");
+			System.out.println("Room No     Course ID   Course Name");
 			TimeInterval time1 = new TimeInterval(1);
 			TimeInterval time2 = new TimeInterval(2);
 			int flag = 0;// a flag to use to forcibly exit loops or restarting loops.

@@ -46,9 +46,9 @@ public class SlotServlet extends HttpServlet {
 		Slot s = (Slot) request.getSession().getAttribute(request.getParameter("slot"));
 		try {
 			if (action.equals("delete"))
-				s.deleteCourse(request.getParameter("course"));
+				s.deleteCourseFromDB(request.getParameter("course"));
 			else if(action.equals("add"))
-				s.addCourse(request.getParameter("course"));
+				s.addCourseToDB(request.getParameter("course"));
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

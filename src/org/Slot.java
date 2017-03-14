@@ -69,7 +69,9 @@ public class Slot {
 		}
 		return temp;
 	}
-	
+	public Connection getCon() {
+		return con;
+	}
 	//this method add course to database corresponding to this slot
 	public void addCourseToDB(String course_id) throws DAOException {
 		try {

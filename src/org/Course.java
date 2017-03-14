@@ -65,9 +65,14 @@ public class Course {
 	public void setUnallocatedStrength(int num) {
 		unallocated_strength = unallocated_strength - num;
 	}
+//	public String toString()
+//	{
+//		return "Course ID: "+this.course_id+" Course_name: "+this.course_name;
+//	}
 	public String toString()
 	{
-		return "Course ID: "+this.course_id+" Course_name: "+this.course_name;
+		return this.course_id+" "+this.course_name;
 	}
+	
 	
 }

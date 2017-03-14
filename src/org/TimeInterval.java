@@ -124,11 +124,11 @@ public class TimeInterval {
 	//printing timetable of this timeinterval
 	public void print()
 	{
-		System.out.println("Printing, time interval "+this.time_interval+"Map size: "+map.size());
+		//System.out.println("Printing, time interval "+this.time_interval+"Map size: "+map.size());
 		
 		for(Integer key:map.keySet())
 		{
-			System.out.println("Room No: "+key+" "+map.get(key));
+			System.out.println(key+" "+map.get(key));
 		}
 	}	
 	public String toString()

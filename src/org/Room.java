@@ -126,6 +126,6 @@ public class Room{
 	}
 	public String toString()
 	{
-		return this.room_no+"";
+		return "";
 	}
 }

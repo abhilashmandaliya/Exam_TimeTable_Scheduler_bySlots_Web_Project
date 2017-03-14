@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
-  <title>Bootstrap Example</title>
+  <title>DA-IICT Exam Scheduler</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -20,9 +20,9 @@
     <ul class="nav navbar-nav">
       <li><a href="Home.jsp">Home</a></li>
       <li><a href="Slot.jsp">Slot Details</a></li>
-      <li><a href="#">Course Details</a></li>
-      <li><a href="#">Room Details</a></li>
-      <li><a href="#">Generate Time Table</a></li>
+      <li><a href="Course.jsp">Course Details</a></li>
+      <li><a href="Room.jsp">Room Details</a></li>
+      <li><a href="TimeTable.jsp">Generate Time Table</a></li>
     </ul>
   </div>
 </nav>
