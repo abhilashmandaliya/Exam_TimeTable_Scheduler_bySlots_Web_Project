@@ -451,7 +451,8 @@ public class TimeTable {
 	        cell.setCellStyle(cellStyle);
 	    }
 	public static void main(String[] args) throws CloneNotSupportedException,SQLException,ClassNotFoundException,DAOException, IOException {
-
+		System.out.println("entered");
+		if(args==null)return;
 		//storing entire time table in 1 object of TimeTable class.
 		TimeTable TT=new TimeTable();
 		
@@ -639,8 +640,8 @@ public class TimeTable {
 		//export to Excel Format
 		//making workbook and sheet
 				XSSFWorkbook wb = new XSSFWorkbook();
-				String safeName = WorkbookUtil.createSafeSheetName("Main Result"); // returns " O'Brien's sales   "
-			    XSSFSheet sheet1 = wb.createSheet(safeName);
+				//String safeName = WorkbookUtil.createSafeSheetName("Main Result"); // returns " O'Brien's sales   "
+			    XSSFSheet sheet1 = wb.createSheet("a");
 			    
 			    XSSFCellStyle[] style=new XSSFCellStyle[12];
 			    //styles
@@ -711,7 +712,7 @@ public class TimeTable {
 			    style[11].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //main work
-			    CreationHelper createHelper = wb.getCreationHelper();
+			    //CreationHelper createHelper = wb.getCreationHelper();
 			    int i=0;
 			    int j=0;
 			    

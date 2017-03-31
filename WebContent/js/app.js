@@ -43,4 +43,7 @@ $(document).ready(function() {
 			}
 		});
 	});
+	$("#generateAndDownloadTT").click(function() {
+		window.location='/Exam_TimeTable_Scheduler_bySlots_Web_Project/SlotManagement?action=generateAndDownloadTT';
+	});
 });

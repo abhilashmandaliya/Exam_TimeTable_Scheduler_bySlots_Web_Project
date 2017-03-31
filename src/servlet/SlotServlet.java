@@ -1,6 +1,9 @@
 package servlet;
 
+import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.DAOException;
 import org.Slot;
+import org.TimeTable;
 
 /**
  * Servlet implementation class SlotServlet
@@ -32,7 +36,8 @@ public class SlotServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		//response.getWriter().append("Served at: ").append(request.getContextPath());
+		doPost(request,response);
 	}
 
 	/**
@@ -47,12 +52,30 @@ public class SlotServlet extends HttpServlet {
 		try {
 			if (action.equals("delete"))
 				s.deleteCourseFromDB(request.getParameter("course"));
-			else if(action.equals("add"))
+			else if (action.equals("add"))
 				s.addCourseToDB(request.getParameter("course"));
+			else if (action.equals("generateAndDownloadTT")) {
+				System.out.println("conc");
+				//TimeTable.main(null);
+				response.setContentType("application/force-download");
+				// File f = new File("")
+				// response.setContentLength((int)f.length());
+				response.setHeader("Content-Transfer-Encoding", "binary");
+				response.setHeader("Content-Disposition", "attachment; filename=\"company.xlsx\"");
+			}
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} /*catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 	}
 
 }
