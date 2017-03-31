@@ -117,7 +117,19 @@ public class Slot {
 		return course;
 	}
 
-	
+//	public Course chosingCourse() {
+//		Course course = null;
+//		int min = 100000;
+//		for (int i = 0; i < courses.size(); i++) {
+//			if (courses.get(i).getUnallocated_strength() > 0 && courses.get(i).getProcessed() == false) {
+//				if (min > courses.get(i).getNo_Of_Students()) {
+//					min = courses.get(i).getNo_Of_Students();
+//					course = courses.get(i);
+//				}
+//			}
+//		}
+//		return course;
+//	}
 	//a particular course from this slot has been successfully processed. It means all the students from
 	//this course are assigned a room.
 	public void updateProcessCount() {

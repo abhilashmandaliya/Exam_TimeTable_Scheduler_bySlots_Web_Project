@@ -25,7 +25,7 @@ public class TimeInterval {
 	
 	//copy constructor
 	public TimeInterval(TimeInterval other) throws ClassNotFoundException, SQLException
-	{
+	{   
 		this.map=new HashMap<>();
 		this.rooms=new ArrayList<>();
 		this.time_interval=other.time_interval;
