@@ -12,12 +12,16 @@ import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.WorkbookUtil;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.util.PropertyTemplate;
 import org.apache.poi.ss.usermodel.BorderExtent;
@@ -285,7 +289,7 @@ public class TimeTable {
 	}
 	//this function prints all the data in excel sheet for a particular SLOT and TIME INTERVAL
 	public static void printInExcel(Map<Integer,String> batch_id_name,
-			Map<Integer,Integer> line,Map<Integer,Integer> range,Sheet sheet1,int j,CellStyle[] style,Set<Course> set,TimeInterval t1,Workbook wb,int flag) throws ClassNotFoundException, DAOException, SQLException
+			Map<Integer,Integer> line,Map<Integer,Integer> range,Sheet sheet1,int j,XSSFCellStyle[] style,Set<Course> set,TimeInterval t1,Workbook wb,int flag) throws ClassNotFoundException, DAOException, SQLException
 	{
 		int flag2=0;//to print labels just for first time.
 		int border_first=0;
@@ -365,7 +369,7 @@ public class TimeTable {
     		// Write Batch Name
     		
 		    row.createCell(j).setCellValue(batch_id_name.get(batch_id));
-		    row.getCell(j).setCellStyle(style[batch_id-1]);
+		    row.getCell(j).setCellStyle(style[4]);
     		}
 		    //Start allocating courses
 		    for(Course course:set)
@@ -383,7 +387,7 @@ public class TimeTable {
 					    row_temp.getCell(j+1).setCellStyle(style[batch_id-1]);
 					    row_temp.createCell(j+2).setCellValue(course.getCourse_name());
 					    row_temp.getCell(j+2).setCellStyle(style[batch_id-1]);
-					    
+					   // sheet1.createRow(80).createCell(j+1).setCellStyle(style[10]);
 					    ArrayList<Room> temp_rooms=t1.getRooms();
 					     //first column for timeinterval1
 					    int first_col=j+4;
@@ -413,8 +417,11 @@ public class TimeTable {
 		    }
 		 PropertyTemplate pt = new PropertyTemplate();
 		  // #1) these borders will all be medium in default color
+		 
 		  pt.drawBorders(new CellRangeAddress(border_first, border_last, j+1, j+8),
-		          BorderStyle.MEDIUM,BorderExtent.OUTSIDE);
+		          BorderStyle.NONE,BorderExtent.OUTSIDE);
+		  
+		  
 		  if(flag==1)
 		  {
 		  pt.drawBorders(new CellRangeAddress(border_first, border_last, j, j),
@@ -631,11 +638,11 @@ public class TimeTable {
 		
 		//export to Excel Format
 		//making workbook and sheet
-				Workbook wb = new XSSFWorkbook();
+				XSSFWorkbook wb = new XSSFWorkbook();
 				String safeName = WorkbookUtil.createSafeSheetName("Main Result"); // returns " O'Brien's sales   "
-			    Sheet sheet1 = wb.createSheet(safeName);
+			    XSSFSheet sheet1 = wb.createSheet(safeName);
 			    
-			    CellStyle[] style=new CellStyle[12];
+			    XSSFCellStyle[] style=new XSSFCellStyle[12];
 			    //styles
 			    //BTech Ist
 			    style[0] = wb.createCellStyle();
@@ -643,57 +650,63 @@ public class TimeTable {
 			    style[0].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //B.Tech IInd
-			    style[1] = wb.createCellStyle();
+			    style[1] = (XSSFCellStyle)wb.createCellStyle();
 			    style[1].setFillBackgroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
 			    style[1].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //B.Tech IIIrd
-			    style[2] = wb.createCellStyle();
+			    style[2] =(XSSFCellStyle) wb.createCellStyle();
 			    style[2].setFillBackgroundColor(IndexedColors.BLUE.getIndex());
 			    style[2].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //B.Tech IVth
-			    style[3] = wb.createCellStyle();
+			    style[3] =(XSSFCellStyle) wb.createCellStyle();
 			    style[3].setFillBackgroundColor(IndexedColors.TAN.getIndex());
 			    style[3].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //M.Sc(IT) Ist 
-			    style[4] = wb.createCellStyle();
-			    style[4].setFillBackgroundColor(IndexedColors.ORANGE.getIndex());
+			    style[4] = (XSSFCellStyle)wb.createCellStyle();
+			    style[4].setFillBackgroundColor(new XSSFColor(new java.awt.Color(0, 255, 0)));
 			    style[4].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //M.Sc(IT) IInd
-			    style[5] = wb.createCellStyle();
+			    style[5] =(XSSFCellStyle) wb.createCellStyle();
 			    style[5].setFillBackgroundColor(IndexedColors.LIGHT_GREEN.getIndex());
 			    style[5].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //M.Sc(IT) ARD Ist
-			    style[6] = wb.createCellStyle();
+			    style[6] =(XSSFCellStyle) wb.createCellStyle();
 			    style[6].setFillBackgroundColor(IndexedColors.YELLOW.getIndex());
 			    style[6].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //M.Sc(IT) ARD IInd
-			    style[7] = wb.createCellStyle();
+			    style[7] =(XSSFCellStyle) wb.createCellStyle();
 			    style[7].setFillBackgroundColor(IndexedColors.VIOLET.getIndex());
 			    style[7].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //M.Tech Ist
-			    style[8] = wb.createCellStyle();
+			    style[8] =(XSSFCellStyle) wb.createCellStyle();
 			    style[8].setFillBackgroundColor(IndexedColors.ROSE.getIndex());
 			    style[8].setFillPattern(CellStyle.BIG_SPOTS);
-			    
+			   
 			    //M.Tech IInd
-			    style[9] = wb.createCellStyle();
+			    style[9] =(XSSFCellStyle) wb.createCellStyle();
 			    style[9].setFillBackgroundColor(IndexedColors.LAVENDER.getIndex());
 			    style[9].setFillPattern(CellStyle.BIG_SPOTS);
 			    
+			  
 			    //M.Des Ist
-			    style[10] = wb.createCellStyle();
-			    style[10].setFillBackgroundColor(IndexedColors.GREEN.getIndex());
-			    style[10].setFillPattern(CellStyle.BIG_SPOTS);
+			    style[10] =wb.createCellStyle();
+			    //style[10].setFillBackgroundColor(new XSSFColor(new java.awt.Color(51, 204, 51)));
+			    //style[10].setFillPattern(CellStyle.BIG_SPOTS);
+//			    style[10].setFillBackgroundColor(new XSSFColor(java.awt.Color.GREEN));
+//			    style[10].setFillPattern(CellStyle.BIG_SPOTS);
+			    style[10].setFillForegroundColor(new XSSFColor(new java.awt.Color(128, 0, 128)));
+			  style[10].setFillBackgroundColor(IndexedColors.BLACK.getIndex());
+			    style[10].setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
 			  
 			    //M.Des IInd
-			    style[11] = wb.createCellStyle();
+			    style[11] =(XSSFCellStyle) wb.createCellStyle();
 			    style[11].setFillBackgroundColor(IndexedColors.RED.getIndex());
 			    style[11].setFillPattern(CellStyle.BIG_SPOTS);
 			    
@@ -851,14 +864,17 @@ public class TimeTable {
 			    	
 			    	
 			    
-			  
+			   XSSFCellStyle cust_style=wb.createCellStyle();
 			    
-			
+			    cust_style.setFillForegroundColor(new XSSFColor(new java.awt.Color(0, 255, 0)));
+			    cust_style.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
+			    
+			    
 			    
 			    
 			    
 			    	    
-
+			    sheet1.autoSizeColumn(12);
 			    //saving output to file
 			    sheet1.getPrintSetup().setLandscape(true);
 			    FileOutputStream fileOut = new FileOutputStream("workbook.xlsx");

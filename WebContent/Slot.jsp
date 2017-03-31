@@ -11,28 +11,24 @@
 		<%
 			int slot_num = 1;
 			HttpSession crnt_session = request.getSession();
-	
+
 			Slot s = new Slot(slot_num);
 			// some method which will return slot count. store it in cnt
 			crnt_session.setAttribute(String.valueOf(slot_num), s);
 			int cnt = 8;
 		%>
-		<table class="table">
+		<table class="table" id="courseIncluded">
 			<tr>
 				<th>Course Code</th>
 				<th>Course Name</th>
 				<th>Delete</th>
 			</tr>
-			<%	s.refreshCourses();
+			<%
+				s.refreshCourses();
 				ArrayList<Course> courses = s.getCourses();
-				
 				for (int i = 0; i < courses.size(); i++) {
 					out.write("<tr id='row" + i + "'><td>");
 					out.write(courses.get(i).getCourse_id() + "</td><td>" + courses.get(i).getCourse_name() + "</td>");
-					/*out.write("<td><select class='form-control '> ");
-					for (int j = 0; j < 350; j++)
-						out.write("<option>" + (j + 1) + "</option>");
-					out.write("</select></td>");*/
 					out.write("<td><button slot='" + slot_num + "' course='" + courses.get(i).getCourse_id()
 							+ "' class='btn btn-danger' type='button' id='deleteRow" + i + "'>Delete</button> </td></tr>");
 				}
@@ -63,18 +59,18 @@
 				<th>Add</th>
 			</tr>
 			<%
-			Statement st = s.getCon().createStatement();
-			ResultSet rs = st.executeQuery("select * from course");
-			int i = 0;
-				while(rs.next()) {
+				Statement st = s.getCon().createStatement();
+				ResultSet rs = st.executeQuery("select course.course_id,course.course_name,course.batch from course,slot where course.course_id=slot.course_id AND slot.slot_no!="+slot_num);
+				int i = 0;
+				while (rs.next()) {
 					out.write("<tr id='row" + i + "'><td>");
-					out.write(rs.getString(1)+ "</td><td>" + rs.getString(2) + "</td><td>"+rs.getString(3)+"</td>");
+					out.write(rs.getString(1) + "</td><td>" + rs.getString(2) + "</td><td>" + rs.getString(3) + "</td>");
 					/*out.write("<td><select class='form-control '> ");
 					for (int j = 0; j < 350; j++)
 						out.write("<option>" + (j + 1) + "</option>");
 					out.write("</select></td>");*/
 					out.write("<td><button slot='" + slot_num + "' course='" + rs.getString(1)
-							+ "' class='btn btn-success' type='button' id='addCourse" + i + "'>Add</button> </td></tr>");
+							+ "' class='btn btn-success' type='button' id='addCourse" + (i++) + "'>Add</button> </td></tr>");
 				}
 			%>
 		</table>

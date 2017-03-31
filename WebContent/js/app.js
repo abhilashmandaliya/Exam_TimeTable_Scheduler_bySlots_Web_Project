@@ -17,7 +17,7 @@ $(document).ready(function() {
 			}
 		});
 	});
-	$("[id^=addCourse]").click(function() {
+	$("[id^=addCourse]").click(function(e) {
 		$.ajax({
 			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/SlotManagement',
 			type : 'post',
@@ -27,8 +27,15 @@ $(document).ready(function() {
 				'slot' : $(this).attr('slot')
 			},
 			success : function() {
-//				console.log( $(this) );
-//				$(("#row" +($(this).attr('id').substring(10)))).remove();
+				var clicked = e.target.id || this.id;
+				$('#'+clicked).parent().parent().hide();
+				var row = $('#'+clicked).parent().parent().html();
+				$('#courseIncluded').append("<tr>"+row+"</tr>");
+				$('#courseIncluded tr:last td:last').remove();
+				$('#courseIncluded tr:last td:last').remove();
+				$('#courseIncluded tr:last').append($('#courseIncluded tr:last').prev().clone().find("td:last"));
+				$('#courseIncluded tr:last td:last button').attr('course',$('#courseIncluded tr:last td:first').text());
+				$('#courseIncluded tr:last td:last button').attr('id',"deleteRow"+($('#courseIncluded tr').length-1));
 			},
 			error : function() {
 //				alert($(this));
