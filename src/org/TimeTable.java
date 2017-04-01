@@ -8,16 +8,20 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -287,6 +291,50 @@ public class TimeTable {
 	    	//cell.setCellStyle(style[1]);
 	    }
 	}
+	
+	public static int dostuff(int i,int j,Sheet sheet1,ArrayList<Room> rooms,Workbook wb,int flag2,Row row1,int flag)
+	{
+	TimeTable.merge(i, j, sheet1, rooms);
+	System.out.println("hi");
+	Font font = wb.createFont();
+    font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+    CellStyle temp_style=wb.createCellStyle();
+    temp_style.setFont(font);
+    temp_style.setAlignment(CellStyle.ALIGN_CENTER_SELECTION);
+   
+	TimeTable.printRooms(i, j, sheet1, rooms);
+	flag2=1;
+	if(flag==1)
+    {
+		row1.createCell(j+1).setCellValue(" 08:30 - 10:30 ");
+    	
+    }
+    else if(flag==2)
+    {
+    	row1.createCell(j+1).setCellValue(" 11:00 - 13:00 ");
+    	
+    }
+    else if(flag==3)
+    {	
+    	row1.createCell(j+1).setCellValue(" 14:00 - 16:00 ");
+    	
+    }
+    else if(flag==4)
+    {
+    	row1.createCell(j+1).setCellValue(" 16:30 - 18:30 ");
+    	
+    }
+	 row1.createCell(j+4).setCellValue(" CEP Rooms ");
+		row1.getCell(j+4).setCellStyle(temp_style);
+		
+		CellStyle temp_style_2=wb.createCellStyle();
+		temp_style_2.cloneStyleFrom(temp_style);
+		Font font1=wb.createFont();
+		font1.setFontHeightInPoints((short)18);
+		temp_style_2.setFont(font1);
+	row1.getCell(j+1).setCellStyle(temp_style_2);
+	return flag2;
+	}
 	//this function prints all the data in excel sheet for a particular SLOT and TIME INTERVAL
 	public static void printInExcel(Map<Integer,String> batch_id_name,
 			Map<Integer,Integer> line,Map<Integer,Integer> range,Sheet sheet1,int j,XSSFCellStyle[] style,Set<Course> set,TimeInterval t1,Workbook wb,int flag) throws ClassNotFoundException, DAOException, SQLException
@@ -315,39 +363,9 @@ public class TimeTable {
 		    //if flag2==0,it means it's first iteration
 		    if(flag2==0)
 		    {   border_first=i;
-	    		if(flag==1)
-			    {
-	    			//System.out.println("Working");
-			    	TimeTable.merge(i, j, sheet1, rooms);
-			    	row1.createCell(j+1).setCellValue(" 08:30 - 10:30 ");
-			    	row1.createCell(j+4).setCellValue(" CEP Rooms ");
-			    	TimeTable.printRooms(i, j, sheet1, rooms);
-			    	flag2=1;
-			    }
-			    else if(flag==2)
-			    {
-			    	TimeTable.merge(i, j, sheet1, rooms);
-			    	row1.createCell(j+1).setCellValue(" 11:00 - 13:00 ");
-			    	row1.createCell(j+4).setCellValue(" CEP Rooms ");
-			    	TimeTable.printRooms(i, j, sheet1, rooms);
-			    	flag2=1;
-			    }
-			    else if(flag==3)
-			    {	TimeTable.merge(i, j, sheet1, rooms);
-			    	row1.createCell(j+1).setCellValue(" 14:00 - 16:00 ");
-			    	row1.createCell(j+4).setCellValue(" CEP Rooms ");
-			    	TimeTable.printRooms(i, j, sheet1, rooms);
-			    	flag2=1;
-			    }
-			    else if(flag==4)
-			    {
-			    	TimeTable.merge(i, j, sheet1, rooms);
-			    	row1.createCell(j+1).setCellValue(" 16:30 - 18:30 ");
-			    	row1.createCell(j+4).setCellValue(" CEP Rooms ");
-			    	TimeTable.printRooms(i, j, sheet1, rooms);
-			    	flag2=1;
-			    }
-			    
+	    		 flag2=	TimeTable.dostuff(i, j, sheet1, rooms, wb, flag2, row1,flag);
+	    		 
+	    		  	 	System.out.println("flag2="+flag2);
 		    }
 		    
     		Row row=sheet1.getRow(start);
@@ -367,9 +385,15 @@ public class TimeTable {
 			    ));
 	    		}
     		// Write Batch Name
-    		
-		    row.createCell(j).setCellValue(batch_id_name.get(batch_id));
-		    row.getCell(j).setCellStyle(style[4]);
+	    		CellStyle combined = wb.createCellStyle();
+	    		combined.cloneStyleFrom(style[batch_id-1]);
+	    	
+	    		// You can copy other attributes to "combined" here if desired.
+	    		Font font = wb.createFont();
+		        font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		        combined.setFont(font);
+		    	row.createCell(j).setCellValue(batch_id_name.get(batch_id));
+		    row.getCell(j).setCellStyle(combined);
     		}
 		    //Start allocating courses
 		    for(Course course:set)
@@ -394,7 +418,7 @@ public class TimeTable {
 					    for(int p=0;p<temp_rooms.size();p++)
 					    {
 					    	
-					    	System.out.println("Running"+p);
+					    //	System.out.println("Running"+p);
 					    	
 					    	if(!t1.getMap().containsKey(temp_rooms.get(p).getRoom_no()))
 					    		continue;
@@ -419,13 +443,13 @@ public class TimeTable {
 		  // #1) these borders will all be medium in default color
 		 
 		  pt.drawBorders(new CellRangeAddress(border_first, border_last, j+1, j+8),
-		          BorderStyle.NONE,BorderExtent.OUTSIDE);
+		          BorderStyle.MEDIUM,IndexedColors.BLACK.getIndex(),BorderExtent.OUTSIDE);
 		  
-		  
+
 		  if(flag==1)
 		  {
 		  pt.drawBorders(new CellRangeAddress(border_first, border_last, j, j),
-		          BorderStyle.MEDIUM,BorderExtent.OUTSIDE);	
+		          BorderStyle.MEDIUM,IndexedColors.BLACK.getIndex(),BorderExtent.OUTSIDE);	
 		  sheet1.addMergedRegion(new CellRangeAddress(
           border_first, //first row (0-based)
           border_last, //last row  (0-based)
@@ -439,6 +463,7 @@ public class TimeTable {
 		  pt.drawBorders(new CellRangeAddress(border_first, border_last, j-1, j-1),
 		          BorderStyle.MEDIUM,BorderExtent.OUTSIDE);
 		  }
+		  
 		  pt.applyBorders(sheet1);
 	}
 	 private static void createCell(Workbook wb, Row row, int column, short halign, short valign) {
@@ -450,9 +475,8 @@ public class TimeTable {
 	        cellStyle.setRotation((short)90);
 	        cell.setCellStyle(cellStyle);
 	    }
-	public static void main(String[] args) throws CloneNotSupportedException,SQLException,ClassNotFoundException,DAOException, IOException {
+	public static void main(String[] args)/* tt(HttpServletResponse res)*/ throws CloneNotSupportedException,SQLException,ClassNotFoundException,DAOException, IOException {
 		System.out.println("entered");
-		if(args==null)return;
 		//storing entire time table in 1 object of TimeTable class.
 		TimeTable TT=new TimeTable();
 		
@@ -647,54 +671,75 @@ public class TimeTable {
 			    //styles
 			    //BTech Ist
 			    style[0] = wb.createCellStyle();
-			    style[0].setFillBackgroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+			    style[0].setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
+			    style[0].setFillBackgroundColor(IndexedColors.PALE_BLUE.getIndex());
 			    style[0].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //B.Tech IInd
 			    style[1] = (XSSFCellStyle)wb.createCellStyle();
+			    style[1].setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
 			    style[1].setFillBackgroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
 			    style[1].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //B.Tech IIIrd
 			    style[2] =(XSSFCellStyle) wb.createCellStyle();
-			    style[2].setFillBackgroundColor(IndexedColors.BLUE.getIndex());
+			    style[2].setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
+			    style[2].setFillBackgroundColor(IndexedColors.SKY_BLUE.getIndex());
 			    style[2].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //B.Tech IVth
 			    style[3] =(XSSFCellStyle) wb.createCellStyle();
+			    style[3].setFillForegroundColor(IndexedColors.TAN.getIndex());
 			    style[3].setFillBackgroundColor(IndexedColors.TAN.getIndex());
 			    style[3].setFillPattern(CellStyle.BIG_SPOTS);
 			    
+			    
 			    //M.Sc(IT) Ist 
 			    style[4] = (XSSFCellStyle)wb.createCellStyle();
-			    style[4].setFillBackgroundColor(new XSSFColor(new java.awt.Color(0, 255, 0)));
-			    style[4].setFillPattern(CellStyle.BIG_SPOTS);
+			    style[4].setFillForegroundColor(IndexedColors.ORANGE.getIndex());
+			    style[4].setFillBackgroundColor(IndexedColors.ORANGE.getIndex());
+			    
+			    style[4].setFillPattern(FillPatternType.BIG_SPOTS);
+			   // style[4].setLocked(true);
 			    
 			    //M.Sc(IT) IInd
 			    style[5] =(XSSFCellStyle) wb.createCellStyle();
+			    style[5].setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
 			    style[5].setFillBackgroundColor(IndexedColors.LIGHT_GREEN.getIndex());
 			    style[5].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //M.Sc(IT) ARD Ist
 			    style[6] =(XSSFCellStyle) wb.createCellStyle();
+			    style[6].setFillForegroundColor(IndexedColors.YELLOW.getIndex());
 			    style[6].setFillBackgroundColor(IndexedColors.YELLOW.getIndex());
 			    style[6].setFillPattern(CellStyle.BIG_SPOTS);
 			    
 			    //M.Sc(IT) ARD IInd
 			    style[7] =(XSSFCellStyle) wb.createCellStyle();
-			    style[7].setFillBackgroundColor(IndexedColors.VIOLET.getIndex());
+			    style[7].setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+			    style[7].setFillBackgroundColor(IndexedColors.LIGHT_BLUE.getIndex());
 			    style[7].setFillPattern(CellStyle.BIG_SPOTS);
-			    
+			    sheet1.createRow(55);
+			    for(int kk=0;kk<30;kk++)
+			    {
+			    sheet1.getRow(55).createCell(kk).setCellStyle(style[7]);
+			    }
 			    //M.Tech Ist
 			    style[8] =(XSSFCellStyle) wb.createCellStyle();
+			    style[8].setFillForegroundColor(IndexedColors.ROSE.getIndex());
 			    style[8].setFillBackgroundColor(IndexedColors.ROSE.getIndex());
 			    style[8].setFillPattern(CellStyle.BIG_SPOTS);
 			   
 			    //M.Tech IInd
 			    style[9] =(XSSFCellStyle) wb.createCellStyle();
+			    style[9].setFillForegroundColor(IndexedColors.LAVENDER.getIndex());
 			    style[9].setFillBackgroundColor(IndexedColors.LAVENDER.getIndex());
 			    style[9].setFillPattern(CellStyle.BIG_SPOTS);
-			    
+//			    sheet1.createRow(55);
+//			    for(int kk=0;kk<30;kk++)
+//			    {
+//			    sheet1.getRow(55).createCell(kk).setCellStyle(style[9]);
+//			    }
 			  
 			    //M.Des Ist
 			    style[10] =wb.createCellStyle();
@@ -702,12 +747,14 @@ public class TimeTable {
 			    //style[10].setFillPattern(CellStyle.BIG_SPOTS);
 //			    style[10].setFillBackgroundColor(new XSSFColor(java.awt.Color.GREEN));
 //			    style[10].setFillPattern(CellStyle.BIG_SPOTS);
-			    style[10].setFillForegroundColor(new XSSFColor(new java.awt.Color(128, 0, 128)));
-			  style[10].setFillBackgroundColor(IndexedColors.BLACK.getIndex());
+			    style[10].setFillForegroundColor(IndexedColors.GREEN.getIndex());
+			    style[10].setFillBackgroundColor(IndexedColors.GREEN.getIndex());
+			  //style[10].setFillBackgroundColor(IndexedColors.BLACK.getIndex());
 			    style[10].setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
 			  
 			    //M.Des IInd
 			    style[11] =(XSSFCellStyle) wb.createCellStyle();
+			    style[11].setFillForegroundColor(IndexedColors.RED.getIndex());
 			    style[11].setFillBackgroundColor(IndexedColors.RED.getIndex());
 			    style[11].setFillPattern(CellStyle.BIG_SPOTS);
 			    
@@ -867,7 +914,7 @@ public class TimeTable {
 			    
 			   XSSFCellStyle cust_style=wb.createCellStyle();
 			    
-			    cust_style.setFillForegroundColor(new XSSFColor(new java.awt.Color(0, 255, 0)));
+			    cust_style.setFillBackgroundColor(new XSSFColor(new java.awt.Color(0, 255, 0)));
 			    cust_style.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
 			    
 			    
@@ -875,12 +922,16 @@ public class TimeTable {
 			    
 			    
 			    	    
-			    sheet1.autoSizeColumn(12);
+			    for(int ii=-1;ii<40;ii++)
+			    {sheet1.autoSizeColumn(j+ii);
+			    System.out.println(j+ii);}
 			    //saving output to file
 			    sheet1.getPrintSetup().setLandscape(true);
 			    FileOutputStream fileOut = new FileOutputStream("workbook.xlsx");
 			    wb.write(fileOut);
+			    //  wb.write(res.getOutputStream());
 			    fileOut.close();
+			    System.out.println("over");
 	}
 
 }

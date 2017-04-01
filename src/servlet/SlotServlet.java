@@ -1,7 +1,9 @@
 package servlet;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -37,6 +39,7 @@ public class SlotServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
+		System.out.println("doGet");
 		doPost(request,response);
 	}
 
@@ -57,25 +60,26 @@ public class SlotServlet extends HttpServlet {
 			else if (action.equals("generateAndDownloadTT")) {
 				System.out.println("conc");
 				//TimeTable.main(null);
-				response.setContentType("application/force-download");
-				// File f = new File("")
-				// response.setContentLength((int)f.length());
-				response.setHeader("Content-Transfer-Encoding", "binary");
-				response.setHeader("Content-Disposition", "attachment; filename=\"company.xlsx\"");
+//				String fileName = "C:\\Users\\ashwani tanwar\\workspace\\Exam_TimeTable_Scheduler_bySlots_Web_Project\\workbook.xlsx";
+//		         String fileType = "xlsx";
+//		         response.setContentType(fileType);
+//		         response.setHeader("Content-disposition","attachment; filename=workbook.xlsx");
+//		         File my_file = new File(fileName);
+//		         OutputStream out = response.getOutputStream();
+//		         FileInputStream in = new FileInputStream(my_file);
+//		         byte[] buffer = new byte[4096];
+//		         int length;
+//		         while ((length = in.read(buffer)) > 0){
+//		            out.write(buffer, 0, length);
+//		         }
+//		         in.close();
+//		         out.flush();
+				response.getWriter().write("http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/workbook.xlsx");
 			}
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} /*catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+		}
 	}
 
 }
