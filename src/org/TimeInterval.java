@@ -85,17 +85,17 @@ public class TimeInterval {
 	 //this function assigns a particular course+allocated_strength(no of students from this course to be seated in 
 	 //this room) to a particular room in this time interval. 
 	 //If this room already contains course details,then this just appends a new course+allocated_strength
-	 public void assignCourse(int room_no,Course course,int allocated,String side)
+	 public void assignCourse(int room_no,Course course,int allocated,String side,Room room)
 	 {			//System.out.println("Really assigning"+course);
 			if(map.containsKey(room_no))
 			{ 
 			ArrayList<OccupationData> temp=map.get(room_no);
-			temp.add(new OccupationData(course,allocated,side));
+			temp.add(new OccupationData(course,allocated,side,room));
 			map.put(room_no, temp);
 			return;
 			}
 			ArrayList<OccupationData> newList=new ArrayList<>();
-			newList.add(new OccupationData(course,allocated,side));
+			newList.add(new OccupationData(course,allocated,side,room));
 			map.put(room_no, newList);
 	}
 	 

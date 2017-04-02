@@ -15,8 +15,8 @@ public class GenerateTT {
 		//Running main algorithm for all the slots.It creates timetable of all the slots separately.
 		for(int h=0;h<TT.getSlot().length;h++)// 
 		{ 
-			System.out.println("**************************SLOT NO: "+(h+1)+"****************************");
-			System.out.println("Room No     Course ID   Course Name");
+//			System.out.println("**************************SLOT NO: "+(h+1)+"****************************");
+//			System.out.println("Room No     Course ID   Course Name");
 			
 			if((h+1)%2!=0)
 				{
@@ -43,7 +43,7 @@ public class GenerateTT {
 				int flagContinue = 0;
 				int flagContinue2 = 0;
 				Course tempCourse = slot.chosingCourse();//refer slot class for details
-				System.out.println("Course chosen: "+tempCourse);
+				//System.out.println("Course chosen: "+tempCourse);
 				//MAIN ALGORITHM:
 				// There are 3 cases. Each course visits all the 3 cases. If it gets allocated in CASE 1, it breaks
 				//the while loop and gives chance to next course. If it doesn't get allocated in CASE 1,then it tries for
@@ -212,10 +212,7 @@ public class GenerateTT {
 		    			}
 		    		}
 				}
-				for(Course course:slot.getCourses()){
-					if(course.getBroken())
-			System.out.println("Broken Courses:"+course);}
-			//System.out.println("Slot: "+(h+1)+"Set: "+set);
+				
 		}
 		//It prints data in excel sheet and exports a .xlsx file
 		PrintExcel excel=new PrintExcel();

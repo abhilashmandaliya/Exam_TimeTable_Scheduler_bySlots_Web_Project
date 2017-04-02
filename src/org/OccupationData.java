@@ -10,6 +10,7 @@ public class OccupationData {
 	private int allocatedStudents;
 	private Course course;
 	private String side;
+	private Room room;
 	
 	public int getAllocatedStudents() {
 		return allocatedStudents;
@@ -20,11 +21,15 @@ public class OccupationData {
 	public String getSide() {
 		return side;
 	}
-	public OccupationData(Course course,int allocatedStudents,String side)
+	 public Room getRoom() {
+		return room;
+	}
+	public OccupationData(Course course,int allocatedStudents,String side,Room room)
 	{
 		this.course=course;
 		this.allocatedStudents=allocatedStudents;
 		this.side=side;
+		this.room=room;
 	}
 	
 	//copy constructor
@@ -33,6 +38,7 @@ public class OccupationData {
 		this.allocatedStudents=other.getAllocatedStudents();
 		this.course=new Course(other.getCourse());//calling copy constructor of Course
 		this.side=other.side;
+		this.room=other.room;
 	}
 	public void setSide(String side) {
 		this.side = side;
@@ -43,5 +49,8 @@ public class OccupationData {
 	}
 	public void setAllocatedStudents(int allocatedStudents) {
 		this.allocatedStudents = allocatedStudents;
+	}
+	public void setRoom(Room room) {
+		this.room = room;
 	}
 }
