@@ -106,14 +106,33 @@ public class Slot {
 	public Course chosingCourse() {
 		Course course = null;
 		int max = 0;
+		
+		int flag_no_otherloop=0;
 		for (int i = 0; i < courses.size(); i++) {
-			if (courses.get(i).getUnallocated_strength() > 0 && courses.get(i).getProcessed() == false) {
+			if (courses.get(i).getUnallocated_strength() > 0 && courses.get(i).getProcessed() == false && courses.get(i).getFlag_clash()==1) {
 				if (max < courses.get(i).getNo_Of_Students()) {
 					max = courses.get(i).getNo_Of_Students();
 					course = courses.get(i);
+					flag_no_otherloop=1;
 				}
 			}
 		}
+		//return course;
+		if(flag_no_otherloop==0)
+		{
+			for (int i = 0; i < courses.size(); i++) 
+			{
+				if (courses.get(i).getUnallocated_strength() > 0 && courses.get(i).getProcessed() == false) 
+				{
+					if (max < courses.get(i).getNo_Of_Students()) 
+					{
+						max = courses.get(i).getNo_Of_Students();
+						course = courses.get(i);
+					}
+				}
+			}
+		}
+			
 		return course;
 	}
 

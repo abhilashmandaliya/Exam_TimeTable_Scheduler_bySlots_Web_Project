@@ -2,26 +2,44 @@ package org;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GenerateTT {
 
 	public static void main(String[] args)/* tt(HttpServletResponse res)*/ throws CloneNotSupportedException,SQLException,ClassNotFoundException,DAOException, IOException {
 		//storing entire time table in 1 object of TimeTable class.
 		TimeTable TT=new TimeTable();
-		
+		Set<Integer> set=new HashSet<>();//stores batch numbers of timeinterval2 of odd  slots
 		//Running main algorithm for all the slots.It creates timetable of all the slots separately.
 		for(int h=0;h<TT.getSlot().length;h++)// 
 		{ 
 			System.out.println("**************************SLOT NO: "+(h+1)+"****************************");
 			System.out.println("Room No     Course ID   Course Name");
+			
+			if((h+1)%2!=0)
+				{
+				set.removeAll(set);//clear set for reuse
+				}
+						
 			TimeInterval time1 = new TimeInterval(1);
 			TimeInterval time2 = new TimeInterval(2);
 			int flag = 0;// a flag to use to forcibly exit loops or restarting loops.
 			TimeInterval[] array = {time1,time2};
 			int p = 0;
 			Slot slot=TT.getSlot()[h];
+			
+			for(Course course:slot.getCourses())
+			{
+				if(set.contains(Integer.parseInt(course.getBatch())))
+				{
+					course.setFlag_clash(1);
+				}
+			}
 			while (slot.slotProcessed())//if all the courses are processed, then loop breaks. 
 			{
+				
 				int flagContinue = 0;
 				int flagContinue2 = 0;
 				Course tempCourse = slot.chosingCourse();//refer slot class for details
@@ -42,14 +60,24 @@ public class GenerateTT {
 				int k;
 				if (TT.ifCourseIsBig(tempCourse, time1)) //assuming that total capacity of rooms is same for time2
 				{
-					k = p % 2; // k=0,1
+					k = p % 2; // k=0,1//just alternating,p->course sequences(0,1,2,3,..)
+					
+					//flip k
+					if(k==0)
+						k=1;
+					else if(k==1)
+						k=0;
 				} 
 				else
 				{
-					k = 0;
+					k = 1;
 				}
 				
-				for (; k < 2; k++) 
+				//always start from k=1 for flag_clash==1
+
+				if(tempCourse.getFlag_clash()==1)
+					k=1;
+				for (; k >=0 ; k--) 
 				{
 					flag = 0;
 	
@@ -169,6 +197,20 @@ public class GenerateTT {
 			time2.print();
 			TT.getStore().put(h+1, new StoreTT(h+1,time1,time2));
 			
+			if((h+1)%2!=0)//slot is odd 
+			{
+				if(!time2.getMap().isEmpty())//if time2 has some courses allocated
+				{					
+		    		for(ArrayList<OccupationData> od:time2.getMap().values())//stores all the batches of time2 in set
+		    		{
+		    			for(int hh=0;hh<od.size();hh++)
+		    			{
+		    			set.add(Integer.parseInt(od.get(hh).getCourse().getBatch()));
+		    			}
+		    		}
+				}
+			}
+			//System.out.println("Slot: "+(h+1)+"Set: "+set);
 		}
 		//It prints data in excel sheet and exports a .xlsx file
 		PrintExcel excel=new PrintExcel();

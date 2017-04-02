@@ -10,7 +10,7 @@ public class Course {
 	//when algorithm is running
 	private boolean processed;// all the students of this course are assigned a room and this course is 
 	//successfully finished in allocation algorithm.
-
+	private int flag_clash;//a flag to check that if it requires a gap of time interval
 	public Course(String course_id, String course_name,String batch, int no_Of_Students)
 	{
 		this.course_id = course_id;
@@ -19,6 +19,7 @@ public class Course {
 		this.batch=batch;
 		this.unallocated_strength = this.no_Of_Students;
 		this.processed = false;
+		this.flag_clash=0;
 	}
 
 	//copy constructor
@@ -30,12 +31,15 @@ public class Course {
 		this.unallocated_strength = other.getUnallocated_strength();
 		this.processed = other.getProcessed();
 		this.batch=other.getBatch();
+		this.flag_clash=other.getFlag_clash();
 	}
                                                                        
 	public String getBatch() {
 		return batch;
 	}
-	
+	public int getFlag_clash() {
+		return flag_clash;
+	}
 	public String getCourse_id() {
 		return course_id;
 	}
@@ -73,6 +77,8 @@ public class Course {
 	{
 		return this.course_id+" "+this.course_name;
 	}
-	
+	 public void setFlag_clash(int flag_clash) {
+		this.flag_clash = flag_clash;
+	}
 	
 }

@@ -121,6 +121,8 @@ public class TimeTable {
 	//condition. in case, CASE 2 condition is true, it saves those values to be used later. If CASE 1 is successful,
 	//then it returns the function,but in case if CASE 1 fails, and custom_flag==1(means CASE 2 is successful),then
 	// it assigns according to case2. At last,if both case fails, it returns 0.
+	
+	
 	public int allocateFullChunk(TimeInterval array[],Course course,Slot slot)
 	{
 		
@@ -131,9 +133,22 @@ public class TimeTable {
 		String save_side=null;
 		int finalChunkStudents = course.getUnallocated_strength();//It will have full strength for CASE1 and CASE2
 		//CASE 1:
-		for (int k = 0; k < array.length; k++) 
+		for (int k = array.length-1; k >= 0; k--) 
 		{
 			flag=0;
+			if(custom_flag==1 && k==0)// K==0 means it has already checked for k==1(TimeInterval2) 
+				//and it has just reached timeinterval1 first iteration. BUT custom_flag==1 means it already has
+				//a best case for entire allocation(although pushing this in already invigilance secured room).
+				//So,push it in that timeInterval2 even if invigilance is overdozed and timeinterval1 still
+				//requires invigilance as consecutive exams are prohibited(priority).
+			{
+				flag=1;//course has been processed. jump to next course and dont run below cases.
+				System.out.println("Room No: "+save_room.getRoom_no()+" is "+save_room.getInvigilanceRequired());
+				assignOnLeftRight(course, save_room,finalChunkStudents, slot, save_ti, save_side);
+				System.out.println("Forced: "+course);
+				return flag;	
+			}
+			//custom_flag=0;
 			for (int i = 0; i < array[k].getRooms().size(); i++) //entering a particular room to check invigilation
 			{
 				Room proposedRoom = array[k].getRooms().get(i);//storing concerned room for handy computation
