@@ -56,7 +56,7 @@ public class TimeTable {
 	public void assignOnLeftRight(Course course,Room room,int num_of_students,Slot slot,TimeInterval ti,String side)
 	{
 		course.setProcessed(true); // course is successfully processed.
-		room.setInvigilanceRequired(false);// no, now invigilance is not required for this "room".
+		
 		course.setUnallocatedStrength(num_of_students);//set to 0 in CASE 1 and CASE 2//Reduce unallocated strength
 		//as some(all in CASE1 and CASE2) students have already been allocated in a room.
 		slot.updateProcessCount();// increase process count as a course has been processed successfully.
@@ -145,6 +145,7 @@ public class TimeTable {
 				flag=1;//course has been processed. jump to next course and dont run below cases.
 				System.out.println("Room No: "+save_room.getRoom_no()+" is "+save_room.getInvigilanceRequired());
 				assignOnLeftRight(course, save_room,finalChunkStudents, slot, save_ti, save_side);
+				save_room.setInvigilanceRequired(false);// no, now invigilance is not required for this "room".
 				System.out.println("Forced: "+course);
 				return flag;	
 			}
@@ -156,7 +157,7 @@ public class TimeTable {
 				int right = proposedRoom.getRightStrength();
 				//a new course will visit this function.So, this is certain that below will have
 				//all the students from that course.
-				
+				System.out.println("k: "+k+"i: "+i+" "+proposedRoom.getRoom_no()+"required: "+proposedRoom.getInvigilanceRequired()+""+course);
 				if (proposedRoom.checkInvigilanceRequired()) //refer Room class for this function
 				{	if (left > right) //left side has more strength
 					{	
@@ -166,6 +167,7 @@ public class TimeTable {
 							
 							flag=1;//course has been processed. jump to next course and dont run below cases.
 							assignOnLeftRight(course, proposedRoom,finalChunkStudents, slot, array[k], "left");
+							proposedRoom.setInvigilanceRequired(false);// no, now invigilance is not required for this "room".
 							return flag;	
 						}
 						else if (finalChunkStudents <= proposedRoom.getRightCapacity()) //left couldn't allocate.
@@ -173,6 +175,7 @@ public class TimeTable {
 						{
 						    flag=1;//course has been processed. jump to next course and dont run below cases.
 							assignOnLeftRight(course, proposedRoom,finalChunkStudents, slot, array[k], "right");
+							proposedRoom.setInvigilanceRequired(false);// no, now invigilance is not required for this "room".
 							return flag;
 						}
 					} 
@@ -181,12 +184,14 @@ public class TimeTable {
 						{
 							flag=1;//course has been processed. jump to next course and dont run below cases.
 							assignOnLeftRight(course, proposedRoom,finalChunkStudents, slot, array[k], "right");
+							proposedRoom.setInvigilanceRequired(false);// no, now invigilance is not required for this "room".
 							return flag;	
 						}
 						else if(finalChunkStudents <= proposedRoom.getLeftCapacity()) 
 						{
 							flag=1;//course has been processed. jump to next course and dont run below cases.
 							assignOnLeftRight(course, proposedRoom,finalChunkStudents, slot, array[k], "left");
+							proposedRoom.setInvigilanceRequired(false);// no, now invigilance is not required for this "room".
 							return flag;
 						}
 					}
@@ -235,6 +240,7 @@ public class TimeTable {
 		{
 			flag=1;//course has been processed. jump to next course and dont run below cases.
 			assignOnLeftRight(course, save_room,finalChunkStudents, slot, save_ti, save_side);
+			save_room.setInvigilanceRequired(false);// no, now invigilance is not required for this "room".
 			return flag;	
 		}
 		return flag;//both case failed ,returning 0;

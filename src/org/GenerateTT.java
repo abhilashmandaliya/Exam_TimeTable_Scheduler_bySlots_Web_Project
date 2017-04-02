@@ -153,7 +153,7 @@ public class GenerateTT {
 						// time interval 1
 						flagContinue = 0;
 						flagContinue2 = 0;
-						if (k == 0 && tempCourse.getUnallocated_strength() > 0) {//course still has some unallocated students in above
+						if (k == 1 && tempCourse.getUnallocated_strength() > 0) {//course still has some unallocated students in above
 							//case, so try other case and undo above operation
 						//	time1.printRooms();
 							time1 = save1;
@@ -165,13 +165,13 @@ public class GenerateTT {
 							//time1.printRooms();
 							//time1.setRooms(save5);
 							
-							// send to k1(check same pattern for next time interval)
+							// send to k0(check same pattern for next time interval)
 							
 						}
 	
 						
 						//above pattern could not fit in both the time intervals,so change the pattern and undo codes
-						if (k == 1 && (save4 == array[k].getRooms().size() - 1) && (tempCourse.getUnallocated_strength() > 0)) {
+						if (k == 0 && (save4 == array[k].getRooms().size() - 1) && (tempCourse.getUnallocated_strength() > 0)) {
 							// undo code;
 							time1 = save1;
 							time2 = save2;
@@ -197,8 +197,7 @@ public class GenerateTT {
 			time2.print();
 			TT.getStore().put(h+1, new StoreTT(h+1,time1,time2));
 			
-			if((h+1)%2!=0)//slot is odd 
-			{
+			
 				if(!time2.getMap().isEmpty())//if time2 has some courses allocated
 				{					
 		    		for(ArrayList<OccupationData> od:time2.getMap().values())//stores all the batches of time2 in set
@@ -209,7 +208,7 @@ public class GenerateTT {
 		    			}
 		    		}
 				}
-			}
+			
 			//System.out.println("Slot: "+(h+1)+"Set: "+set);
 		}
 		//It prints data in excel sheet and exports a .xlsx file
