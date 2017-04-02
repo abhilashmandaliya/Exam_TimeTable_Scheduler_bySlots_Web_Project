@@ -83,12 +83,28 @@ public class Room{
 	//Undesirable effect: While traversing the rooms, if algorithm finds any empty room, it goes inside as room's 
 	// invigilation is required by default. But I may require invigilation in next interval for some room. So, in any case, 
 	//fresh whole allocation is given to CASE 2 only. invigilation just checks rooms with at least 1 student 
-	public boolean checkInvigilanceRequired()
+	public boolean checkInvigilanceRequired(int flag_clash,Slot slot,TimeInterval ti)
 	{
+		int flag_big=0;
+		if(flag_clash==1)
+		{   
+			for(Course course:slot.getCourses())
+			{
+				if(TimeTable.ifCourseIsBig(course,ti )==true)
+				{
+					flag_big=1;
+				}
+			}
+			if(invigilanceRequired==true && flag_big==1)
+				return true;
+				else return false;
+		}
 		if(invigilanceRequired==true && (rightStrength>0 || leftStrength>0))
 		return true;
 		else return false;
 	}
+	
+	
 	
 	public boolean getCheckBigCapacity()
 	{

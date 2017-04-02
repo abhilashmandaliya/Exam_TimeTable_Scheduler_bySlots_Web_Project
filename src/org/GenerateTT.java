@@ -43,7 +43,7 @@ public class GenerateTT {
 				int flagContinue = 0;
 				int flagContinue2 = 0;
 				Course tempCourse = slot.chosingCourse();//refer slot class for details
-				//System.out.println(tempCourse);
+				System.out.println("Course chosen: "+tempCourse);
 				//MAIN ALGORITHM:
 				// There are 3 cases. Each course visits all the 3 cases. If it gets allocated in CASE 1, it breaks
 				//the while loop and gives chance to next course. If it doesn't get allocated in CASE 1,then it tries for
@@ -62,7 +62,7 @@ public class GenerateTT {
 				tempCourse.setBroken(true);
 				int k;
 				
-				if (TT.ifCourseIsBig(tempCourse, time1)) //assuming that total capacity of rooms is same for time2
+				if (TimeTable.ifCourseIsBig(tempCourse, time1)) //assuming that total capacity of rooms is same for time2
 				{
 					k = p % 2; // k=0,1//just alternating,p->course sequences(0,1,2,3,..)
 					
@@ -197,8 +197,8 @@ public class GenerateTT {
 	
 				p++;
 			}
-			time1.print();
-			time2.print();
+//			time1.print();
+//			time2.print();
 			TT.getStore().put(h+1, new StoreTT(h+1,time1,time2));
 			
 			
@@ -212,7 +212,9 @@ public class GenerateTT {
 		    			}
 		    		}
 				}
-			
+				for(Course course:slot.getCourses()){
+					if(course.getBroken())
+			System.out.println("Broken Courses:"+course);}
 			//System.out.println("Slot: "+(h+1)+"Set: "+set);
 		}
 		//It prints data in excel sheet and exports a .xlsx file
