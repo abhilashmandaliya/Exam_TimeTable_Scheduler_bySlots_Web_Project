@@ -191,7 +191,7 @@ public class PrintExcel {
 						    	{    		
 						       		if(od.getCourse().getCourse_id()==course.getCourse_id())
 						    		{
-						    			row_temp.createCell(p+first_col).setCellValue(od.getAllocatedStudents());
+						    			row_temp.createCell(p+first_col).setCellValue(od.getAllocatedStudents()+"\n["+od.getSide()+"]");
 						    			row_temp.getCell(p+first_col).setCellStyle(style[batch_id-1]);
 						    		}
 						    	}						    	

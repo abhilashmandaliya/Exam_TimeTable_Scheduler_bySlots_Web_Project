@@ -57,7 +57,11 @@ public class GenerateTT {
 					continue;
 				}				
 				// CASE 3: small and big cases
+				
+				//if a course has come here,it means that it's broken in different chunks
+				tempCourse.setBroken(true);
 				int k;
+				
 				if (TT.ifCourseIsBig(tempCourse, time1)) //assuming that total capacity of rooms is same for time2
 				{
 					k = p % 2; // k=0,1//just alternating,p->course sequences(0,1,2,3,..)
