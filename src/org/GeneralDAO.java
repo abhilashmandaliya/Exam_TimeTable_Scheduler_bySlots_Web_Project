@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 
 // This is a general class to deal with database where objects are not required to manipulate database.
 public class GeneralDAO {
@@ -25,6 +26,9 @@ public class GeneralDAO {
 					 int room_capacity=rs.getInt("room_capacity");
 					 rooms.add(new Room(room_no,room_capacity));
 				 }
+				 
+		         Collections.sort(rooms, new RoomComparatorByCapacity());  
+		         
 				 
 			 }
 			 catch(SQLException e)
@@ -116,11 +120,12 @@ public class GeneralDAO {
 	public static void addCourse(String course_id,String course_name,String batch,int no_of_students) throws DAOException, ClassNotFoundException
 	{
 		 try
-		 {	 
-			 Connection con=DBConnection.getInstance().getConnectionSchema("public");
-			 String sql="Insert into Course VALUES("+course_id+","+course_name+","+batch+","+no_of_students+")";
+		 {	 Connection con=DBConnection.getInstance().getConnectionSchema("public");
+			 String sql="Insert into Course VALUES('"+course_id+"','"+course_name+"','"+batch+"',"+no_of_students+")";
+			 
 			 Statement stmt=con.createStatement();
-			 stmt.executeUpdate(sql);
+			
+			 stmt.execute(sql);
 		 }
 		 catch(SQLException e)
 		 {
@@ -135,7 +140,7 @@ public class GeneralDAO {
 		 try
 		 {	 
 			 Connection con=DBConnection.getInstance().getConnectionSchema("public");
-			 String sql="Delete from Course where course_id="+course_id;
+			 String sql="Delete from Course where course_id='"+course_id+"'";
 			 Statement stmt=con.createStatement();
 			 ResultSet rs=stmt.executeQuery(sql);
 			
@@ -154,7 +159,7 @@ public class GeneralDAO {
 		 try
 		 {	 
 			 Connection con=DBConnection.getInstance().getConnectionSchema("public");
-			 String sql="UPDATE course SET course_name="+course_name+",batch="+batch+",no_of_students="+no_of_students+" WHERE course_id="+course_id;
+			 String sql="UPDATE course SET course_name='"+course_name+"',batch='"+batch+"',no_of_students="+no_of_students+" WHERE course_id='"+course_id+"'";
 			 Statement stmt=con.createStatement();
 			 ResultSet rs=stmt.executeQuery(sql);
 			
@@ -166,5 +171,36 @@ public class GeneralDAO {
 		 }
 		
 	}
+	//delete all the courses from database.it clears the database as slot table also get deleted
+	public static void deleteAllCourses() throws DAOException, ClassNotFoundException
+	{
+		 try
+		 {	 
+			 Connection con=DBConnection.getInstance().getConnectionSchema("public");
+			 String sql="delete from course";
+			 Statement stmt=con.createStatement();
+			 stmt.execute(sql);			 
+		 }
+		 catch(SQLException e)
+		 {
+			 throw new DAOException(e.getMessage());
+		 }
+		
+	}
 	
+	public static void addSlotEntry(int slot_no,String course_id) throws DAOException, ClassNotFoundException
+	{
+		 try
+		 {	 
+			 Connection con=DBConnection.getInstance().getConnectionSchema("public");
+			 String sql="Insert into slot(slot_no,course_id) VALUES("+slot_no+",'"+course_id+"')";
+			 Statement stmt=con.createStatement();
+			 stmt.executeUpdate(sql);
+		 }
+		 catch(SQLException e)
+		 {
+			 throw new DAOException(e.getMessage());
+		 }
+		
+	}
 }

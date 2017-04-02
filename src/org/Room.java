@@ -144,4 +144,14 @@ public class Room{
 	{
 		return "";
 	}
+	
+	//sorting descending order
+	public int compareTo(Room other)
+	{
+		if(this.getCapacity()<other.getCapacity())
+			return 1;
+		else if(this.getCapacity()<other.getCapacity())
+			return -1;
+		else return 0;					
+	}
 }

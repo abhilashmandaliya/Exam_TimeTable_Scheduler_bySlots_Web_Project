@@ -3,12 +3,37 @@ package org;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class GenerateTT {
+	
+	//this method gets unallocated students after entire allocation
+	public static Map<Course,Integer> printUnallocatedStudents(TimeTable TT)
+	{
+		Slot[]slot_data=TT.getSlot();
+		
+		Map<Course,Integer> unallocated_map=new HashMap<>();
+		
+		for(Slot s:slot_data)
+		{
+			ArrayList<Course> courses=s.getCourses();
+			for(Course course:courses)
+			{
+				if(course.getUnallocated_strength()>0)
+				{
+					unallocated_map.put(course, course.getUnallocated_strength());
+				}				
+			}
+		}
+		return unallocated_map;
+	}
 
 	public static void main(String[] args)/* tt(HttpServletResponse res)*/ throws CloneNotSupportedException,SQLException,ClassNotFoundException,DAOException, IOException {
+		GeneralDAO.deleteAllCourses();
+		ReadFromExcel.read_excel();
 		//storing entire time table in 1 object of TimeTable class.
 		TimeTable TT=new TimeTable();
 		Set<Integer> set=new HashSet<>();//stores batch numbers of timeinterval2 of odd  slots
@@ -217,5 +242,6 @@ public class GenerateTT {
 		//It prints data in excel sheet and exports a .xlsx file
 		PrintExcel excel=new PrintExcel();
 		excel.createExcelSheet(TT);		
+		Map<Course,Integer> map=GenerateTT.printUnallocatedStudents(TT);
 	}
 }
