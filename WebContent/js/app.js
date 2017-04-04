@@ -44,17 +44,6 @@ $(document).ready(function() {
 		});
 	});
 	$("#generateAndDownloadTT").click(function(e) {
-		$.ajax({
-			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet',
-			type : 'get',
-			data : {},
-			success : function(res) {
-				window.location.href = res;
-			},
-			error : function() {
-//				alert($(this));
-//				$(("#row" +($(this).attr('id').substring(10)))).remove();
-			}
-		});
+		window.location.href = "http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet";
 	});
 });

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.DAOException;
+import org.GenerateTT;
 import org.TimeTable;
 
 /**
@@ -40,6 +41,8 @@ public class FileDownloadServlet extends HttpServlet {
 		// response.getWriter().append("Served at:
 		// ").append(request.getContextPath());
 		try {
+			// System.out.println("starting the program!");
+			GenerateTT.main(null);
 			response.setContentType("text/html");
 			PrintWriter out = response.getWriter();
 			String fileName = "workbook.xlsx";
@@ -53,6 +56,7 @@ public class FileDownloadServlet extends HttpServlet {
 				out.write(i);
 			fis.close();
 			out.close();
+			// System.out.println("exiting the program!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
