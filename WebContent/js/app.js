@@ -45,11 +45,9 @@ $(document).ready(function() {
 	});
 	$("#generateAndDownloadTT").click(function(e) {
 		$.ajax({
-			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/SlotManagement',
-			type : 'post',
-			data : {
-				'action' : 'generateAndDownloadTT'
-			},
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet',
+			type : 'get',
+			data : {},
 			success : function(res) {
 				window.location.href = res;
 			},
