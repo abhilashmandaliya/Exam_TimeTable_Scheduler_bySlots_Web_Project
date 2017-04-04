@@ -58,7 +58,7 @@ public class SlotServlet extends HttpServlet {
 			else if (action.equals("add"))
 				s.addCourseToDB(request.getParameter("course"));
 			else if (action.equals("generateAndDownloadTT")) {
-				System.out.println("conc");
+				//System.out.println("conc");
 				//TimeTable.main(null);
 //				String fileName = "C:\\Users\\ashwani tanwar\\workspace\\Exam_TimeTable_Scheduler_bySlots_Web_Project\\workbook.xlsx";
 //		         String fileType = "xlsx";
