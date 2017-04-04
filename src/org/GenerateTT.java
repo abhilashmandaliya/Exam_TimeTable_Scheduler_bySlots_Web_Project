@@ -32,8 +32,8 @@ public class GenerateTT {
 	}
 
 	public static void main(String[] args) throws CloneNotSupportedException,SQLException,ClassNotFoundException,DAOException, IOException {
-		GeneralDAO.deleteAllCourses();
-		ReadFromExcel.read_excel();
+		//GeneralDAO.deleteAllCourses();
+		//ReadFromExcel.read_excel();
 		//storing entire time table in 1 object of TimeTable class.
 		TimeTable TT=new TimeTable();
 		Set<Integer> set=new HashSet<>();//stores batch numbers of timeinterval2 of odd  slots
