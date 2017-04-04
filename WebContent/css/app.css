@@ -1,0 +1,6 @@
+@CHARSET "ISO-8859-1";
+
+.availableCourse {
+	height: 500px !important;
+	overflow: scroll;
+}
