@@ -60,17 +60,16 @@
 			</tr>
 			<%
 				Statement st = s.getCon().createStatement();
-				ResultSet rs = st.executeQuery("select course.course_id,course.course_name,course.batch from course,slot where course.course_id=slot.course_id AND slot.slot_no!="+slot_num);
+				ResultSet rs = st.executeQuery(
+						"select c.course_id,c.course_name,c.batch from course c where c.course_id not in (select course_id from slot where slot_no=+"
+								+ slot_num + ")");
 				int i = 0;
 				while (rs.next()) {
 					out.write("<tr id='row" + i + "'><td>");
 					out.write(rs.getString(1) + "</td><td>" + rs.getString(2) + "</td><td>" + rs.getString(3) + "</td>");
-					/*out.write("<td><select class='form-control '> ");
-					for (int j = 0; j < 350; j++)
-						out.write("<option>" + (j + 1) + "</option>");
-					out.write("</select></td>");*/
 					out.write("<td><button slot='" + slot_num + "' course='" + rs.getString(1)
-							+ "' class='btn btn-success' type='button' id='addCourse" + (i++) + "'>Add</button> </td></tr>");
+							+ "' class='btn btn-success' type='button' id='addCourse" + (i++)
+							+ "'>Add</button> </td></tr>");
 				}
 			%>
 		</table>

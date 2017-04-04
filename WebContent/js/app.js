@@ -36,10 +36,6 @@ $(document).ready(function() {
 				$('#courseIncluded tr:last').append($('#courseIncluded tr:last').prev().clone().find("td:last"));
 				$('#courseIncluded tr:last td:last button').attr('course',$('#courseIncluded tr:last td:first').text());
 				$('#courseIncluded tr:last td:last button').attr('id',"deleteRow"+($('#courseIncluded tr').length-1));
-			},
-			error : function() {
-//				alert($(this));
-//				$(("#row" +($(this).attr('id').substring(10)))).remove();
 			}
 		});
 	});
