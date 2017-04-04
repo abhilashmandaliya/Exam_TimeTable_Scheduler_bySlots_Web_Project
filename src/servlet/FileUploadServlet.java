@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+
+import org.GeneralDAO;
+import org.ReadFromExcel;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -87,7 +90,8 @@ public class FileUploadServlet extends HttpServlet {
 	                   fileName.substring(fileName.lastIndexOf("\\")+1)) ;
 	                }
 	                fi.write( file ) ;
-	                out.println("Uploaded Filename: " + fileName + "<br>");
+	                GeneralDAO.deleteAllCourses();
+	                ReadFromExcel.read_excel();
 	             }
 	          }
 	       }catch(Exception ex) {
