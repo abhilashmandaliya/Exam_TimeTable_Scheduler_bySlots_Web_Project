@@ -69,5 +69,18 @@ $(document).ready(function() {
 				}
 			});
 	});
-	
+	$("#registerCourse").click(function(e){
+		var course_id = $('#course_id').val();
+		var course_name = $('#course_name').val();
+		var batch = $('#batch').val();
+		var no_of_students = $('#no_of_students').val();
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/CourseServlet',
+			type : 'post',
+			data : {"course_id":course_id,"course_name":course_name,"batch":batch,"no_of_students":no_of_students},
+			success : function(){
+				
+			}
+		});
+	});
 });
