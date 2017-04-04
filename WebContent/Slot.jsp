@@ -9,7 +9,11 @@
 			<strong>Current Slot Courses!</strong>
 		</div>
 		<%
-			int slot_num = 1;
+			int slot_num;
+			if (request.getParameter("slotNo") == null)
+				slot_num = 1;
+			else
+				slot_num = Integer.parseInt(request.getParameter("slotNo"));
 			HttpSession crnt_session = request.getSession();
 
 			Slot s = new Slot(slot_num);
@@ -38,9 +42,9 @@
 			<%
 				for (int i = 1; i <= cnt; i++) {
 					if (i == slot_num)
-						out.write("<li class='active'><a href='#'>" + i + "</a></li>");
+						out.write("<li class='active'><a href='/Exam_TimeTable_Scheduler_bySlots_Web_Project/Slot.jsp?slotNo="+(i)+"'>" + i + "</a></li>");
 					else
-						out.write("<li><a href='#'>" + i + "</a></li>");
+						out.write("<li><a href='/Exam_TimeTable_Scheduler_bySlots_Web_Project/Slot.jsp?slotNo="+(i)+"'>"+ i + "</a></li>");
 				}
 			%>
 		</ul>
@@ -51,28 +55,30 @@
 			<strong>All Courses!</strong> Choose course to add in the current
 			slot.
 		</div>
-		<table class="table">
-			<tr>
-				<th>Course Code</th>
-				<th>Course Name</th>
-				<th>Batch</th>
-				<th>Add</th>
-			</tr>
-			<%
-				Statement st = s.getCon().createStatement();
-				ResultSet rs = st.executeQuery(
-						"select c.course_id,c.course_name,c.batch from course c where c.course_id not in (select course_id from slot where slot_no=+"
-								+ slot_num + ")");
-				int i = 0;
-				while (rs.next()) {
-					out.write("<tr id='row" + i + "'><td>");
-					out.write(rs.getString(1) + "</td><td>" + rs.getString(2) + "</td><td>" + rs.getString(3) + "</td>");
-					out.write("<td><button slot='" + slot_num + "' course='" + rs.getString(1)
-							+ "' class='btn btn-success' type='button' id='addCourse" + (i++)
-							+ "'>Add</button> </td></tr>");
-				}
-			%>
-		</table>
+		<div class="availableCourse">
+			<table class="table" id="remainingCourses">
+				<tr>
+					<th>Course Code</th>
+					<th>Course Name</th>
+					<th>Batch</th>
+					<th>Add</th>
+				</tr>
+				<%
+					Statement st = s.getCon().createStatement();
+					ResultSet rs = st.executeQuery(
+							"select c.course_id,c.course_name,b_p.program from course c, batch_program b_p where c.batch=b_p.batch and c.course_id not in (select course_id from slot where slot_no=+"
+									+ slot_num + ")");
+					int i = 0;
+					while (rs.next()) {
+						out.write("<tr id='row" + i + "'><td>");
+						out.write(rs.getString(1) + "</td><td>" + rs.getString(2) + "</td><td>" + rs.getString(3) + "</td>");
+						out.write("<td><button slot='" + slot_num + "' course='" + rs.getString(1)
+								+ "' class='btn btn-success' type='button' id='addCourse" + (i++)
+								+ "'>Add</button> </td></tr>");
+					}
+				%>
+			</table>
+		</div>
 	</div>
 </div>
 <%@include file="footer.jsp"%>

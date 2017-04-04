@@ -39,7 +39,7 @@ public class SlotServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		// response.getWriter().append("Served at:
-		// ").append(request.getContextPath());		
+		// ").append(request.getContextPath());
 		doPost(request, response);
 	}
 
@@ -54,7 +54,7 @@ public class SlotServlet extends HttpServlet {
 		Slot s = (Slot) request.getSession().getAttribute(request.getParameter("slot"));
 		try {
 			if (action.equals("delete"))
-				s.deleteCourseFromDB(request.getParameter("course"));
+				response.getWriter().write(s.deleteCourseFromDB(request.getParameter("course")));
 			else if (action.equals("add"))
 				s.addCourseToDB(request.getParameter("course"));
 		} catch (DAOException e) {

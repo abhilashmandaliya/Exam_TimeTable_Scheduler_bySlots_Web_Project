@@ -3,7 +3,7 @@ $(document).ready(function() {
 		$(".nav li").removeClass("active");
 		$(this).addClass("active");
 	});
-	$("[id^=deleteRow]").click(function() {
+	$(document).on("click","[id^=deleteRow]",function(e) {
 		$.ajax({
 			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/SlotManagement',
 			type : 'post',
@@ -12,12 +12,20 @@ $(document).ready(function() {
 				'course' : $(this).attr('course'),
 				'slot' : $(this).attr('slot')
 			},
-			success : function() {
-				//$(("#row" +($(this).attr('id').substring(9)))).remove();
+			success : function(data) {
+				var clicked = e.target.id || this.id;
+				$('#'+clicked).parent().parent().hide();
+				var row = $('#'+clicked).parent().parent().html();
+				$('#remainingCourses').append("<tr>"+row+"</tr>");
+				$('#remainingCourses tr:last td:last').remove();
+				$('#remainingCourses tr:last').append("<td>"+data+"</td>");
+				$('#remainingCourses tr:last').append($('#remainingCourses tr:last').prev().clone().find("td:last"));
+				$('#remainingCourses tr:last td:last button').attr('course',$('#remainingCourses tr:last td:first').text());
+				$('#remainingCourses tr:last td:last button').attr('id',"row"+($('#remainingCourses tr').length-1));
 			}
 		});
 	});
-	$("[id^=addCourse]").click(function(e) {
+	$(document).on("click","[id^=addCourse]",function(e) {
 		$.ajax({
 			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/SlotManagement',
 			type : 'post',

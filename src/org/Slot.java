@@ -88,17 +88,22 @@ public class Slot {
 	}
 
 	// this method deletes course from database corresponding to this slot
-	public void deleteCourseFromDB(String course_id) throws DAOException {
+	public String deleteCourseFromDB(String course_id) throws DAOException {
 		try {
 			System.out.println("cid : " + course_id);
 			String sql = "Delete from slot where slot_no=" + this.slot_no + " and course_id='" + course_id + "'";
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(sql);
+			sql = "Select program from batch_program,course where course.batch = batch_program.batch and course.course_id='"
+					+ course_id+"'";
+			ResultSet rs = stmt.executeQuery(sql);
+			if (rs.next())
+				return rs.getString(1);			
 		} catch (SQLException e) {
 			// throw new DAOException(e.getMessage());
 			e.printStackTrace();
 		}
-
+		return null;
 	}
 
 	// this method finds course which is to be processed by algorithm.
