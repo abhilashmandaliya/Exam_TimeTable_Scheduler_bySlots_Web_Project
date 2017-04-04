@@ -46,4 +46,24 @@ $(document).ready(function() {
 	$("#generateAndDownloadTT").click(function(e) {
 		window.location.href = "http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet";
 	});
+	
+	$('#uploadCourseDetail').click(function(){
+			var form_data = new FormData();
+			if(! ($('#courseDetails').prop('files')[0]==undefined) ) {
+				var file_data = $('#courseDetails').prop('files')[0];				
+				form_data.append('courseDetails',file_data);
+			}
+			$.ajax({
+				url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/FileUploadServlet',
+				type : 'post',
+				cache : false,
+				contentType : false,
+				processData : false,
+				data : form_data,
+				success : function(data){
+					alert(data);
+				}
+			});
+	});
+	
 });
