@@ -38,9 +38,9 @@ public class SlotServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
-		System.out.println("doGet");
-		doPost(request,response);
+		// response.getWriter().append("Served at:
+		// ").append(request.getContextPath());		
+		doPost(request, response);
 	}
 
 	/**
@@ -57,25 +57,6 @@ public class SlotServlet extends HttpServlet {
 				s.deleteCourseFromDB(request.getParameter("course"));
 			else if (action.equals("add"))
 				s.addCourseToDB(request.getParameter("course"));
-			else if (action.equals("generateAndDownloadTT")) {
-				//System.out.println("conc");
-				//TimeTable.main(null);
-//				String fileName = "C:\\Users\\ashwani tanwar\\workspace\\Exam_TimeTable_Scheduler_bySlots_Web_Project\\workbook.xlsx";
-//		         String fileType = "xlsx";
-//		         response.setContentType(fileType);
-//		         response.setHeader("Content-disposition","attachment; filename=workbook.xlsx");
-//		         File my_file = new File(fileName);
-//		         OutputStream out = response.getOutputStream();
-//		         FileInputStream in = new FileInputStream(my_file);
-//		         byte[] buffer = new byte[4096];
-//		         int length;
-//		         while ((length = in.read(buffer)) > 0){
-//		            out.write(buffer, 0, length);
-//		         }
-//		         in.close();
-//		         out.flush();
-				response.getWriter().write("http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/workbook.xlsx");
-			}
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

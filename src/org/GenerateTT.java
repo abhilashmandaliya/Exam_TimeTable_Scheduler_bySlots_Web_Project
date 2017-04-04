@@ -31,7 +31,7 @@ public class GenerateTT {
 		return unallocated_map;
 	}
 
-	public static void main(String[] args)/* tt(HttpServletResponse res)*/ throws CloneNotSupportedException,SQLException,ClassNotFoundException,DAOException, IOException {
+	public static void main(String[] args) throws CloneNotSupportedException,SQLException,ClassNotFoundException,DAOException, IOException {
 		GeneralDAO.deleteAllCourses();
 		ReadFromExcel.read_excel();
 		//storing entire time table in 1 object of TimeTable class.
