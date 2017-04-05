@@ -37,7 +37,8 @@
     <description>Location to store uploaded file</description>
     <param-name>file-upload</param-name>
     <param-value>
-         F:\exam_timetable\src\data\input\
+         <!-- F:\exam_timetable\src\data\input\ -->
+         C:\Users\ashwani tanwar\workspace\Exam_TimeTable_Scheduler_bySlots_Web_Project\src\data\input\
      </param-value>
   </context-param>
 </web-app>

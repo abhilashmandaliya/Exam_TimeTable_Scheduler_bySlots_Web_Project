@@ -11,9 +11,16 @@ import java.util.Collections;
 public class GeneralDAO {
 
 	// fetch rooms from database
+	private static Connection con;
+	
+	public static void makeConnection() throws ClassNotFoundException, SQLException
+	{
+		con=DBConnection.getInstance().getConnectionSchema("public");
+	}
 	 public static ArrayList<Room> getRooms() throws DAOException, ClassNotFoundException, SQLException 
 	 {
-		 Connection con=DBConnection.getInstance().getConnectionSchema("public");
+		 if(con==null)
+			 makeConnection();
 		 ArrayList<Room> rooms=new ArrayList<>();
 			 try
 			 {	 		 
@@ -42,7 +49,8 @@ public class GeneralDAO {
 	{
 		 try
 		 {	 
-			 Connection con=DBConnection.getInstance().getConnectionSchema("public");
+			 if(con==null)
+				 makeConnection();
 			 String sql="Insert into Room VALUES("+room_no+","+room_capacity+")";
 			 Statement stmt=con.createStatement();
 			 ResultSet rs=stmt.executeQuery(sql);
@@ -61,7 +69,8 @@ public class GeneralDAO {
 	{
 		 try
 		 {	 
-			 Connection con=DBConnection.getInstance().getConnectionSchema("public");
+			 if(con==null)
+				 makeConnection();
 			 String sql="Delete from Room where room_no="+room_no;
 			 Statement stmt=con.createStatement();
 			 ResultSet rs=stmt.executeQuery(sql);
@@ -80,7 +89,8 @@ public class GeneralDAO {
 	{
 		 try
 		 {	 
-			 Connection con=DBConnection.getInstance().getConnectionSchema("public");
+			 if(con==null)
+				 makeConnection();
 			 String sql="UPDATE Room SET room_capacity="+capacity+" WHERE room_no="+room_no;
 			 Statement stmt=con.createStatement();
 			 ResultSet rs=stmt.executeQuery(sql);
@@ -96,7 +106,8 @@ public class GeneralDAO {
 	//fetch courses from database
 	 public static ArrayList<Course> getCourses() throws DAOException, ClassNotFoundException, SQLException 
 	 {
-		 Connection con=DBConnection.getInstance().getConnectionSchema("public");
+		 if(con==null)
+			 makeConnection();
 		 ArrayList<Course> courses=new ArrayList<>();
 			 try
 			 {	 		 
@@ -120,7 +131,8 @@ public class GeneralDAO {
 	public static void addCourse(String course_id,String course_name,String batch,int no_of_students) throws DAOException, ClassNotFoundException
 	{
 		 try
-		 {	 Connection con=DBConnection.getInstance().getConnectionSchema("public");
+		 {	if(con==null)
+			 makeConnection();
 			 String sql="Insert into Course VALUES('"+course_id+"','"+course_name+"','"+batch+"',"+no_of_students+")";
 			 
 			 Statement stmt=con.createStatement();
@@ -139,7 +151,8 @@ public class GeneralDAO {
 	{
 		 try
 		 {	 
-			 Connection con=DBConnection.getInstance().getConnectionSchema("public");
+			 if(con==null)
+				 makeConnection();
 			 String sql="Delete from Course where course_id='"+course_id+"'";
 			 Statement stmt=con.createStatement();
 			 ResultSet rs=stmt.executeQuery(sql);
@@ -158,7 +171,8 @@ public class GeneralDAO {
 	{
 		 try
 		 {	 
-			 Connection con=DBConnection.getInstance().getConnectionSchema("public");
+			 if(con==null)
+				 makeConnection();
 			 String sql="UPDATE course SET course_name='"+course_name+"',batch='"+batch+"',no_of_students="+no_of_students+" WHERE course_id='"+course_id+"'";
 			 Statement stmt=con.createStatement();
 			 ResultSet rs=stmt.executeQuery(sql);
@@ -176,7 +190,8 @@ public class GeneralDAO {
 	{
 		 try
 		 {	 
-			 Connection con=DBConnection.getInstance().getConnectionSchema("public");
+			 if(con==null)
+				 makeConnection();
 			 String sql="delete from course";
 			 Statement stmt=con.createStatement();
 			 stmt.execute(sql);			 
@@ -192,7 +207,8 @@ public class GeneralDAO {
 	{
 		 try
 		 {	 
-			 Connection con=DBConnection.getInstance().getConnectionSchema("public");
+			 if(con==null)
+				 makeConnection();
 			 String sql="Insert into slot(slot_no,course_id) VALUES("+slot_no+",'"+course_id+"')";
 			 Statement stmt=con.createStatement();
 			 stmt.executeUpdate(sql);
@@ -202,5 +218,8 @@ public class GeneralDAO {
 			 throw new DAOException(e.getMessage());
 		 }
 		
+	}
+	public static Connection getCon() {
+		return con;
 	}
 }

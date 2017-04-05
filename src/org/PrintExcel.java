@@ -442,7 +442,9 @@ public class PrintExcel {
 		// saving output to file
 		sheet1.getPrintSetup().setLandscape(true);
 		String fileName = "workbook.xlsx";
-		String filePath = "F:\\exam_timetable\\src\\data\\output\\";
+		//String filePath = "F:\\exam_timetable\\src\\data\\output\\";
+		String filePath = "C:\\Users\\ashwani tanwar\\workspace\\Exam_TimeTable_Scheduler_bySlots_Web_Project\\src\\data\\output\\";
+		
 		FileOutputStream fileOut = new FileOutputStream(filePath + fileName);
 		wb.write(fileOut);
 		fileOut.close();
