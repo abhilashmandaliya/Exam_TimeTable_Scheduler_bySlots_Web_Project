@@ -85,7 +85,7 @@ $(document).ready(function() {
 	});
 });
 $(function(){
-	var textfield = $("input[name=user]");
+	/*var textfield = $("input[name=user]");
 	            $('button[type="submit"]').click(function(e) {
 	                e.preventDefault();
 	                //little validation just to check username
@@ -121,5 +121,5 @@ $(function(){
 	                }
 	                //console.log(textfield.val());
 
-	            });
+	            });*/
 	});
