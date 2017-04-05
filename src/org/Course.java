@@ -12,7 +12,8 @@ public class Course {
 	//successfully finished in allocation algorithm.
 	private int flag_clash;//a flag to check that if it requires a gap of time interval
 	private boolean broken;
-	public Course(String course_id, String course_name,String batch, int no_Of_Students)
+	private String faculty;
+	public Course(String course_id, String course_name,String batch, int no_Of_Students,String faculty)
 	{
 		this.course_id = course_id;
 		this.course_name = course_name;
@@ -22,6 +23,7 @@ public class Course {
 		this.processed = false;
 		this.flag_clash=0;
 		this.broken=false;
+		this.faculty=faculty;
 	}
 
 	//copy constructor
@@ -35,6 +37,7 @@ public class Course {
 		this.batch=other.getBatch();
 		this.flag_clash=other.getFlag_clash();
 		this.broken=other.broken;
+		this.faculty=other.faculty;
 	}
                                                                        
 	public String getBatch() {
@@ -91,5 +94,10 @@ public class Course {
 	 public void setFlag_clash(int flag_clash) {
 		this.flag_clash = flag_clash;
 	}
-	
+	public String getFaculty() {
+		return faculty;
+	}
+	public void setFaculty(String faculty) {
+		this.faculty = faculty;
+	}
 }

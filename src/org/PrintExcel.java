@@ -165,6 +165,8 @@ public class PrintExcel {
 					row_temp.getCell(j + 1).setCellStyle(style[batch_id - 1]);
 					row_temp.createCell(j + 2).setCellValue(course.getCourse_name());
 					row_temp.getCell(j + 2).setCellStyle(style[batch_id - 1]);
+					row_temp.createCell(j + 3).setCellValue(course.getFaculty());
+					row_temp.getCell(j + 3).setCellStyle(style[batch_id - 1]);
 
 					ArrayList<Room> temp_rooms = t1.getRooms();
 					// first column for timeinterval1
@@ -238,20 +240,8 @@ public class PrintExcel {
 	// file
 	public void createExcelSheet(TimeTable TT) throws ClassNotFoundException, DAOException, SQLException, IOException {
 		// mapping numeric code to Batches
-		Map<Integer, String> batch_id_name = new HashMap<>();
-		batch_id_name.put(1, "BTech-I");
-		batch_id_name.put(2, "BTech-II");
-		batch_id_name.put(3, "BTech-III");
-		batch_id_name.put(4, "BTech-IV");
-		batch_id_name.put(5, "MScIT-I");
-		batch_id_name.put(6, "MScIT-II");
-		batch_id_name.put(7, "MScICTARD-I");
-		batch_id_name.put(8, "MScICTARD-II");
-		batch_id_name.put(9, "MTech-I");
-		batch_id_name.put(10, "MTech-II");
-		batch_id_name.put(11, "MDes-I");
-		batch_id_name.put(12, "MDes-II");
-
+		Map<Integer, String> batch_id_name = GeneralDAO.getBatchProgram();
+		
 		// export to Excel Format
 		// making workbook and sheet
 		XSSFWorkbook wb = new XSSFWorkbook();

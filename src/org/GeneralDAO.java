@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 // This is a general class to deal with database where objects are not required to manipulate database.
 public class GeneralDAO {
@@ -116,7 +118,7 @@ public class GeneralDAO {
 				 		
 				 while(rs.next())
 				 {				 
-					 courses.add(new Course(rs.getString(1),rs.getString(2),rs.getString(3),rs.getInt(4)));
+					 courses.add(new Course(rs.getString(1),rs.getString(2),rs.getString(3),rs.getInt(4),rs.getString(5)));
 				 }
 				 
 			 }
@@ -128,12 +130,12 @@ public class GeneralDAO {
 	}
 	 
 	//add a new course to database
-	public static void addCourse(String course_id,String course_name,String batch,int no_of_students) throws DAOException, ClassNotFoundException
+	public static void addCourse(String course_id,String course_name,String batch,int no_of_students,String faculty) throws DAOException, ClassNotFoundException
 	{
 		 try
 		 {	if(con==null)
 			 makeConnection();
-			 String sql="Insert into Course VALUES('"+course_id+"','"+course_name+"','"+batch+"',"+no_of_students+")";
+			 String sql="Insert into Course VALUES('"+course_id+"','"+course_name+"','"+batch+"',"+no_of_students+",'"+faculty+"')";
 			 
 			 Statement stmt=con.createStatement();
 			
@@ -167,13 +169,13 @@ public class GeneralDAO {
 	}
 	
 	//modify a course
-	public static void updateCourse(String course_id,String course_name,String batch,int no_of_students) throws DAOException, ClassNotFoundException
+	public static void updateCourse(String course_id,String course_name,String batch,int no_of_students,String faculty) throws DAOException, ClassNotFoundException
 	{
 		 try
 		 {	 
 			 if(con==null)
 				 makeConnection();
-			 String sql="UPDATE course SET course_name='"+course_name+"',batch='"+batch+"',no_of_students="+no_of_students+" WHERE course_id='"+course_id+"'";
+			 String sql="UPDATE course SET course_name='"+course_name+"',batch='"+batch+"',no_of_students="+no_of_students+",faculty='"+faculty+ "'WHERE course_id='"+course_id+"'";
 			 Statement stmt=con.createStatement();
 			 ResultSet rs=stmt.executeQuery(sql);
 			
@@ -221,5 +223,32 @@ public class GeneralDAO {
 	}
 	public static Connection getCon() {
 		return con;
+	}
+	
+	 public static Map<Integer,String> getBatchProgram() throws DAOException, ClassNotFoundException, SQLException 
+	 {
+		 if(con==null)
+			 makeConnection();
+		 Map<Integer,String> batch_program = new HashMap<>();
+			 try
+			 {	 		 
+				 Statement stmt=con.createStatement();
+				 ResultSet rs=stmt.executeQuery("Select * from batch_program");
+				 		
+				 while(rs.next())
+				 {				 
+					 int batch=Integer.parseInt(rs.getString("batch"));
+					 String program=rs.getString("program");
+					 batch_program.put(batch,program);
+				 }
+				 
+		         
+				 
+			 }
+			 catch(SQLException e)
+			 {
+				 throw new DAOException(e.getMessage());
+			 }
+			 return batch_program;
 	}
 }
