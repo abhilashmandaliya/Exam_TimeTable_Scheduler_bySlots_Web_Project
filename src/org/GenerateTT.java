@@ -240,8 +240,11 @@ public class GenerateTT {
 				
 		}
 		//It prints data in excel sheet and exports a .xlsx file
-		PrintExcel excel=new PrintExcel();
-		excel.createExcelSheet(TT);		
+		//PrintExcel excel=new PrintExcel();
+		PrintExcel excel=new PrintExcelEndSem();
+		
+		excel.createExcelSheet(TT);	
+		
 		Map<Course,Integer> map=GenerateTT.printUnallocatedStudents(TT);
 	}
 }

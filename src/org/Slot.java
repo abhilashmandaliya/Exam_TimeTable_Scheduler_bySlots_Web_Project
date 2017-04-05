@@ -59,11 +59,11 @@ public class Slot {
 	public ArrayList<Course> getCourseFromDB() throws SQLException {
 		ArrayList<Course> temp = new ArrayList<>();
 		Statement stmt = con.createStatement();
-		String sql = "Select S.course_id,C.course_name,C.batch,C.no_of_students " + "from Slot S,Course C "
+		String sql = "Select S.course_id,C.course_name,C.batch,C.no_of_students,C.faculty " + "from Slot S,Course C "
 				+ "where S.course_id=C.course_id AND " + "S.slot_no=" + this.slot_no;
 		ResultSet rs = stmt.executeQuery(sql);
 		while (rs.next()) {
-			temp.add(new Course(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4)));
+			temp.add(new Course(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4),rs.getString(5)));
 		}
 		return temp;
 	}
