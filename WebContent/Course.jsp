@@ -67,6 +67,10 @@
 			<div class="form-group">
 				<button class='btn btn-success' type='button' id="registerCourse">Add Course</button>
 			</div>
+			
+			<div class="form-group">
+				<button class='btn btn-danger' type='button' id="removeAllCourses">Delete all Courses</button>
+			</div>
 		</form>
 		</fieldset>
 	</div>
