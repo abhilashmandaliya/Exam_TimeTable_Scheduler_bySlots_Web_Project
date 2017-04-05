@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.Authenticator;
 import org.DAOException;
 import org.GeneralDAO;
 
@@ -32,6 +33,8 @@ public class CourseServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		if(!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
+			response.sendRedirect("login.jsp");
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
@@ -42,6 +45,9 @@ public class CourseServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		if(!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
+			response.sendRedirect("login.jsp");
+		System.out.println("no need to return");
 		try {
 			GeneralDAO.addCourse(request.getParameter("course_id"), request.getParameter("course_name"),
 					request.getParameter("batch"), Integer.parseInt(request.getParameter("no_of_students")));
