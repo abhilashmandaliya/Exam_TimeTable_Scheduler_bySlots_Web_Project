@@ -50,7 +50,7 @@ public class CourseServlet extends HttpServlet {
 		System.out.println("no need to return");
 		try {
 			GeneralDAO.addCourse(request.getParameter("course_id"), request.getParameter("course_name"),
-					request.getParameter("batch"), Integer.parseInt(request.getParameter("no_of_students")));
+					request.getParameter("batch"), Integer.parseInt(request.getParameter("no_of_students")),null);
 		} catch (NumberFormatException | ClassNotFoundException | DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
