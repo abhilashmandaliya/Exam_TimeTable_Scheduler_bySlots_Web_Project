@@ -13,6 +13,8 @@ public class Course {
 	private int flag_clash;//a flag to check that if it requires a gap of time interval
 	private boolean broken;
 	private String faculty;
+	private int priority_flag;//this is just for clubbing of slot1 and slot2. If it's set,then this course 
+	//is in slot2,it needs to be in allocated in t1 first
 	public Course(String course_id, String course_name,String batch, int no_Of_Students,String faculty)
 	{
 		this.course_id = course_id;
@@ -24,6 +26,7 @@ public class Course {
 		this.flag_clash=0;
 		this.broken=false;
 		this.faculty=faculty;
+		this.priority_flag=0;
 	}
 
 	//copy constructor
@@ -38,10 +41,14 @@ public class Course {
 		this.flag_clash=other.getFlag_clash();
 		this.broken=other.broken;
 		this.faculty=other.faculty;
+		this.priority_flag=other.priority_flag;
 	}
                                                                        
 	public String getBatch() {
 		return batch;
+	}
+	public int getPriority_flag() {
+		return priority_flag;
 	}
 	public int getFlag_clash() {
 		return flag_clash;
@@ -86,7 +93,9 @@ public class Course {
 	{
 		return this.course_id+" "+this.course_name;
 	}
-	
+	public void setPriority_flag(int priority_flag) {
+		this.priority_flag = priority_flag;
+	}
 	public void setBroken(boolean value)
 	{
 		this.broken=value;

@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.DAOException;
-import org.GenerateTT;
-import org.TimeTable;
+import org.GenerateTTEndSem;
+import org.TimeTableEndSem;
 
 /**
  * Servlet implementation class FileDownloadServlet
@@ -42,7 +42,7 @@ public class FileDownloadServlet extends HttpServlet {
 		// ").append(request.getContextPath());
 		try {
 			// System.out.println("starting the program!");
-			GenerateTT.main(null);
+			GenerateTTEndSem.main(null);
 			response.setContentType("text/html");
 			PrintWriter out = response.getWriter();
 			String fileName = "workbook.xlsx";

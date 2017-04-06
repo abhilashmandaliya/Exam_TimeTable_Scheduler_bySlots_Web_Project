@@ -8,7 +8,7 @@ import java.util.Map;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
-public class TimeTable {
+public class TimeTableEndSem {
 
 	private final Connection con;
 	private Slot slot[];//stores all the slots
@@ -27,7 +27,7 @@ public class TimeTable {
 		return store;
 	}
 
-	public TimeTable() throws ClassNotFoundException, SQLException, DAOException
+	public TimeTableEndSem() throws ClassNotFoundException, SQLException, DAOException
 	{
 		failed=new ArrayList<>();
 		con=DBConnection.getInstance().getConnectionSchema("public");
@@ -285,10 +285,13 @@ public class TimeTable {
 		String save_side=null;
 		int finalChunkStudents = course.getUnallocated_strength();//It will have full strength for CASE1 and CASE2
 		//CASE 1:
-		for (int k = array.length-1; k >= 0; k--) 
+		int k=0;
+		if(course.getFlag_clash()==1)
+			k=1;
+		for (;k<=1;k++) 
 		{
 			flag=0;
-			if(custom_flag==1 && k==0 && slot.getSlot_no()!=1)// K==0 means it has already checked for k==1(TimeInterval2) 
+			if(custom_flag==1 && k==1 && slot.getSlot_no()!=1)// K==0 means it has already checked for k==1(TimeInterval2) 
 				//and it has just reached timeinterval1 first iteration. BUT custom_flag==1 means it already has
 				//a best case for entire allocation(although pushing this in already invigilance secured room).
 				//So,push it in that timeInterval2 even if invigilance is overdozed and timeinterval1 still

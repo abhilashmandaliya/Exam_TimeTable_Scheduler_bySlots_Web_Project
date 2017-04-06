@@ -90,7 +90,7 @@ public class Room{
 		{   
 			for(Course course:slot.getCourses())
 			{
-				if(TimeTable.ifCourseIsBig(course,ti )==true)
+				if(TimeTableEndSem.ifCourseIsBig(course,ti )==true)
 				{
 					flag_big=1;
 				}

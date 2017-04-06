@@ -69,7 +69,7 @@ public class PrintExcelEndSem extends PrintExcel{
 						// value,so returning
 	}
 	
-	public void createExcelSheet(TimeTable TT) throws ClassNotFoundException, DAOException, SQLException, IOException {
+	public void createExcelSheet(TimeTableEndSem TT) throws ClassNotFoundException, DAOException, SQLException, IOException {
 		// mapping numeric code to Batches
 		Map<Integer, String> batch_id_name = GeneralDAO.getBatchProgram();
 		

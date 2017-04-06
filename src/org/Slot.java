@@ -15,17 +15,20 @@ public class Slot {
 										// object
 	private int slot_no;// slot number like slot 1,slot 2,...
 	private int processCount;
+	private ArrayList<Course> slot2courses;//special case for mapping between slot 2 and slot1
 
 	public Slot(int num) throws ClassNotFoundException, SQLException, DAOException {
 		this.slot_no = num;
 		this.courses = new ArrayList<>();
 		this.con = DBConnection.getInstance().getConnectionSchema("public");
 		this.processCount = 0;
+		this.slot2courses=new ArrayList<>();
 	}
 
 	// copy constructor
 	public Slot(Slot other) throws ClassNotFoundException, SQLException {
 		this.courses = new ArrayList<>();
+		this.slot2courses=new ArrayList<>();
 		this.con = DBConnection.getInstance().getConnectionSchema("public");
 		this.slot_no = other.getSlot_no();
 		this.processCount = other.getProcessCount();
@@ -33,12 +36,21 @@ public class Slot {
 			this.courses.add(new Course(course));// calling copy constructor of
 													// Course
 		}
+		for (Course course : other.getCourses()) {
+			this.slot2courses.add(new Course(course));// calling copy constructor of
+													// Course
+		}
 	}
 
 	public ArrayList<Course> getCourses() {
 		return courses;
 	}
-
+	public ArrayList<Course> getSlot2courses() {
+	return slot2courses;
+	}
+	 public void setSlot2courses(Course course) {
+		slot2courses.add(course);
+	}
 	public int getSlot_no() {
 		return slot_no;
 	}
@@ -126,7 +138,23 @@ public class Slot {
 				}
 			}
 		}
-		// return course;
+		//special case-Slot1/Slot2
+		if (flag_no_otherloop == 0) {
+			for (int i = 0; i < slot2courses.size(); i++) {
+				if (slot2courses.get(i).getUnallocated_strength() > 0 && slot2courses.get(i).getProcessed() == false) {
+					if (max < slot2courses.get(i).getNo_Of_Students()) {
+						max = slot2courses.get(i).getNo_Of_Students();
+						course = slot2courses.get(i);
+						
+					}
+				}
+				
+			}
+			
+		}
+		//normal Case
+		if(course==null)
+		{
 		if (flag_no_otherloop == 0) {
 			for (int i = 0; i < courses.size(); i++) {
 				if (courses.get(i).getUnallocated_strength() > 0 && courses.get(i).getProcessed() == false) {
@@ -137,7 +165,7 @@ public class Slot {
 				}
 			}
 		}
-
+		}
 		return course;
 	}
 
