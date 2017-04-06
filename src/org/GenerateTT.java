@@ -35,6 +35,15 @@ public class GenerateTT {
 			throws CloneNotSupportedException, SQLException, ClassNotFoundException, DAOException, IOException {
 		// GeneralDAO.deleteAllCourses();
 		// ReadFromExcel.read_excel();
+		// ReadFromExcel.read_excel(1);
+		// ReadFromExcel.read_excel(2);
+		// ReadFromExcel.read_excel(3);
+		// ReadFromExcel.read_excel(4);
+		// ReadFromExcel.read_excel(5);
+		// ReadFromExcel.read_excel(6);
+		// ReadFromExcel.read_excel(7);
+		// ReadFromExcel.read_excel(8);
+
 		// storing entire time table in 1 object of TimeTable class.
 		TimeTable TT = new TimeTable();
 		Set<Integer> set = new HashSet<>();// stores batch numbers of
@@ -43,8 +52,7 @@ public class GenerateTT {
 		// the slots separately.
 		for (int h = 0; h < TT.getSlot().length; h++)//
 		{
-			// System.out.println("**************************SLOT NO:
-			// "+(h+1)+"****************************");
+			System.out.println("**************************SLOT NO:" + (h + 1) + "****************************");
 			// System.out.println("Room No Course ID Course Name");
 			//
 			// if((h+1)%2!=0)
@@ -77,6 +85,20 @@ public class GenerateTT {
 			// }
 			// }
 			// }
+			// if (h == 0) {
+			//
+			// HashSet<Integer> set2 = new HashSet<>();
+			// for (Course course : GeneralDAO.getCourses(2)) {
+			// set2.add(Integer.parseInt(course.getBatch()));
+			// }
+			// for (Course course : slot.getCourses()) {
+			// if (set2.contains(Integer.parseInt(course.getBatch()))) {
+			// course.setSlot1priority(1);
+			// }
+			// System.out.println(course + " and priority: " +
+			// course.getSlot1priority());
+			// }
+			// } else
 			if (h != 0) {
 				for (Course course : slot.getCourses()) {
 					if (set.contains(Integer.parseInt(course.getBatch()))) {
@@ -86,7 +108,7 @@ public class GenerateTT {
 				}
 			}
 			set.removeAll(set);
-			int k = 1;
+			int k = 0;
 			while (slot.slotProcessed())// if all the courses are processed,
 										// then loop breaks.
 			{
@@ -95,7 +117,7 @@ public class GenerateTT {
 				int flagContinue2 = 0;
 				Course tempCourse = slot.chosingCourse();// refer slot class for
 															// details
-				// System.out.println("Course chosen: "+tempCourse);
+				System.out.println("Course chosen: " + tempCourse + "processed is:" + tempCourse.getProcessed());
 				// MAIN ALGORITHM:
 				// There are 3 cases. Each course visits all the 3 cases. If it
 				// gets allocated in CASE 1, it breaks
@@ -110,6 +132,7 @@ public class GenerateTT {
 				// CASE 1: checks for invigilation and CASE 2: tries to allocate
 				// all students in 1 class.
 				if (TT.allocateFullChunk(array, tempCourse, slot) == 1) {
+					System.out.println("Allocated full chunk for" + tempCourse);
 					continue;
 				}
 				// CASE 3: small and big cases
@@ -118,11 +141,14 @@ public class GenerateTT {
 				// different chunks
 				tempCourse.setBroken(true);
 
-				if (TimeTable.ifCourseIsBig(tempCourse, time1)) // assuming that
-																// total
-																// capacity of
-																// rooms is same
-																// for time2
+				if (TimeTable.ifCourseIsBig(tempCourse, array[0])) // assuming
+																	// that
+																	// total
+																	// capacity
+																	// of
+																	// rooms is
+																	// same
+																	// for time2
 				{
 					// k = p % 2; // k=0,1//just alternating,p->course
 					// sequences(0,1,2,3,..)
@@ -133,7 +159,8 @@ public class GenerateTT {
 					else if (k == 1)
 						k = 0;
 				} else {
-					k = 1;//this is causing 4-5 times printing in excel if given wrong value.
+					k = 1;// this is causing 4-5 times printing in excel if
+							// given wrong value.
 				}
 
 				// always start from k=1 for flag_clash==1
@@ -153,11 +180,12 @@ public class GenerateTT {
 																				// of
 																				// rooms
 					{
-						// saving state of time1,time2 and slot. In case, entire
+						// saving state of array[0],time2 and slot. In case,
+						// entire
 						// course is not allocated in one time interval,then it
 						// undo all the operations.
-						TimeInterval save1 = new TimeInterval(time1);
-						TimeInterval save2 = new TimeInterval(time2);
+						TimeInterval save1 = new TimeInterval(array[0]);
+						TimeInterval save2 = new TimeInterval(array[1]);
 						Slot save3 = new Slot(slot);
 						// ArrayList<Room> save5=new ArrayList<>();
 						// for(Room room:array[k].getRooms())
@@ -170,7 +198,7 @@ public class GenerateTT {
 						for (int i = 0; i < array[k].getRooms().size(); i++) // entering
 																				// room
 																				// for
-																				// time1/time2
+																				// array[0]/time2
 						{ // System.out.println("i:"+i+"for course"+tempCourse);
 							save4 = i;
 							Room proposedRoom = array[k].getRooms().get(i);
@@ -231,6 +259,7 @@ public class GenerateTT {
 						// time interval 1
 						flagContinue = 0;
 						flagContinue2 = 0;
+						System.out.println("visiting");
 						if (k == 1 && tempCourse.getUnallocated_strength() > 0) {// course
 																					// still
 																					// has
@@ -240,15 +269,16 @@ public class GenerateTT {
 																					// in
 																					// above
 							// case, so try other case and undo above operation
-							// time1.printRooms();
-							time1 = save1;
+							// array[0].printRooms();
+							array[0] = save1;
 							flagContinue = 1;
 							flagContinue2 = 1;
-							time2 = save2;
+							array[1] = save2;
 							slot = save3;
 							tempCourse = slot.chosingCourse();
-							// time1.printRooms();
-							// time1.setRooms(save5);
+							System.out.println("flag1: " + tempCourse);
+							// array[0].printRooms();
+							// array[0].setRooms(save5);
 
 							// send to k0(check same pattern for next time
 							// interval)
@@ -260,11 +290,12 @@ public class GenerateTT {
 						if (k == 0 && (save4 == array[k].getRooms().size() - 1)
 								&& (tempCourse.getUnallocated_strength() > 0)) {
 							// undo code;
-							time1 = save1;
-							time2 = save2;
+							array[0] = save1;
+							array[1] = save2;
 							slot = save3;
 							flagContinue2 = 1;
 							tempCourse = slot.chosingCourse();
+							System.out.println("flag2: " + tempCourse);
 							// send to next pattern.
 						}
 
@@ -275,13 +306,19 @@ public class GenerateTT {
 						if (k == 0 && (save4 == array[k].getRooms().size() - 1)
 								&& (tempCourse.getUnallocated_strength() > 0) && (j == array[k].getRooms().size())) {
 							// undo code;
+							System.out.println("breaking for" + tempCourse);
+
 							TT.setFailed(tempCourse);
 							tempCourse.setProcessed(true);
+							slot.updateProcessCount();
+							System.out.println(tempCourse.getProcessed());
 							flag = 1;
+							flagContinue2 = 0;
+							flagContinue = 0;
 							break;
 							// send to next pattern.
 						}
-
+						// tempCourse = slot.chosingCourse();
 						if (flagContinue2 == 1)
 							continue;
 						if (flag == 1 || flagContinue == 1)
@@ -295,20 +332,21 @@ public class GenerateTT {
 
 				p++;
 			}
-			// time1.print();
-			// time2.print();
-			TT.getStore().put(h + 1, new StoreTT(h + 1, time1, time2));
+			array[0].print();
+			array[1].print();
+			TT.getStore().put(h + 1, new StoreTT(h + 1, array[0], array[1]));
 
-			if (!time2.getMap().isEmpty())// if time2 has some courses allocated
+			if (!array[1].getMap().isEmpty())// if time2 has some courses
+												// allocated
 			{
-				for (ArrayList<OccupationData> od : time2.getMap().values())// stores
-																			// all
-																			// the
-																			// batches
-																			// of
-																			// time2
-																			// in
-																			// set
+				for (ArrayList<OccupationData> od : array[1].getMap().values())// stores
+																				// all
+																				// the
+																				// batches
+																				// of
+																				// time2
+																				// in
+																				// set
 				{
 					for (int hh = 0; hh < od.size(); hh++) {
 						set.add(Integer.parseInt(od.get(hh).getCourse().getBatch()));
@@ -321,11 +359,12 @@ public class GenerateTT {
 		// It prints data in excel sheet and exports a .xlsx file
 		// PrintExcel excel=new PrintExcel();
 		PrintExcel excel = new PrintExcel();
-		// System.out.println("Failed");
-		// for(Course course:TT.getFailed())
-		// System.out.println(course);
+		System.out.println("Following courses Failed");
+		for (Course course : TT.getFailed())
+			System.out.println(course);
 		excel.createExcelSheet(TT);
 
 		// Map<Course,Integer> map=GenerateTT.printUnallocatedStudents(TT);
+
 	}
 }

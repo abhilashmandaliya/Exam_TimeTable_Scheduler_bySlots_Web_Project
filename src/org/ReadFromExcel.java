@@ -27,11 +27,11 @@ public class ReadFromExcel {
 		iterator.next();
 		System.out.println("Working");
 		try {
-		
+
 			if (GeneralDAO.getCon() == null)
 				GeneralDAO.makeConnection();
 			GeneralDAO.getCon().setAutoCommit(false);
-			
+
 			while (iterator.hasNext()) {
 				Row nextRow = iterator.next();
 				Iterator<Cell> cellIterator = nextRow.cellIterator();
@@ -43,37 +43,37 @@ public class ReadFromExcel {
 					// System.out.println("Working");
 				}
 
-				//int slot_no = Integer.parseInt(queue.removeFirst());
+				// int slot_no = Integer.parseInt(queue.removeFirst());
 				String course_id = queue.removeFirst();
 				String course_name = queue.removeFirst();
 				String batch = queue.removeFirst();
 				int no_of_students = Integer.parseInt(queue.removeFirst());
-				String faculty=queue.removeFirst();
+				String faculty = queue.removeFirst();
 
-				GeneralDAO.addCourse(course_id, course_name, batch, no_of_students,faculty);
-				//GeneralDAO.addSlotEntry(slot_no, course_id);
+				GeneralDAO.addCourse(course_id, course_name, batch, no_of_students, faculty);
+				// GeneralDAO.addSlotEntry(slot_no, course_id);
 
 				GeneralDAO.getCon().commit();
-				
+
 			}
 		} catch (Exception e) {
 			GeneralDAO.getCon().rollback();
 			// e.printStackTrace();
-			System.out.println("Course already exists.");		} 
-		
-		
-		finally
-		{	System.out.println("Working");
+			System.out.println("Course already exists.");
+		}
+
+		finally {
+			System.out.println("Working");
 			GeneralDAO.getCon().setAutoCommit(true);
 		}
 
 		workbook.close();
 		inputStream.close();
 	}
-	
+
 	public static void read_excel(int slot_no) throws IOException, ClassNotFoundException, DAOException, SQLException {
 		// String excelFilePath = "ExamData.xlsx";
-		String fileName = "ExamData.xlsx";
+		String fileName = "slot" + slot_no + "course.xlsx";
 		String filePath = "C:\\Users\\ashwani tanwar\\workspace\\Exam_TimeTable_Scheduler_bySlots_Web_Project\\src\\data\\input\\";
 		FileInputStream inputStream = new FileInputStream(new File(filePath + fileName));
 
@@ -83,11 +83,11 @@ public class ReadFromExcel {
 		iterator.next();
 		System.out.println("Working");
 		try {
-		
+
 			if (GeneralDAO.getCon() == null)
 				GeneralDAO.makeConnection();
 			GeneralDAO.getCon().setAutoCommit(false);
-			
+
 			while (iterator.hasNext()) {
 				Row nextRow = iterator.next();
 				Iterator<Cell> cellIterator = nextRow.cellIterator();
@@ -99,22 +99,19 @@ public class ReadFromExcel {
 					// System.out.println("Working");
 				}
 
-				
 				String course_id = queue.removeFirst();
-				
+
 				GeneralDAO.addSlotEntry(slot_no, course_id);
 
 				GeneralDAO.getCon().commit();
-				
+
 			}
 		} catch (Exception e) {
 			GeneralDAO.getCon().rollback();
-			// e.printStackTrace();		
-			} 
-		
-		
-		finally
-		{	
+			// e.printStackTrace();
+		}
+
+		finally {
 			GeneralDAO.getCon().setAutoCommit(true);
 		}
 

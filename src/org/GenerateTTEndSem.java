@@ -44,8 +44,7 @@ public class GenerateTTEndSem {
 		// the slots separately.
 		for (int h = 0; h < TT.getSlot().length; h++)//
 		{
-			// System.out.println("**************************SLOT NO:
-			// "+(h+1)+"****************************");
+			System.out.println("**************************SLOT NO: " + (h + 1) + "****************************");
 			// System.out.println("Room No Course ID Course Name");
 
 			// if((h+1)%2==0)
@@ -61,18 +60,23 @@ public class GenerateTTEndSem {
 			TimeInterval[] array = { time1, time2 };
 			int p = 0;
 			Slot slot = TT.getSlot()[h];
-			slot.getSlot2courses().clear();
+
 			if (h == 0) {
 
-				HashSet<String> set2 = new HashSet<>();
+				HashSet<Integer> set2 = new HashSet<>();
 				for (Course course : GeneralDAO.getCourses(2)) {
-					set2.add(course.getBatch());
+					set2.add(Integer.parseInt(course.getBatch()));
 				}
 				for (Course course : slot.getCourses()) {
-					if (set2.contains(course.getBatch())) {
-						slot.setSlot2courses(course);
+					if (set2.contains(Integer.parseInt(course.getBatch()))) {
+						course.setSlot1priority(1);
 					}
+					System.out.println(course + " and priority: " + course.getSlot1priority());
 				}
+
+				// System.out.println("set2"+set2);
+				// for(Course course:slot.getSlot2courses())
+				// System.out.println(course);
 			} else if (h != 0) {
 				for (Course course : slot.getCourses()) {
 					if (set.contains(Integer.parseInt(course.getBatch()))) {
@@ -91,7 +95,7 @@ public class GenerateTTEndSem {
 				int flagContinue2 = 0;
 				Course tempCourse = slot.chosingCourse();// refer slot class for
 															// details
-				// System.out.println("Course chosen: "+tempCourse);
+				System.out.println("Course chosen: " + tempCourse);
 				// MAIN ALGORITHM:
 				// There are 3 cases. Each course visits all the 3 cases. If it
 				// gets allocated in CASE 1, it breaks
@@ -114,16 +118,16 @@ public class GenerateTTEndSem {
 				// different chunks
 				tempCourse.setBroken(true);
 
-				if (TimeTableEndSem.ifCourseIsBig(tempCourse, time1)) // assuming
-																		// that
-																		// total
-																		// capacity
-																		// of
-																		// rooms
-																		// is
-																		// same
-																		// for
-																		// time2
+				if (TimeTableEndSem.ifCourseIsBig(tempCourse, array[0])) // assuming
+																			// that
+																			// total
+																			// capacity
+																			// of
+																			// rooms
+																			// is
+																			// same
+																			// for
+																			// time2
 				{
 					// k = p % 2; // k=0,1//just alternating,p->course
 					// sequences(0,1,2,3,..)
@@ -138,7 +142,8 @@ public class GenerateTTEndSem {
 					else if (k == 0)
 						k = 1;
 				} else {
-					k = 0;////this is causing 4-5 times printing in excel if given wrong value.
+					k = 0;//// this is causing 4-5 times printing in excel if
+							//// given wrong value.
 				}
 
 				// always start from k=1 for flag_clash==1
@@ -160,12 +165,13 @@ public class GenerateTTEndSem {
 																				// of
 																				// rooms
 					{
-
-						// saving state of time1,time2 and slot. In case, entire
+						System.out.println("j:" + j);
+						// saving state of time1,array[1] and slot. In case,
+						// entire
 						// course is not allocated in one time interval,then it
 						// undo all the operations.
-						TimeInterval save1 = new TimeInterval(time1);
-						TimeInterval save2 = new TimeInterval(time2);
+						TimeInterval save1 = new TimeInterval(array[0]);
+						TimeInterval save2 = new TimeInterval(array[1]);
 						Slot save3 = new Slot(slot);
 						// ArrayList<Room> save5=new ArrayList<>();
 						// for(Room room:array[k].getRooms())
@@ -179,7 +185,8 @@ public class GenerateTTEndSem {
 																				// room
 																				// for
 																				// time1/time2
-						{ // System.out.println(tempCourse+"still running"+i);
+						{
+							System.out.println(tempCourse + "still running" + i);
 							save4 = i;
 							Room proposedRoom = array[k].getRooms().get(i);
 							int left = proposedRoom.getLeftStrength();
@@ -239,7 +246,7 @@ public class GenerateTTEndSem {
 						// time interval 1
 						flagContinue = 0;
 						flagContinue2 = 0;
-
+						System.out.println("Trespasser: " + tempCourse);
 						if (k == 0 && tempCourse.getUnallocated_strength() > 0) {// course
 																					// still
 																					// has
@@ -249,13 +256,14 @@ public class GenerateTTEndSem {
 																					// in
 																					// above
 							// case, so try other case and undo above operation
-							// time1.printRooms();
-							time1 = save1;
+							// array[0].printRooms();
+							array[0] = save1;
 							flagContinue = 1;
 							flagContinue2 = 1;
-							time2 = save2;
+							array[1] = save2;
 							slot = save3;
 							tempCourse = slot.chosingCourse();
+
 							// time1.printRooms();
 							// time1.setRooms(save5);
 
@@ -269,11 +277,12 @@ public class GenerateTTEndSem {
 						if (k == 1 && (save4 == array[k].getRooms().size() - 1)
 								&& (tempCourse.getUnallocated_strength() > 0)) {
 							// undo code;
-							time1 = save1;
-							time2 = save2;
+							array[0] = save1;
+							array[1] = save2;
 							slot = save3;
 							flagContinue2 = 1;
 							tempCourse = slot.chosingCourse();
+
 							// send to next pattern.
 						}
 
@@ -289,16 +298,29 @@ public class GenerateTTEndSem {
 						// failed list in TT.
 						if (k == 1 && (save4 == array[k].getRooms().size() - 1)
 								&& (tempCourse.getUnallocated_strength() > 0) && tempCourse.getFlag_clash() == 1) {
+							array[0] = save1;
+							array[1] = save2;
+							slot = save3;
+							tempCourse = slot.chosingCourse();
 							k = 0;
+
 							break;
 						}
 						// check above comment. This ensures that it finally
 						// terminates after k=0;
 						if (k == 0 && (save4 == array[k].getRooms().size() - 1)
 								&& (tempCourse.getUnallocated_strength() > 0) && tempCourse.getFlag_clash() == 1) {
+							array[0] = save1;
+							array[1] = save2;
+							slot = save3;
+							tempCourse = slot.chosingCourse();
 							TT.setFailed(tempCourse);
 							tempCourse.setProcessed(true);
+							slot.updateProcessCount();
 							flag = 1;
+							flagContinue2 = 0;
+							flagContinue = 0;
+
 							break;
 						}
 
@@ -309,9 +331,17 @@ public class GenerateTTEndSem {
 						if (k == 1 && (save4 == array[k].getRooms().size() - 1)
 								&& (tempCourse.getUnallocated_strength() > 0) && (j == array[k].getRooms().size())) {
 							// undo code;
+							array[0] = save1;
+							array[1] = save2;
+							slot = save3;
+							tempCourse = slot.chosingCourse();
 							TT.setFailed(tempCourse);
 							tempCourse.setProcessed(true);
+							slot.updateProcessCount();
 							flag = 1;
+							flagContinue2 = 0;
+							flagContinue = 0;
+
 							break;
 							// send to next pattern.
 						}
@@ -329,21 +359,29 @@ public class GenerateTTEndSem {
 
 				p++;
 			}
-			// time1.print();
-			// time2.print();
-			TT.getStore().put(h + 1, new StoreTT(h + 1, time1, time2));
-
+			array[0].print();
+			array[1].print();
+			TT.getStore().put(h + 1, new StoreTT(h + 1, array[0], array[1]));
+			System.out.println("It's really painful************");
+			Set<Course> set1 = new HashSet<>();
+			for (ArrayList<OccupationData> od : array[0].getMap().values()) {
+				for (int hh = 0; hh < od.size(); hh++) {
+					set1.add(od.get(hh).getCourse());
+				}
+			}
+			System.out.println("set1" + set1 + "for k=" + k);
 			// System.out.println(set);
-			if (!time2.getMap().isEmpty())// if time2 has some courses allocated
+			if (!array[1].getMap().isEmpty())// if time2 has some courses
+												// allocated
 			{
-				for (ArrayList<OccupationData> od : time2.getMap().values())// stores
-																			// all
-																			// the
-																			// batches
-																			// of
-																			// time2
-																			// in
-																			// set
+				for (ArrayList<OccupationData> od : array[1].getMap().values())// stores
+																				// all
+																				// the
+																				// batches
+																				// of
+																				// time2
+																				// in
+																				// set
 				{
 					for (int hh = 0; hh < od.size(); hh++) {
 						set.add(Integer.parseInt(od.get(hh).getCourse().getBatch()));
@@ -356,8 +394,11 @@ public class GenerateTTEndSem {
 		// PrintExcel excel=new PrintExcel();
 		PrintExcelEndSem excel = new PrintExcelEndSem();
 
+		
+		System.out.println("Following courses Failed");
+		for (Course course : TT.getFailed())
+			System.out.println(course);
 		excel.createExcelSheet(TT);
-
 		// Map<Course,Integer> map=GenerateTT.printUnallocatedStudents(TT);
 	}
 }
