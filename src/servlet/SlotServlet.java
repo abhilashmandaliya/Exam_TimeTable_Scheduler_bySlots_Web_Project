@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.Authenticator;
 import org.DAOException;
 import org.Slot;
 import org.TimeTable;
@@ -40,7 +41,8 @@ public class SlotServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		// response.getWriter().append("Served at:
 		// ").append(request.getContextPath());
-		doPost(request, response);
+		if(!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
+			response.sendRedirect("login.jsp");
 	}
 
 	/**
@@ -50,6 +52,8 @@ public class SlotServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		if(!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
+			response.sendRedirect("login.jsp");
 		String action = request.getParameter("action");
 		Slot s = (Slot) request.getSession().getAttribute(request.getParameter("slot"));
 		try {

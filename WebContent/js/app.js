@@ -47,28 +47,58 @@ $(document).ready(function() {
 			}
 		});
 	});
-	$("#generateAndDownloadTT").click(function(e) {
-		window.location.href = "http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet";
+	$("#generateTT").click(function(e) {
+		$.ajax({
+			url : 'http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet',
+			type : 'get',
+			data : {'action':'generatett'},
+			success : function(data) {
+				alert("Server Response : "+data);
+			}, error : function(data) {
+				alert("Error : "+data);
+			}
+		});
 	});
-	
+	$("#downloadTT").click(function(e) {
+		window.location.href='http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet?action=downloadtt';
+	});
 	$('#uploadCourseDetail').click(function(){
 			var form_data = new FormData();
 			if(! ($('#courseDetails').prop('files')[0]==undefined) ) {
-				var file_data = $('#courseDetails').prop('files')[0];				
-				form_data.append('courseDetails',file_data);
+				form_data.append('file','examdetails');
+				form_data.append('courseDetails',$('#courseDetails').prop('files')[0]);				
 			}
 			$.ajax({
 				url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/FileUploadServlet',
-				type : 'post',
-				cache : false,
+				type : 'POST',
 				contentType : false,
 				processData : false,
+				cache : false,
 				data : form_data,
 				success : function(data){
-					alert(data);
+					alert("File Uploaded Successfully !");
 				}
 			});
 	});
+	$('#uploadSlotDetail').click(function(){
+		var form_data = new FormData();
+		if(! ($('#slotDetails').prop('files')[0]==undefined) ) {
+			form_data.append('slot_no',$('#slot_no').val());
+			form_data.append('file','slotdetails');
+			form_data.append('slotDetails',$('#slotDetails').prop('files')[0]);			
+		}
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/FileUploadServlet',
+			type : 'POST',
+			contentType : false,
+			processData : false,
+			cache : false,
+			data : form_data,
+			success : function(data){
+				alert(data);
+			}
+		});
+});
 	$("#registerCourse").click(function(e){
 		var course_id = $('#course_id').val();
 		var course_name = $('#course_name').val();

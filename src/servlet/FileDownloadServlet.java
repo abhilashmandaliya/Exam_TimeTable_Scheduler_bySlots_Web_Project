@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.Authenticator;
 import org.DAOException;
+import org.FileConfig;
 import org.GenerateTT;
 import org.TimeTable;
 
@@ -40,25 +42,33 @@ public class FileDownloadServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		// response.getWriter().append("Served at:
 		// ").append(request.getContextPath());
-		try {
-			// System.out.println("starting the program!");
-			GenerateTT.main(null);
-			response.setContentType("text/html");
-			PrintWriter out = response.getWriter();
-			String fileName = "workbook.xlsx";
-			String filePath = "C:\\Users\\ashwani tanwar\\workspace\\Exam_TimeTable_Scheduler_bySlots_Web_Project\\src\\data\\output\\";
-			response.setContentType("APPLICATION/OCTET-STREAM");
-			response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-
-			FileInputStream fis = new FileInputStream(filePath + fileName);
-			int i;
-			while ((i = fis.read()) != -1)
-				out.write(i);
-			fis.close();
-			out.close();
-			// System.out.println("exiting the program!");
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
+			response.sendRedirect("login.jsp");
+		String action = request.getParameter("action");
+		if (action != null) {
+			try {
+				if (action.toLowerCase().equals("generatett")) {
+					GenerateTT.main(null);
+					response.getWriter().write("Timetable Genrated Successfully !");
+				} else if (action.toLowerCase().equals("downloadtt")) {
+					response.setContentType("text/html");
+					PrintWriter out = response.getWriter();
+					String fileName = "workbook.xlsx";
+					String filePath = FileConfig.OUTPUT_FILES_PATH;
+					response.setContentType("APPLICATION/OCTET-STREAM");
+					response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+					FileInputStream fis = new FileInputStream(filePath + fileName);
+					int i;
+					while ((i = fis.read()) != -1)
+						out.write(i);
+					fis.close();
+					out.close();
+				}
+				// System.out.println("exiting the program!");
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.getWriter().write("Some error occured ! Kindly contact the developers.");
+			}
 		}
 	}
 
@@ -69,7 +79,8 @@ public class FileDownloadServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(request, response);
+		if (!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
+			response.sendRedirect("login.jsp");
 	}
 
 }
