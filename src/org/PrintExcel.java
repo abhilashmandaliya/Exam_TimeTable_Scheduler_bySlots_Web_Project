@@ -114,7 +114,7 @@ public class PrintExcel {
 			int end = start + range.get(batch_id) - 1;
 			int i = start - 2;
 			ArrayList<Room> rooms = GeneralDAO.getRooms();
-
+			
 			Row row1 = sheet1.getRow(i);
 			if (row1 == null)
 				row1 = sheet1.createRow(i);
@@ -191,9 +191,9 @@ public class PrintExcel {
 
 		// setting border
 		PropertyTemplate pt = new PropertyTemplate();
-
+		int temp_rooms_size=GeneralDAO.getRooms().size();
 		// this border is the biggest one covering entire timeinterval
-		pt.drawBorders(new CellRangeAddress(border_first, border_last, j + 1, j + 8), BorderStyle.MEDIUM,
+		pt.drawBorders(new CellRangeAddress(border_first, border_last, j + 1, j + 3+temp_rooms_size), BorderStyle.MEDIUM,
 				IndexedColors.BLACK.getIndex(), BorderExtent.OUTSIDE);
 
 		// for border of t1
@@ -432,20 +432,21 @@ public class PrintExcel {
 			// for time interval 1
 			printInExcel(batch_id_name, line, range, sheet1, j, style, set1, t1, wb, 1);
 			// for time interval 2
-
-			printInExcel(batch_id_name, line, range, sheet1, j + 9, style, set2, t2, wb, 2);
+			int temp_rooms_size=GeneralDAO.getRooms().size();
+			int m=4+temp_rooms_size;
+			printInExcel(batch_id_name, line, range, sheet1, j + m, style, set2, t2, wb, 2);
 			if (slot2_flag == 1) {
 				// for time interval 1_2
-				printInExcel(batch_id_name, line, range, sheet1, j + 18, style, set1_2, t1_2, wb, 3);
+				printInExcel(batch_id_name, line, range, sheet1, j + (m*2), style, set1_2, t1_2, wb, 3);
 				// for time interval 1_2
-				printInExcel(batch_id_name, line, range, sheet1, j + 27, style, set2_2, t2_2, wb, 4);
+				printInExcel(batch_id_name, line, range, sheet1, j + (m*3), style, set2_2, t2_2, wb, 4);
 			}
 		}
 		XSSFCellStyle cust_style = wb.createCellStyle();
 		cust_style.setFillBackgroundColor(new XSSFColor(new java.awt.Color(0, 255, 0)));
 		cust_style.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
 		// auto-resizing columns
-		for (int ii = -1; ii < 40; ii++)
+		for (int ii = -1; ii < 100; ii++)
 			sheet1.autoSizeColumn(j + ii);
 
 		// saving output to file
