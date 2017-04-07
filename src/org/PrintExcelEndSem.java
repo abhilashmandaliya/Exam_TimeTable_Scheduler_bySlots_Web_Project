@@ -250,12 +250,13 @@ public class PrintExcelEndSem extends PrintExcel {
 			}
 			// main allocation in
 			// excel######################################################
-
+			int temp_rooms_size=GeneralDAO.getRooms().size();
+			int m=4+temp_rooms_size;
 			// for time interval 1
 			printInExcel(batch_id_name, line, range, sheet1, j, style, set1, t1, wb, 1);
 			// for time interval 2
 
-			printInExcel(batch_id_name, line, range, sheet1, j + 9, style, set2, t2, wb, 2);
+			printInExcel(batch_id_name, line, range, sheet1, j + m, style, set2, t2, wb, 2);
 			// if (slot2_flag == 1) {
 			// // for time interval 1_2
 			// printInExcel(batch_id_name, line, range, sheet1, j, style,
@@ -269,7 +270,7 @@ public class PrintExcelEndSem extends PrintExcel {
 		cust_style.setFillBackgroundColor(new XSSFColor(new java.awt.Color(0, 255, 0)));
 		cust_style.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
 		// auto-resizing columns
-		for (int ii = -1; ii < 40; ii++)
+		for (int ii = -1; ii < 100; ii++)
 			sheet1.autoSizeColumn(j + ii);
 
 		// saving output to file
