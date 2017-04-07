@@ -61,11 +61,12 @@ public class ReadFromExcel {
 				}
 
 				// int slot_no = Integer.parseInt(queue.removeFirst());
-				course_id = queue.removeFirst();
+				
 				course_name = queue.removeFirst();
-				batch = queue.removeFirst();
-				no_of_students = Integer.parseInt(queue.removeFirst());
+				course_id = queue.removeFirst();
 				faculty = queue.removeFirst();
+				no_of_students = Integer.parseInt(queue.removeFirst());
+				batch = queue.removeFirst();
 
 				GeneralDAO.addCourse(course_id, course_name, batch, no_of_students, faculty);
 				// GeneralDAO.addSlotEntry(slot_no, course_id);

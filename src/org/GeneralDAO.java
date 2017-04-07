@@ -37,7 +37,7 @@ public class GeneralDAO {
 		ArrayList<Room> rooms = new ArrayList<>();
 		try {
 			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("Select * from Room");
+			ResultSet rs = stmt.executeQuery("Select * from Room order by room_no");
 
 			while (rs.next()) {
 				int room_no = rs.getInt("room_no");
@@ -102,7 +102,7 @@ public class GeneralDAO {
 		ArrayList<Course> courses = new ArrayList<>();
 		try {
 			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("Select * from Course");
+			ResultSet rs = stmt.executeQuery("Select * from Course order by course_name");
 
 			while (rs.next()) {
 				courses.add(
