@@ -33,7 +33,6 @@ public class LoginServlet extends HttpServlet {
 		System.out.println(action);
 		if(action.toLowerCase().equals("logout")){
 			request.getSession().removeAttribute("user");
-			System.out.println(request.getSession().getAttribute("user"));
 			response.sendRedirect("login.jsp");
 		}
 	}
@@ -47,9 +46,7 @@ public class LoginServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String user = request.getParameter("user");
 		String password = request.getParameter("password");
-		System.out.println("i am not null");
 		if (user != null && password != null) {
-			System.out.println("i am not null");
 			request.getSession().setAttribute("user", user);
 			response.sendRedirect("Home.jsp");
 		}

@@ -15,7 +15,6 @@ public class TimeTableEndSem {
 	private Map<Integer, StoreTT> store;// storing timetable (Slot
 										// No,TimeIntervals-t1,t2)
 	private ArrayList<Course> failed;
-
 	public ArrayList<Course> getFailed() {
 		return failed;
 	}

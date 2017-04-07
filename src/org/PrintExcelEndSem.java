@@ -67,7 +67,7 @@ public class PrintExcelEndSem extends PrintExcel {
 		return flag2;// can't modify flag2 in function as Java is pass by
 						// value,so returning
 	}
-
+	
 	public void createExcelSheet(TimeTableEndSem TT)
 			throws ClassNotFoundException, DAOException, SQLException, IOException {
 		// mapping numeric code to Batches
@@ -276,7 +276,7 @@ public class PrintExcelEndSem extends PrintExcel {
 		sheet1.getPrintSetup().setLandscape(true);
 		String fileName = "workbook.xlsx";
 		// String filePath = "F:\\exam_timetable\\src\\data\\output\\";
-		String filePath = "C:\\Users\\ashwani tanwar\\workspace\\Exam_TimeTable_Scheduler_bySlots_Web_Project\\src\\data\\output\\";
+		String filePath = FileConfig.OUTPUT_FILES_PATH;
 
 		FileOutputStream fileOut = new FileOutputStream(filePath + fileName);
 		wb.write(fileOut);

@@ -18,7 +18,7 @@ public class ReadFromExcel {
 	public static void read_excel() throws IOException, ClassNotFoundException, DAOException, SQLException {
 		// String excelFilePath = "ExamData.xlsx";
 		String fileName = "ExamData.xlsx";
-		String filePath = "C:\\Users\\ashwani tanwar\\workspace\\Exam_TimeTable_Scheduler_bySlots_Web_Project\\src\\data\\input\\";
+		String filePath = FileConfig.INPUT_FILES_PATH + "examData\\";
 		FileInputStream inputStream = new FileInputStream(new File(filePath + fileName));
 
 		Workbook workbook = new XSSFWorkbook(inputStream);
@@ -73,8 +73,8 @@ public class ReadFromExcel {
 
 	public static void read_excel(int slot_no) throws IOException, ClassNotFoundException, DAOException, SQLException {
 		// String excelFilePath = "ExamData.xlsx";
-		String fileName = "slot" + slot_no + "course.xlsx";
-		String filePath = "C:\\Users\\ashwani tanwar\\workspace\\Exam_TimeTable_Scheduler_bySlots_Web_Project\\src\\data\\input\\";
+		String fileName = "slot" + (slot_no) + "course.xlsx";
+		String filePath = FileConfig.INPUT_FILES_PATH + "slotData\\";
 		FileInputStream inputStream = new FileInputStream(new File(filePath + fileName));
 
 		Workbook workbook = new XSSFWorkbook(inputStream);

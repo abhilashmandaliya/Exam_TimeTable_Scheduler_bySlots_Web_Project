@@ -15,6 +15,7 @@ public class Authenticator {
 		protectedURLs.add("servlet.FileDownloadServlet");
 		protectedURLs.add("servlet.FileUploadServlet");
 		protectedURLs.add("servlet.SlotServlet");
+		protectedURLs.add("servlet.RoomServlet");
 
 		// jsp
 		protectedURLs.add("org.apache.jsp.Course_jsp");

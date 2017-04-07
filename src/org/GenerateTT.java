@@ -10,6 +10,11 @@ import java.util.Set;
 
 public class GenerateTT {
 
+	private static ArrayList<Course> failedCourses;
+
+	public static ArrayList<Course> getFailedCourses() {
+		return failedCourses;
+	}
 	// this method gets unallocated students after entire allocation
 	// public static Map<Course,Integer> printUnallocatedStudents(TimeTable TT)
 	// {
@@ -359,9 +364,10 @@ public class GenerateTT {
 		// It prints data in excel sheet and exports a .xlsx file
 		// PrintExcel excel=new PrintExcel();
 		PrintExcel excel = new PrintExcel();
-		System.out.println("Following courses Failed");
-		for (Course course : TT.getFailed())
-			System.out.println(course);
+		 System.out.println("Following courses Failed");
+		 for (Course course : TT.getFailed())
+		 System.out.println(course);
+		failedCourses = TT.getFailed();
 		excel.createExcelSheet(TT);
 
 		// Map<Course,Integer> map=GenerateTT.printUnallocatedStudents(TT);

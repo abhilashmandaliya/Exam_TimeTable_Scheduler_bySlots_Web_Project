@@ -55,9 +55,7 @@ public class GeneralDAO {
 				 makeConnection();
 			 String sql="Insert into Room VALUES("+room_no+","+room_capacity+")";
 			 Statement stmt=con.createStatement();
-			 ResultSet rs=stmt.executeQuery(sql);
-			
-			 
+			 stmt.executeUpdate(sql); 
 		 }
 		 catch(SQLException e)
 		 {
@@ -75,9 +73,7 @@ public class GeneralDAO {
 				 makeConnection();
 			 String sql="Delete from Room where room_no="+room_no;
 			 Statement stmt=con.createStatement();
-			 ResultSet rs=stmt.executeQuery(sql);
-			
-			 
+			 stmt.executeUpdate(sql);
 		 }
 		 catch(SQLException e)
 		 {
@@ -95,9 +91,7 @@ public class GeneralDAO {
 				 makeConnection();
 			 String sql="UPDATE Room SET room_capacity="+capacity+" WHERE room_no="+room_no;
 			 Statement stmt=con.createStatement();
-			 ResultSet rs=stmt.executeQuery(sql);
-			
-			 
+			 stmt.executeUpdate(sql);
 		 }
 		 catch(SQLException e)
 		 {
@@ -179,9 +173,7 @@ public class GeneralDAO {
 				 makeConnection();
 			 String sql="Delete from Course where course_id='"+course_id+"'";
 			 Statement stmt=con.createStatement();
-			 ResultSet rs=stmt.executeQuery(sql);
-			
-			 
+			 stmt.executeUpdate(sql);
 		 }
 		 catch(SQLException e)
 		 {
@@ -199,9 +191,7 @@ public class GeneralDAO {
 				 makeConnection();
 			 String sql="UPDATE course SET course_name='"+course_name+"',batch='"+batch+"',no_of_students="+no_of_students+",faculty='"+faculty+ "'WHERE course_id='"+course_id+"'";
 			 Statement stmt=con.createStatement();
-			 ResultSet rs=stmt.executeQuery(sql);
-			
-			 
+			 stmt.executeUpdate(sql);
 		 }
 		 catch(SQLException e)
 		 {

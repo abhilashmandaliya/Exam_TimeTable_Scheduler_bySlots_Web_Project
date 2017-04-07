@@ -3,6 +3,7 @@ package servlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.Authenticator;
+import org.FileConfig;
 import org.GeneralDAO;
 import org.ReadFromExcel;
 import org.apache.commons.fileupload.FileItem;
@@ -27,9 +30,9 @@ import org.apache.commons.io.output.*;
 @WebServlet("/FileUploadServlet")
 public class FileUploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private boolean isMultipart;
 	private String filePath;
 	private File file;
+	boolean isMultiPart;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -46,12 +49,8 @@ public class FileUploadServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	public void init() {
-		// Get the file location where it would be stored.
-		filePath = getServletContext().getInitParameter("file-upload");
+		if (!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
+			response.sendRedirect("login.jsp");
 	}
 
 	/**
@@ -61,42 +60,47 @@ public class FileUploadServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		isMultipart = ServletFileUpload.isMultipartContent(request);
-		PrintWriter out = response.getWriter();
-		DiskFileItemFactory factory = new DiskFileItemFactory();
-	      // Create a new file upload handler
-	      ServletFileUpload upload = new ServletFileUpload(factory);
-	      try{ 
-	          // Parse the request to get file items.
-	          List fileItems = upload.parseRequest(request);	    	
-	          // Process the uploaded file items
-	          Iterator i = fileItems.iterator();
-	          while ( i.hasNext () ) 
-	          {
-	             FileItem fi = (FileItem)i.next();
-	             if ( !fi.isFormField () )	
-	             {
-	                String fieldName = fi.getFieldName();
-	                String fileName = fi.getName();
-	                String contentType = fi.getContentType();
-	                boolean isInMemory = fi.isInMemory();
-	                long sizeInBytes = fi.getSize();
-	                // Write the file
-	                if( fileName.lastIndexOf("\\") >= 0 ){
-	                   file = new File( filePath + 
-	                   fileName.substring( fileName.lastIndexOf("\\"))) ;
-	                }else{
-	                   file = new File( filePath + 
-	                   fileName.substring(fileName.lastIndexOf("\\")+1)) ;
-	                }
-	                fi.write( file ) ;
-	                GeneralDAO.deleteAllCourses();
-	                ReadFromExcel.read_excel();
-	             }
-	          }
-	       }catch(Exception ex) {
-	           System.out.println(ex);
-	       }
+		if (!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
+			response.sendRedirect("login.jsp");
+		isMultiPart = ServletFileUpload.isMultipartContent(request);
+		if (isMultiPart) {
+			String fileFor = "";
+			String slotParam = "";
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+			ServletFileUpload upload = new ServletFileUpload(factory);
+			try {
+				List<FileItem> fileItems = upload.parseRequest(request);
+				Iterator<FileItem> i = fileItems.iterator();
+				while (i.hasNext()) {
+					FileItem fi = (FileItem) i.next();
+					if (!fi.isFormField()) {
+						String fileName = "TYPE_MISMATCH";
+						filePath = FileConfig.INPUT_FILES_PATH;
+						if (fileFor.toLowerCase().equals("slotdetails")) {
+							filePath += "slotData\\";
+							fileName = "slot" + slotParam + "course.xlsx";
+						} else if (fileFor.toLowerCase().equals("examdetails")) {
+							filePath += "examData\\";
+							fileName = "ExamData.xlsx";
+						}
+						if (fileName.lastIndexOf("\\") >= 0) {
+							file = new File(filePath + fileName.substring(fileName.lastIndexOf("\\")));
+						} else {
+							file = new File(filePath + fileName.substring(fileName.lastIndexOf("\\") + 1));
+						}
+						fi.write(file);
+						ReadFromExcel.read_excel();
+					} else {
+						if (fi.getFieldName().equals("file"))
+							fileFor = fi.getString();
+						else if (fi.getFieldName().equals("slot_no"))
+							slotParam = fi.getString();
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

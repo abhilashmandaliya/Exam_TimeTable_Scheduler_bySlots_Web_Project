@@ -3,7 +3,6 @@
 <%
 	if (!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
 		response.sendRedirect("login.jsp");
-	System.out.println(this.getClass().getName());
 %>
 <nav class="navbar navbar-default">
 	<div class="container-fluid">

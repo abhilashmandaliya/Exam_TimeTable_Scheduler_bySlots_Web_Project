@@ -31,6 +31,11 @@ public class GenerateTTEndSem {
 	// }
 	// return unallocated_map;
 	// }
+	private static ArrayList<Course> failedCourses;
+
+	public static ArrayList<Course> getFailedCourses() {
+		return failedCourses;
+	}
 
 	public static void main(String[] args)
 			throws CloneNotSupportedException, SQLException, ClassNotFoundException, DAOException, IOException {
@@ -394,10 +399,8 @@ public class GenerateTTEndSem {
 		// PrintExcel excel=new PrintExcel();
 		PrintExcelEndSem excel = new PrintExcelEndSem();
 
-		
 		System.out.println("Following courses Failed");
-		for (Course course : TT.getFailed())
-			System.out.println(course);
+		failedCourses = TT.getFailed();
 		excel.createExcelSheet(TT);
 		// Map<Course,Integer> map=GenerateTT.printUnallocatedStudents(TT);
 	}
