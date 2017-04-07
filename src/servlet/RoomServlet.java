@@ -12,16 +12,16 @@ import org.DAOException;
 import org.GeneralDAO;
 
 /**
- * Servlet implementation class CourseServlet
+ * Servlet implementation class RoomServlet
  */
-@WebServlet("/CourseServlet")
-public class CourseServlet extends HttpServlet {
+@WebServlet("/RoomServlet")
+public class RoomServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public CourseServlet() {
+	public RoomServlet() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -46,27 +46,26 @@ public class CourseServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		if (!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
 			response.sendRedirect("login.jsp");
+		String action = request.getParameter("action").toLowerCase();
 		try {
-			String action = request.getParameter("action").toLowerCase();
 			if (action.equals("register")) {
-				GeneralDAO.addCourse(request.getParameter("course_id"), request.getParameter("course_name"),
-						request.getParameter("batch"), Integer.parseInt(request.getParameter("no_of_students")),
-						request.getParameter("faculty"));
-				response.getWriter().write("Course Registration Successful !");
-			} else if (action.equals("update")) {
-				GeneralDAO.updateCourse(request.getParameter("course_id"), request.getParameter("course_name"),
-						request.getParameter("batch"), Integer.parseInt(request.getParameter("no_of_students")),
-						request.getParameter("faculty"));
-				response.getWriter().write("Course Updated Successfully !");
+				GeneralDAO.addRoom(Integer.parseInt(request.getParameter("room_no")),
+						Integer.parseInt(request.getParameter("capacity")));
+				response.getWriter().write("Room added Successfully !");
+			} else if(action.equals("update")) {
+				GeneralDAO.updateRoom(Integer.parseInt(request.getParameter("room_no")),
+						Integer.parseInt(request.getParameter("capacity")));
+				response.getWriter().write("Room updated Successfully !");
 			} else if(action.equals("delete")) {
-				GeneralDAO.deleteCourse(request.getParameter("course_id"));
-				response.getWriter().write("Course deleted Successfully !");
+				GeneralDAO.deleteRoom(Integer.parseInt(request.getParameter("room_no")));
+				response.getWriter().write("Room deleted Successfully !");
 			} else
 				response.getWriter().write("Invalid request !");
 		} catch (NumberFormatException | ClassNotFoundException | DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 
 }

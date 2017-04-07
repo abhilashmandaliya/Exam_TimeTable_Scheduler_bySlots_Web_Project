@@ -24,17 +24,15 @@
 					Room room = al.get(i);
 					out.write(
 							"<tr id='row" + i + "'><td>" + room.getRoom_no() + "</td> <td>" + room.getCapacity() + "</td>");
-					out.write("<td><button room_no='" + room.getRoom_no() + "' room_capacity='" + room.getCapacity()
-							+ "' class='btn btn-warning' type='button' data-toggle='modal' data-target='#myModal' id='editRoom"+(i+1)+"'>Edit</button> </td>");
-					out.write("<td><button room_no='" + room.getRoom_no() + "' room_capacity='" + room.getCapacity()
-							+ "' class='btn btn-danger' type='button' id='deleteRow" + i + "'>Delete</button> </td></tr>");
+					out.write("<td><button room_no='" + room.getRoom_no() + "' class='btn btn-warning' type='button' data-toggle='modal' data-target='#myModal' id='editRoom"+(i+1)+"'>Edit</button> </td>");
+					out.write("<td><button room_no='" + room.getRoom_no() + "' class='btn btn-danger' type='button' id='deleteRoom" + i + "'>Delete</button> </td></tr>");
 				}
 			%>
 		</table>
 	</div>
 	<div class="col-sm-6">
 		<fieldset>
-			<legend>Register New Course</legend>
+			<legend>Register New Room</legend>
 			<form class="form-horizontal" role="form">
 				<div class="form-group">
 					<label class="control-label col-sm-2">Room No</label>
@@ -52,7 +50,7 @@
 				</div>
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-5">
-						<button class="btn btn-success">Add Room</button>
+						<button type="button" id="addRoom" class="btn btn-success">Add Room</button>
 					</div>
 				</div>
 			</form>
@@ -86,7 +84,7 @@
 			</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-success" data-dismiss="modal">Update</button>
+				<button type="button" class="btn btn-success" id="updateRoomDetail" data-dismiss="modal">Update</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			</div>
 		</div>

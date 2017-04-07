@@ -1,4 +1,9 @@
 $(document).ready(function() {
+	
+	$("input[type='text']").each(function(e){
+		$(this).val("");
+	});
+	
 	$(".nav li").on("click", function() {
 		$(".nav li").removeClass("active");
 		$(this).addClass("active");
@@ -104,12 +109,13 @@ $(document).ready(function() {
 		var course_name = $('#course_name').val();
 		var batch = $('#batch').val();
 		var no_of_students = $('#no_of_students').val();
+		var faculty = $('#faculty').val();
 		$.ajax({
 			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/CourseServlet',
 			type : 'post',
-			data : {"course_id":course_id,"course_name":course_name,"batch":batch,"no_of_students":no_of_students},
-			success : function(){
-				
+			data : {"action":"register","course_id":course_id,"course_name":course_name,"batch":batch,"no_of_students":no_of_students,"faculty":faculty},
+			success : function(data){
+				alert("Server Response : "+data);
 			}
 		});
 	});
@@ -119,11 +125,13 @@ $(document).ready(function() {
 		var course_name = $('#'+clicked).parent().parent().find('td:first').next().text();
 		var batch = $('#'+clicked).parent().parent().find('td:first').next().next().attr('batchNo');
 		var no_of_students = $('#'+clicked).parent().parent().find('td:first').next().next().next().text();
+		var faculty_code = $('#'+clicked).parent().parent().find('td:first').next().next().next().next().text();
 		$('#editCourseModalSpan').html(course_id+"-"+course_name);
 		$('#edit_course_id').val(course_id);
 		$('#edit_course_name').val(course_name);
 		$('#edit_batch').val(batch);
 		$('#edit_no_of_students').val(no_of_students);
+		$('#edit_faculty').val(faculty_code);
 	});
 	$(document).on("click","[id^=editRoom]",function(e){
 		var clicked = e.target.id || this.id;
@@ -132,5 +140,72 @@ $(document).ready(function() {
 		$('#editRoomModalSpan').html(room_no);
 		$('#edit_room_no').val(room_no);
 		$('#edit_capacity').val(capacity);
+	});
+	$(document).on("click","#updateCourseDetail",function(e){
+		var course_id = $('#edit_course_id').val();
+		var course_name = $('#edit_course_name').val();
+		var batch = $('#edit_batch').val();
+		var no_of_students = $('#edit_no_of_students').val();
+		var faculty = $('#edit_faculty').val();
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/CourseServlet',
+			type : 'post',
+			data : {"action":"update","course_id":course_id,"course_name":course_name,"batch":batch,"no_of_students":no_of_students,"faculty":faculty},
+			success : function(data){
+				alert("Server Response : "+data);
+				location.reload();
+			}
+		});
+	});
+	$(document).on("click","[id^=deleteCourse]",function(e){
+		var clicked = e.target.id || this.id;
+		var course_id = $(this).attr('course_id');
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/CourseServlet',
+			type : 'post',
+			data : {"action":"delete","course_id":course_id},
+			success : function(data){
+				alert("Server Response : "+data);
+				$('#'+clicked).parent().parent().hide();
+			}
+		});
+	});
+	$(document).on("click","#addRoom",function(e){
+		var room_no = $('#room_no').val();
+		var capacity = $('#capacity').val();
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/RoomServlet',
+			type : 'post',
+			data : {"action":"register", "room_no":room_no, "capacity":capacity},
+			success : function(data) {
+				alert("Server Response : "+data);
+			}
+		})
+	});
+	$(document).on("click","#updateRoomDetail",function(e){
+		var room_no = $('#edit_room_no').val();
+		var capacity = $('#edit_capacity').val();
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/RoomServlet',
+			type : 'post',
+			data : {"action":"update","room_no":room_no, "capacity":capacity},
+			success : function(data){
+				alert("Server Response : "+data);
+				location.reload();
+			}
+		});
+	});
+	$(document).on("click","[id^=deleteRoom]",function(e){
+		var clicked = e.target.id || this.id;
+		var room_no = $(this).attr('room_no');
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/RoomServlet',
+			type : 'post',
+			data : {"action":"delete","room_no":room_no},
+			success : function(data){
+				alert("Server Response : "+data);
+				$('#'+clicked).parent().parent().hide();
+			}
+		});
 	});
 });
