@@ -89,7 +89,14 @@ public class FileUploadServlet extends HttpServlet {
 							file = new File(filePath + fileName.substring(fileName.lastIndexOf("\\") + 1));
 						}
 						fi.write(file);
-						ReadFromExcel.read_excel();
+						if(slotParam=="")
+							ReadFromExcel.read_excel();
+						else
+							ReadFromExcel.read_excel(Integer.parseInt(slotParam));
+						if (ReadFromExcel.isErrorFlag())
+							response.getWriter().write("Same Course Exist !" + ReadFromExcel.getErrorCourse());
+						else
+							response.getWriter().write("File Uploaded Succesfully !");
 					} else {
 						if (fi.getFieldName().equals("file"))
 							fileFor = fi.getString();
@@ -99,6 +106,11 @@ public class FileUploadServlet extends HttpServlet {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				response.getWriter().write(
+						"\nSome error occured.\nEnsure that all excel files are closed.\nKindly contact the developers.");
+			} finally {
+				ReadFromExcel.setErrorCourse();
+				ReadFromExcel.setErrorFlag();
 			}
 		}
 	}

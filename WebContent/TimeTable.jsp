@@ -54,7 +54,7 @@
 	<div class="panel-heading">Generate and Download Exam Timetable</div>
 	<div class="panel-body">
 		<label>Exam Type:</label> 
-		<select id="exam_type" class="form-control">
+		<select id="exam_type" class="form-control" style="width:150px">
 			<option value="insem">In Semester</option>
 			<option value="endsem">End Semester</option>
 		</select>

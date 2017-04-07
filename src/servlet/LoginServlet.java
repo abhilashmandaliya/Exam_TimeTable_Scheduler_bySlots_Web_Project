@@ -1,11 +1,15 @@
 package servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.GeneralDAO;
 
 /**
  * Servlet implementation class LoginServlet
@@ -28,10 +32,10 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 		String action = request.getParameter("action");
 		System.out.println(action);
-		if(action.toLowerCase().equals("logout")){
+		if (action.toLowerCase().equals("logout")) {
 			request.getSession().removeAttribute("user");
 			response.sendRedirect("login.jsp");
 		}
@@ -44,11 +48,16 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String user = request.getParameter("user");
+		String uname = request.getParameter("user");
 		String password = request.getParameter("password");
-		if (user != null && password != null) {
-			request.getSession().setAttribute("user", user);
-			response.sendRedirect("Home.jsp");
+		try {
+			if (GeneralDAO.validateUser(uname, password))
+				request.getSession().setAttribute("user", uname);
+			else
+				response.getWriter().write("false");
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

@@ -9,7 +9,7 @@
 %>
 <%@include file="header.jsp"%>
 <div class="row">
-	<div class="col-sm-7">
+	<div class="col-sm-7 availableCourse">
 		<div class="alert alert-info">
 			<strong>Available Courses</strong>
 		</div>

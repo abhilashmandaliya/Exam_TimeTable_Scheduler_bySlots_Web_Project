@@ -87,7 +87,7 @@ public class FileDownloadServlet extends HttpServlet {
 				// System.out.println("exiting the program!");
 			} catch (Exception e) {
 				e.printStackTrace();
-				response.getWriter().write("\nSome error occured ! Kindly contact the developers.");
+				response.getWriter().write("\nSome error occured.\nEnsure that all excel files are closed.\nKindly contact the developers.");
 			}
 		}
 	}

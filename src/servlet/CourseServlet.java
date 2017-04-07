@@ -61,6 +61,9 @@ public class CourseServlet extends HttpServlet {
 			} else if(action.equals("delete")) {
 				GeneralDAO.deleteCourse(request.getParameter("course_id"));
 				response.getWriter().write("Course deleted Successfully !");
+			} else if(action.equals("deleteallcourses")) {
+				GeneralDAO.deleteAllCourses();
+				response.getWriter().write("All Courses deleted Successfully !");
 			} else
 				response.getWriter().write("Invalid request !");
 		} catch (NumberFormatException | ClassNotFoundException | DAOException e) {

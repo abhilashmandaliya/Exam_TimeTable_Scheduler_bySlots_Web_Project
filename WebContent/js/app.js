@@ -87,7 +87,7 @@ $(document).ready(function() {
 				cache : false,
 				data : form_data,
 				success : function(data){
-					alert("File Uploaded Successfully !");
+					alert("Server Response : "+data);
 				}
 			});
 	});
@@ -177,6 +177,17 @@ $(document).ready(function() {
 			}
 		});
 	});
+	$(document).on("click","#removeAllCourses",function(e){
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/CourseServlet',
+			type : 'post',
+			data : {"action":"deleteallcourses"},
+			success : function(data){
+				alert("Server Response : "+data);
+				location.reload();
+			}
+		});
+	});
 	$(document).on("click","#addRoom",function(e){
 		var room_no = $('#room_no').val();
 		var capacity = $('#capacity').val();
@@ -213,6 +224,21 @@ $(document).ready(function() {
 			success : function(data){
 				alert("Server Response : "+data);
 				$('#'+clicked).parent().parent().hide();
+			}
+		});
+	});
+	$(document).on("click","#login",function(e){
+		var room_no = $(this).attr('room_no');
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/LoginServlet',
+			type : 'post',
+			data : {"user":$('#user').val(),"password":$('#password').val()},
+			success : function(data){
+				if(data=="false"){
+					alert("Wrong Credentials !");
+					location.reload();
+				} else
+					window.location.href = 'Home.jsp';
 			}
 		});
 	});
