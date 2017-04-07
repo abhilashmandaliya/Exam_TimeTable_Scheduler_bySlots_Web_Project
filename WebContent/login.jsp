@@ -5,9 +5,9 @@
             <div class="avatar"></div>
             <div class="form-box">
                 <form action="LoginServlet" method="post">
-                    <input name="user" type="text" placeholder="username">
-                    <input type="password" name="password" placeholder="password">
-                    <button class="btn btn-info btn-block login" type="submit">Login</button>
+                    <input name="user" id="user" type="text" placeholder="username">
+                    <input type="password" id="password" name="password" placeholder="password">
+                    <button class="btn btn-info btn-block login" type="button" id="login">Login</button>
                 </form>
             </div>
         </div>

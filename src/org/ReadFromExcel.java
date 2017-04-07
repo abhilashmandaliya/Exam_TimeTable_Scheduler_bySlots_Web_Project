@@ -14,7 +14,22 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ReadFromExcel {
-
+	
+	// flag to indicate course already exists
+	private static boolean errorFlag = false;
+	private static String errorCourse = "";
+	public static boolean isErrorFlag() {
+		return errorFlag;
+	}
+	public static String getErrorCourse() {
+		return errorCourse;
+	}
+	public static void setErrorCourse() {
+		ReadFromExcel.errorCourse = "";
+	}
+	public static void setErrorFlag() {
+		ReadFromExcel.errorFlag = false;
+	}
 	public static void read_excel() throws IOException, ClassNotFoundException, DAOException, SQLException {
 		// String excelFilePath = "ExamData.xlsx";
 		String fileName = "ExamData.xlsx";
@@ -25,6 +40,8 @@ public class ReadFromExcel {
 		Sheet firstSheet = workbook.getSheetAt(0);
 		Iterator<Row> iterator = firstSheet.iterator();
 		iterator.next();
+		String course_id="",course_name = "", batch = "", faculty="";
+		int no_of_students;
 		System.out.println("Working");
 		try {
 
@@ -44,11 +61,11 @@ public class ReadFromExcel {
 				}
 
 				// int slot_no = Integer.parseInt(queue.removeFirst());
-				String course_id = queue.removeFirst();
-				String course_name = queue.removeFirst();
-				String batch = queue.removeFirst();
-				int no_of_students = Integer.parseInt(queue.removeFirst());
-				String faculty = queue.removeFirst();
+				course_id = queue.removeFirst();
+				course_name = queue.removeFirst();
+				batch = queue.removeFirst();
+				no_of_students = Integer.parseInt(queue.removeFirst());
+				faculty = queue.removeFirst();
 
 				GeneralDAO.addCourse(course_id, course_name, batch, no_of_students, faculty);
 				// GeneralDAO.addSlotEntry(slot_no, course_id);
@@ -56,9 +73,11 @@ public class ReadFromExcel {
 				GeneralDAO.getCon().commit();
 
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			GeneralDAO.getCon().rollback();
 			// e.printStackTrace();
+			errorFlag = true;
+			errorCourse = course_id+":"+course_name+":"+batch;
 			System.out.println("Course already exists.");
 		}
 
@@ -81,6 +100,7 @@ public class ReadFromExcel {
 		Sheet firstSheet = workbook.getSheetAt(0);
 		Iterator<Row> iterator = firstSheet.iterator();
 		iterator.next();
+		String course_id = "";
 		System.out.println("Working");
 		try {
 
@@ -99,7 +119,7 @@ public class ReadFromExcel {
 					// System.out.println("Working");
 				}
 
-				String course_id = queue.removeFirst();
+				course_id = queue.removeFirst();
 
 				GeneralDAO.addSlotEntry(slot_no, course_id);
 
@@ -109,6 +129,9 @@ public class ReadFromExcel {
 		} catch (Exception e) {
 			GeneralDAO.getCon().rollback();
 			// e.printStackTrace();
+			errorFlag = true;
+			errorCourse = course_id;
+			System.out.println("Course already exists in the given slot.");
 		}
 
 		finally {
