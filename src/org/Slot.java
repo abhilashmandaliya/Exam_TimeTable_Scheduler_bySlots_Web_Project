@@ -21,11 +21,13 @@ public class Slot {
 		this.courses = new ArrayList<>();
 		this.con = DBConnection.getInstance().getConnectionSchema("public");
 		this.processCount = 0;
+
 	}
 
 	// copy constructor
 	public Slot(Slot other) throws ClassNotFoundException, SQLException {
 		this.courses = new ArrayList<>();
+
 		this.con = DBConnection.getInstance().getConnectionSchema("public");
 		this.slot_no = other.getSlot_no();
 		this.processCount = other.getProcessCount();
@@ -33,6 +35,7 @@ public class Slot {
 			this.courses.add(new Course(course));// calling copy constructor of
 													// Course
 		}
+
 	}
 
 	public ArrayList<Course> getCourses() {
@@ -63,7 +66,7 @@ public class Slot {
 				+ "where S.course_id=C.course_id AND " + "S.slot_no=" + this.slot_no;
 		ResultSet rs = stmt.executeQuery(sql);
 		while (rs.next()) {
-			temp.add(new Course(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4),rs.getString(5)));
+			temp.add(new Course(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
 		}
 		return temp;
 	}
@@ -95,10 +98,10 @@ public class Slot {
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 			sql = "Select program from batch_program,course where course.batch = batch_program.batch and course.course_id='"
-					+ course_id+"'";
+					+ course_id + "'";
 			ResultSet rs = stmt.executeQuery(sql);
 			if (rs.next())
-				return rs.getString(1);			
+				return rs.getString(1);
 		} catch (SQLException e) {
 			// throw new DAOException(e.getMessage());
 			e.printStackTrace();
@@ -126,10 +129,30 @@ public class Slot {
 				}
 			}
 		}
-		// return course;
+		// special case-Slot1/Slot2
+		max = 0;
 		if (flag_no_otherloop == 0) {
 			for (int i = 0; i < courses.size(); i++) {
-				if (courses.get(i).getUnallocated_strength() > 0 && courses.get(i).getProcessed() == false) {
+				if (courses.get(i).getUnallocated_strength() > 0 && courses.get(i).getProcessed() == false
+						&& courses.get(i).getSlot1priority() == 1) {
+					if (max < courses.get(i).getNo_Of_Students()) {
+						max = courses.get(i).getNo_Of_Students();
+						course = courses.get(i);
+
+					}
+				}
+
+			}
+
+		}
+		// normal Case
+		if (course != null)
+			return course;
+		max = 0;
+		if (flag_no_otherloop == 0) {
+			for (int i = 0; i < courses.size(); i++) {
+				if (courses.get(i).getUnallocated_strength() > 0 && courses.get(i).getProcessed() == false
+						&& courses.get(i).getSlot1priority() == 0) {
 					if (max < courses.get(i).getNo_Of_Students()) {
 						max = courses.get(i).getNo_Of_Students();
 						course = courses.get(i);

@@ -89,8 +89,7 @@ public class FileUploadServlet extends HttpServlet {
 							file = new File(filePath + fileName.substring(fileName.lastIndexOf("\\") + 1));
 						}
 						fi.write(file);
-						//GeneralDAO.deleteAllCourses();
-						//ReadFromExcel.read_excel();
+						ReadFromExcel.read_excel();
 					} else {
 						if (fi.getFieldName().equals("file"))
 							fileFor = fi.getString();

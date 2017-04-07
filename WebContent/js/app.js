@@ -53,12 +53,18 @@ $(document).ready(function() {
 		});
 	});
 	$("#generateTT").click(function(e) {
+		var sem = $('#exam_type').val();
 		$.ajax({
 			url : 'http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet',
 			type : 'get',
-			data : {'action':'generatett'},
+			data : {'action':'generatett','semester':sem},
 			success : function(data) {
-				alert("Server Response : "+data);
+				var msg = "";
+				if(data=="true")
+					msg = "Timetable Generated Successfully !";
+				else
+					msg = "Warning : Following courses could not be accomodated\n" + data + "\nPlease add more Rooms.";
+				alert(msg);
 			}, error : function(data) {
 				alert("Error : "+data);
 			}
@@ -116,6 +122,7 @@ $(document).ready(function() {
 			data : {"action":"register","course_id":course_id,"course_name":course_name,"batch":batch,"no_of_students":no_of_students,"faculty":faculty},
 			success : function(data){
 				alert("Server Response : "+data);
+				location.reload();
 			}
 		});
 	});
@@ -179,6 +186,7 @@ $(document).ready(function() {
 			data : {"action":"register", "room_no":room_no, "capacity":capacity},
 			success : function(data) {
 				alert("Server Response : "+data);
+				location.reload();
 			}
 		})
 	});

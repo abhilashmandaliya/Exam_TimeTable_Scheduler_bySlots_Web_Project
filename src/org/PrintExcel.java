@@ -241,7 +241,7 @@ public class PrintExcel {
 	public void createExcelSheet(TimeTable TT) throws ClassNotFoundException, DAOException, SQLException, IOException {
 		// mapping numeric code to Batches
 		Map<Integer, String> batch_id_name = GeneralDAO.getBatchProgram();
-		
+
 		// export to Excel Format
 		// making workbook and sheet
 		XSSFWorkbook wb = new XSSFWorkbook();
@@ -328,12 +328,17 @@ public class PrintExcel {
 			// **********checking for first Slot************
 			TimeInterval t1 = temp_store.get(slot1).getT1();
 			TimeInterval t2 = temp_store.get(slot1).getT2();
-
+			Set<String> set1_c = new HashSet<>();
+			Set<String> set2_c = new HashSet<>();
 			// check T1
 			Set<Course> set1 = new HashSet<>();
 			for (ArrayList<OccupationData> od : t1.getMap().values()) {
+
 				for (int hh = 0; hh < od.size(); hh++) {
-					set1.add(od.get(hh).getCourse());
+					if (!set1_c.contains(od.get(hh).getCourse().getCourse_id())) {
+						set1_c.add(od.get(hh).getCourse().getCourse_id());
+						set1.add(od.get(hh).getCourse());
+					}
 				}
 			}
 
@@ -341,8 +346,12 @@ public class PrintExcel {
 			curr_row += 1;
 			Set<Course> set2 = new HashSet<>();
 			for (ArrayList<OccupationData> od : t2.getMap().values()) {
+
 				for (int hh = 0; hh < od.size(); hh++) {
-					set2.add(od.get(hh).getCourse());
+					if (!set2_c.contains(od.get(hh).getCourse().getCourse_id())) {
+						set2_c.add(od.get(hh).getCourse().getCourse_id());
+						set2.add(od.get(hh).getCourse());
+					}
 				}
 			}
 			// **********************checking for Slot2***************
@@ -350,6 +359,8 @@ public class PrintExcel {
 			Set<Course> set2_2 = new HashSet<>();
 			TimeInterval t1_2 = null;
 			TimeInterval t2_2 = null;
+			Set<String> set12_c = new HashSet<>();
+			Set<String> set22_c = new HashSet<>();
 
 			if (slot2 <= temp_store.size()) {
 				slot2_flag = 1;
@@ -358,16 +369,24 @@ public class PrintExcel {
 				// check T1
 				curr_row += 1;
 				for (ArrayList<OccupationData> od : t1_2.getMap().values()) {
+
 					for (int hh = 0; hh < od.size(); hh++) {
-						set1_2.add(od.get(hh).getCourse());
+						if (!set12_c.contains(od.get(hh).getCourse().getCourse_id())) {
+							set12_c.add(od.get(hh).getCourse().getCourse_id());
+							set1_2.add(od.get(hh).getCourse());
+						}
 					}
 				}
 
 				// check T2
 				curr_row += 1;
 				for (ArrayList<OccupationData> od : t2_2.getMap().values()) {
+
 					for (int hh = 0; hh < od.size(); hh++) {
-						set2_2.add(od.get(hh).getCourse());
+						if (!set22_c.contains(od.get(hh).getCourse().getCourse_id())) {
+							set22_c.add(od.get(hh).getCourse().getCourse_id());
+							set2_2.add(od.get(hh).getCourse());
+						}
 					}
 				}
 			}
@@ -433,7 +452,6 @@ public class PrintExcel {
 		sheet1.getPrintSetup().setLandscape(true);
 		String fileName = "workbook.xlsx";
 		String filePath = FileConfig.OUTPUT_FILES_PATH;
-		
 		FileOutputStream fileOut = new FileOutputStream(filePath + fileName);
 		wb.write(fileOut);
 		fileOut.close();

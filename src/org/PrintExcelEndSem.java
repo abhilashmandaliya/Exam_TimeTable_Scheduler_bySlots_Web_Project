@@ -67,8 +67,9 @@ public class PrintExcelEndSem extends PrintExcel {
 		return flag2;// can't modify flag2 in function as Java is pass by
 						// value,so returning
 	}
-
-	public void createExcelSheet(TimeTable TT) throws ClassNotFoundException, DAOException, SQLException, IOException {
+	
+	public void createExcelSheet(TimeTableEndSem TT)
+			throws ClassNotFoundException, DAOException, SQLException, IOException {
 		// mapping numeric code to Batches
 		Map<Integer, String> batch_id_name = GeneralDAO.getBatchProgram();
 
@@ -152,27 +153,37 @@ public class PrintExcelEndSem extends PrintExcel {
 															// in Excel
 			curr_row += 2;
 			int slot1 = k + 1;
-			int slot2 = k + 2;
-			int slot2_flag = 0;
+			// int slot2 = k + 2;
+			// int slot2_flag = 0;
 
 			// **********checking for first Slot************
 			TimeInterval t1 = temp_store.get(slot1).getT1();
 			TimeInterval t2 = temp_store.get(slot1).getT2();
 
+			Set<String> set1_c = new HashSet<>();
+			Set<String> set2_c = new HashSet<>();
 			// check T1
 			Set<Course> set1 = new HashSet<>();
 			for (ArrayList<OccupationData> od : t1.getMap().values()) {
+
 				for (int hh = 0; hh < od.size(); hh++) {
-					set1.add(od.get(hh).getCourse());
+					if (!set1_c.contains(od.get(hh).getCourse().getCourse_id())) {
+						set1_c.add(od.get(hh).getCourse().getCourse_id());
+						set1.add(od.get(hh).getCourse());
+					}
 				}
 			}
-
+			// System.out.println("set1"+set1+"for k="+k);
 			// check T2
 			curr_row += 1;
 			Set<Course> set2 = new HashSet<>();
 			for (ArrayList<OccupationData> od : t2.getMap().values()) {
+
 				for (int hh = 0; hh < od.size(); hh++) {
-					set2.add(od.get(hh).getCourse());
+					if (!set2_c.contains(od.get(hh).getCourse().getCourse_id())) {
+						set2_c.add(od.get(hh).getCourse().getCourse_id());
+						set2.add(od.get(hh).getCourse());
+					}
 				}
 			}
 			// // **********************checking for Slot2***************

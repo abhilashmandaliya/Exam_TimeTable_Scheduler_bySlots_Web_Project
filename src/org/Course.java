@@ -13,6 +13,8 @@ public class Course {
 	private int flag_clash;//a flag to check that if it requires a gap of time interval
 	private boolean broken;
 	private String faculty;
+	private int slot1priority;
+	
 	public Course(String course_id, String course_name,String batch, int no_Of_Students,String faculty)
 	{
 		this.course_id = course_id;
@@ -24,6 +26,8 @@ public class Course {
 		this.flag_clash=0;
 		this.broken=false;
 		this.faculty=faculty;
+		this.slot1priority=0;
+		
 	}
 
 	//copy constructor
@@ -38,10 +42,17 @@ public class Course {
 		this.flag_clash=other.getFlag_clash();
 		this.broken=other.broken;
 		this.faculty=other.faculty;
+		this.slot1priority=other.slot1priority;
 	}
                                                                        
 	public String getBatch() {
 		return batch;
+	}
+	 public int getSlot1priority() {
+		return slot1priority;
+	}
+	 public void setSlot1priority(int slot1priority) {
+		this.slot1priority = slot1priority;
 	}
 	public int getFlag_clash() {
 		return flag_clash;

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.Authenticator;
 import org.DAOException;
 import org.Slot;
-import org.TimeTable;
+import org.TimeTableEndSem;
 
 /**
  * Servlet implementation class SlotServlet

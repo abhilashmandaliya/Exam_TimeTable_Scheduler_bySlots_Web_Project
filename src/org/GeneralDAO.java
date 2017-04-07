@@ -122,7 +122,29 @@ public class GeneralDAO {
 			 }
 			 return courses;
 	}
-	 
+	//fetch courses from database slot wise
+		 public static ArrayList<Course> getCourses(int slot_no) throws DAOException, ClassNotFoundException, SQLException 
+		 {
+			 if(con==null)
+				 makeConnection();
+			 ArrayList<Course> courses=new ArrayList<>();
+				 try
+				 {	 		 
+					 Statement stmt=con.createStatement();
+					 ResultSet rs=stmt.executeQuery("Select C.course_id,C.course_name,C.batch,C.no_of_students,C.faculty from Course C,Slot S where S.course_id=C.course_id AND S.slot_no="+slot_no);
+					 		
+					 while(rs.next())
+					 {				 
+						 courses.add(new Course(rs.getString(1),rs.getString(2),rs.getString(3),rs.getInt(4),rs.getString(5)));
+					 }
+					 
+				 }
+				 catch(SQLException e)
+				 {
+					 throw new DAOException(e.getMessage());
+				 }
+				 return courses;
+		}
 	//add a new course to database
 	public static void addCourse(String course_id,String course_name,String batch,int no_of_students,String faculty) throws DAOException, ClassNotFoundException
 	{

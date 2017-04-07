@@ -8,14 +8,13 @@ import java.util.Map;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
-public class TimeTable {
+public class TimeTableEndSem {
 
 	private final Connection con;
 	private Slot slot[];// stores all the slots
 	private Map<Integer, StoreTT> store;// storing timetable (Slot
 										// No,TimeIntervals-t1,t2)
 	private ArrayList<Course> failed;
-
 	public ArrayList<Course> getFailed() {
 		return failed;
 	}
@@ -32,7 +31,7 @@ public class TimeTable {
 		return store;
 	}
 
-	public TimeTable() throws ClassNotFoundException, SQLException, DAOException {
+	public TimeTableEndSem() throws ClassNotFoundException, SQLException, DAOException {
 		failed = new ArrayList<>();
 		con = DBConnection.getInstance().getConnectionSchema("public");
 		getSlotDetails();
@@ -315,9 +314,12 @@ public class TimeTable {
 																	// for CASE1
 																	// and CASE2
 		// CASE 1:
-		for (int k = array.length - 1; k >= 0; k--) {
+		int k = 0;
+		if (course.getFlag_clash() == 1)
+			k = 1;
+		for (; k <= 1; k++) {
 			flag = 0;
-			if (custom_flag == 1 && k == 0 && slot.getSlot_no() != 1)// K==0
+			if (custom_flag == 1 && k == 1 && slot.getSlot_no() != 1)// K==0
 																		// means
 																		// it
 																		// has
