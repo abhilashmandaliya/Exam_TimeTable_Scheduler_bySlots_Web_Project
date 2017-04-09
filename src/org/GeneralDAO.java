@@ -22,13 +22,29 @@ public class GeneralDAO {
 	public static boolean validateUser(String uname, String password) throws ClassNotFoundException, SQLException {
 		if (con == null)
 			makeConnection();
-		String sql = "select password from users where uname='" + uname + "'";
+		String sql = "SELECT PASSWORD FROM USERS WHERE UNAME='" + uname + "'";
 		ResultSet rs = con.createStatement().executeQuery(sql);
 		if (rs.next()) {
 			if (BCrypt.checkpw(password, rs.getString(1)))
 				return true;
 		}
 		return false;
+	}
+
+	public static boolean registerUser(String uname, String password) throws ClassNotFoundException, SQLException {
+		int cnt = 0;
+		if (con == null)
+			makeConnection();
+		// check whether user is already registered
+		String sql = "SELECT UNAME FROM USERS WHERE UNAME='" + uname + "'";
+		Statement st = con.createStatement();
+		ResultSet rs = st.executeQuery(sql);
+		if (rs.next())
+			return false;
+		password = BCrypt.hashpw(password, BCrypt.gensalt());
+		sql = "INSERT INTO USERS VALUES ( NEXTVAL('user_sequence'),'" + uname + "','" + password + "')";
+		cnt = st.executeUpdate(sql);
+		return cnt > 0;
 	}
 
 	public static ArrayList<Room> getRooms() throws DAOException, ClassNotFoundException, SQLException {
@@ -236,12 +252,12 @@ public class GeneralDAO {
 		}
 		return batch_program;
 	}
-	
-	//get codes which map to programs
-	public static Map<Integer,String> getBatch_Program() throws DAOException, ClassNotFoundException, SQLException {
+
+	// get codes which map to programs
+	public static Map<Integer, String> getBatch_Program() throws DAOException, ClassNotFoundException, SQLException {
 		if (con == null)
 			makeConnection();
-		Map<Integer,String> batch_program = new HashMap<>();
+		Map<Integer, String> batch_program = new HashMap<>();
 		try {
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("Select * from batch_program order by batch");
@@ -251,8 +267,6 @@ public class GeneralDAO {
 				String program = rs.getString("program");
 				batch_program.put(batch, program);
 			}
-
-			
 
 		} catch (SQLException e) {
 			throw new DAOException(e.getMessage());
@@ -301,6 +315,5 @@ public class GeneralDAO {
 		}
 
 	}
-
 
 }

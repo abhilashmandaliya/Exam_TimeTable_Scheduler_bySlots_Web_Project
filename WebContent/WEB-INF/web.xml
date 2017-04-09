@@ -49,4 +49,12 @@
     <servlet-name>RoomServlet</servlet-name>
     <url-pattern>/Exam_TimeTable_Scheduler_bySlots_Web_Project/RoomServlet</url-pattern>
   </servlet-mapping>
+    <servlet>
+    <servlet-name>UserServlet</servlet-name>
+    <servlet-class>servlet.UserServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserServlet</servlet-name>
+    <url-pattern>/Exam_TimeTable_Scheduler_bySlots_Web_Project/UserServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

@@ -228,7 +228,6 @@ $(document).ready(function() {
 		});
 	});
 	$(document).on("click","#login",function(e){
-		var room_no = $(this).attr('room_no');
 		$.ajax({
 			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/LoginServlet',
 			type : 'post',
@@ -239,6 +238,16 @@ $(document).ready(function() {
 					location.reload();
 				} else
 					window.location.href = 'Home.jsp';
+			}
+		});
+	});
+	$(document).on("click","#userRegistration",function(e){
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/UserServlet',
+			type : 'post',
+			data : {"action":"userRegistration","uname":$('#uname').val(),"password":$('#password').val()},
+			success : function(data){
+				alert(data);
 			}
 		});
 	});
