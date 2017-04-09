@@ -236,5 +236,71 @@ public class GeneralDAO {
 		}
 		return batch_program;
 	}
+	
+	//get codes which map to programs
+	public static Map<Integer,String> getBatch_Program() throws DAOException, ClassNotFoundException, SQLException {
+		if (con == null)
+			makeConnection();
+		Map<Integer,String> batch_program = new HashMap<>();
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("Select * from batch_program order by batch");
+
+			while (rs.next()) {
+				int batch = rs.getInt("batch");
+				String program = rs.getString("program");
+				batch_program.put(batch, program);
+			}
+
+			
+
+		} catch (SQLException e) {
+			throw new DAOException(e.getMessage());
+		}
+		return batch_program;
+	}
+
+	// add new batch program code to database
+	public static void addBatch_Program(Integer batch, String program) throws DAOException, ClassNotFoundException {
+		try {
+			if (con == null)
+				makeConnection();
+			String sql = "Insert into batch_program VALUES(" + batch + ",'" + program + "')";
+			Statement stmt = con.createStatement();
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			throw new DAOException(e.getMessage());
+		}
+
+	}
+
+	// delete a batch_program from database
+	public static void deleteBatch_Program(Integer batch) throws DAOException, ClassNotFoundException {
+		try {
+			if (con == null)
+				makeConnection();
+			String sql = "Delete from batch_program where batch=" + batch;
+			Statement stmt = con.createStatement();
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			throw new DAOException(e.getMessage());
+		}
+
+	}
+
+	// update batch_program
+	public static void updateBatch_Program(int batch, String program) throws DAOException, ClassNotFoundException {
+		try {
+			if (con == null)
+				makeConnection();
+			String sql = "UPDATE batch_program SET program='" + program + "' WHERE batch=" + batch;
+			Statement stmt = con.createStatement();
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			throw new DAOException(e.getMessage());
+		}
+
+	}
+
 
 }
