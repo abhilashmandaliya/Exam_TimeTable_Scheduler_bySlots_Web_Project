@@ -69,7 +69,7 @@ public class FileDownloadServlet extends HttpServlet {
 								return;
 							}
 						}
-						out.write("true");
+						out.write("Timetable is ready to be downloaded !");
 					}
 				} else if (action.toLowerCase().equals("downloadtt")) {
 					response.setContentType("text/html");
@@ -87,7 +87,8 @@ public class FileDownloadServlet extends HttpServlet {
 				// System.out.println("exiting the program!");
 			} catch (Exception e) {
 				e.printStackTrace();
-				response.getWriter().write("\nSome error occured.\nEnsure that all excel files are closed.\nKindly contact the developers.");
+				//response.getWriter().write("\nSome error occured.\nEnsure that all excel files are closed.\nKindly contact the developers.");
+				response.getWriter().write(e.getMessage());
 			}
 		}
 	}

@@ -9,26 +9,21 @@ $(document).ready(function() {
 		$(this).addClass("active");
 	});
 	$(document).on("click","[id^=deleteRow]",function(e) {
-		$.ajax({
-			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/SlotManagement',
-			type : 'post',
-			data : {
-				'action' : 'delete',
-				'course' : $(this).attr('course'),
-				'slot' : $(this).attr('slot')
-			},
-			success : function(data) {
-				var clicked = e.target.id || this.id;
-				$('#'+clicked).parent().parent().hide();
-				var row = $('#'+clicked).parent().parent().html();
-				$('#remainingCourses').append("<tr>"+row+"</tr>");
-				$('#remainingCourses tr:last td:last').remove();
-				$('#remainingCourses tr:last').append("<td>"+data+"</td>");
-				$('#remainingCourses tr:last').append($('#remainingCourses tr:last').prev().clone().find("td:last"));
-				$('#remainingCourses tr:last td:last button').attr('course',$('#remainingCourses tr:last td:first').text());
-				$('#remainingCourses tr:last td:last button').attr('id',"row"+($('#remainingCourses tr').length-1));
-			}
-		});
+		if (confirm("Are you sure you want to delete selected item(s)?")) {
+			$.ajax({
+				url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/SlotManagement',
+				type : 'post',
+				data : {
+					'action' : 'delete',
+					'course' : $(this).attr('course'),
+					'slot' : $(this).attr('slot')
+				},
+				success : function(data) {
+					giveAlert(data);
+					location.reload();
+				}
+			});
+		}
 	});
 	$(document).on("click","[id^=addCourse]",function(e) {
 		$.ajax({
@@ -39,40 +34,29 @@ $(document).ready(function() {
 				'course' : $(this).attr('course'),
 				'slot' : $(this).attr('slot')
 			},
-			success : function() {
-				var clicked = e.target.id || this.id;
-				$('#'+clicked).parent().parent().hide();
-				var row = $('#'+clicked).parent().parent().html();
-				$('#courseIncluded').append("<tr>"+row+"</tr>");
-				$('#courseIncluded tr:last td:last').remove();
-				$('#courseIncluded tr:last td:last').remove();
-				$('#courseIncluded tr:last').append($('#courseIncluded tr:last').prev().clone().find("td:last"));
-				$('#courseIncluded tr:last td:last button').attr('course',$('#courseIncluded tr:last td:first').text());
-				$('#courseIncluded tr:last td:last button').attr('id',"deleteRow"+($('#courseIncluded tr').length-1));
+			success : function(data) {
+				giveAlert(data);
+				location.reload();
 			}
 		});
 	});
-	$("#generateTT").click(function(e) {
+	$("#generateAndDownloadTT").click(function(e) {
 		var sem = $('#exam_type').val();
 		$.ajax({
 			url : 'http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet',
 			type : 'get',
 			data : {'action':'generatett','semester':sem},
 			success : function(data) {
-				var msg = "";
-				if(data=="true")
-					msg = "Timetable Generated Successfully !";
-				else
-					msg = "Warning : Following courses could not be accomodated\n" + data + "\nPlease add more Rooms.";
-				alert(msg);
+				giveAlert(data);
+				window.location.href='http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet?action=downloadtt';
 			}, error : function(data) {
-				alert("Error : "+data);
+				giveAlert(data);
 			}
 		});
 	});
-	$("#downloadTT").click(function(e) {
-		window.location.href='http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet?action=downloadtt';
-	});
+	function giveAlert(data){
+		alert(data);
+	}
 	$('#uploadCourseDetail').click(function(){
 			var form_data = new FormData();
 			if(! ($('#courseDetails').prop('files')[0]==undefined) ) {
@@ -87,7 +71,7 @@ $(document).ready(function() {
 				cache : false,
 				data : form_data,
 				success : function(data){
-					alert("Server Response : "+data);
+					giveAlert(data);
 				}
 			});
 	});
@@ -121,7 +105,7 @@ $(document).ready(function() {
 			type : 'post',
 			data : {"action":"register","course_id":course_id,"course_name":course_name,"batch":batch,"no_of_students":no_of_students,"faculty":faculty},
 			success : function(data){
-				alert("Server Response : "+data);
+				giveAlert(data);
 				location.reload();
 			}
 		});
@@ -159,34 +143,38 @@ $(document).ready(function() {
 			type : 'post',
 			data : {"action":"update","course_id":course_id,"course_name":course_name,"batch":batch,"no_of_students":no_of_students,"faculty":faculty},
 			success : function(data){
-				alert("Server Response : "+data);
+				giveAlert(data);
 				location.reload();
 			}
 		});
 	});
 	$(document).on("click","[id^=deleteCourse]",function(e){
-		var clicked = e.target.id || this.id;
-		var course_id = $(this).attr('course_id');
-		$.ajax({
-			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/CourseServlet',
-			type : 'post',
-			data : {"action":"delete","course_id":course_id},
-			success : function(data){
-				alert("Server Response : "+data);
-				$('#'+clicked).parent().parent().hide();
-			}
-		});
+		if (confirm("Are you sure you want to delete selected item(s)?")) {
+			var clicked = e.target.id || this.id;
+			var course_id = $(this).attr('course_id');
+			$.ajax({
+				url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/CourseServlet',
+				type : 'post',
+				data : {"action":"delete","course_id":course_id},
+				success : function(data){
+					giveAlert(data);
+					location.reload();
+				}
+			});
+		}
 	});
 	$(document).on("click","#removeAllCourses",function(e){
-		$.ajax({
-			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/CourseServlet',
-			type : 'post',
-			data : {"action":"deleteallcourses"},
-			success : function(data){
-				alert("Server Response : "+data);
-				location.reload();
-			}
-		});
+		if (confirm("Are you sure you want to delete selected item(s)?")) {
+			$.ajax({
+				url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/CourseServlet',
+				type : 'post',
+				data : {"action":"deleteallcourses"},
+				success : function(data){
+					giveAlert(data);
+					location.reload();
+				}
+			});
+		}
 	});
 	$(document).on("click","#addRoom",function(e){
 		var room_no = $('#room_no').val();
@@ -196,7 +184,7 @@ $(document).ready(function() {
 			type : 'post',
 			data : {"action":"register", "room_no":room_no, "capacity":capacity},
 			success : function(data) {
-				alert("Server Response : "+data);
+				giveAlert(data);
 				location.reload();
 			}
 		})
@@ -209,26 +197,27 @@ $(document).ready(function() {
 			type : 'post',
 			data : {"action":"update","room_no":room_no, "capacity":capacity},
 			success : function(data){
-				alert("Server Response : "+data);
+				giveAlert(data);
 				location.reload();
 			}
 		});
 	});
 	$(document).on("click","[id^=deleteRoom]",function(e){
-		var clicked = e.target.id || this.id;
-		var room_no = $(this).attr('room_no');
-		$.ajax({
-			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/RoomServlet',
-			type : 'post',
-			data : {"action":"delete","room_no":room_no},
-			success : function(data){
-				alert("Server Response : "+data);
-				$('#'+clicked).parent().parent().hide();
-			}
-		});
+		if (confirm("Are you sure you want to delete selected item(s)?")) {
+			var clicked = e.target.id || this.id;
+			var room_no = $(this).attr('room_no');
+			$.ajax({
+				url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/RoomServlet',
+				type : 'post',
+				data : {"action":"delete","room_no":room_no},
+				success : function(data){
+					giveAlert(data);
+					location.reload();
+				}
+			});
+		}
 	});
 	$(document).on("click","#login",function(e){
-		var room_no = $(this).attr('room_no');
 		$.ajax({
 			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/LoginServlet',
 			type : 'post',
@@ -241,5 +230,76 @@ $(document).ready(function() {
 					window.location.href = 'Home.jsp';
 			}
 		});
+	});
+	$(document).on("click","#userRegistration",function(e){
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/UserServlet',
+			type : 'post',
+			data : {"action":"userRegistration","uname":$('#uname').val(),"password":$('#password').val()},
+			success : function(data){
+				giveAlert(data);
+				location.reload();
+			}
+		});
+	});
+	$(document).on("click","#resetPassword",function(e){
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/UserServlet',
+			type : 'post',
+			data : {"action":"resetPassword","uname":$('#uname').val(),"password":$('#password').val()},
+			success : function(data){
+				giveAlert(data);
+				location.reload();
+			}
+		});
+	});
+	$(document).on("click","#mapbatchProgram",function(e){
+		var batch_no = $('#batch_no').val();
+		var program = $('#program').val();
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/BatchProgramServlet',
+			type : 'post',
+			data : {"action":"mapbatchprogram", "batch_no":batch_no, "program":program},
+			success : function(data) {
+				giveAlert(data);
+				location.reload();
+			}
+		})
+	});
+	$(document).on("click","#updateBatchProgram",function(e){
+		var batch_no = $('#edit_batch_no').val();
+		var program = $('#edit_program').val();
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/BatchProgramServlet',
+			type : 'post',
+			data : {"action":"remapbatchprogram","batch_no":batch_no, "program":program},
+			success : function(data){
+				giveAlert(data);
+				location.reload();
+			}
+		});
+	});
+	$(document).on("click","[id^=deleteBatchProgram]",function(e){
+		if (confirm("Are you sure you want to delete selected item(s)?")) {
+			var clicked = e.target.id || this.id;
+			var batch_no = $(this).attr('batch_program_no');
+			$.ajax({
+				url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/BatchProgramServlet',
+				type : 'post',
+				data : {"action":"removebatchprogram","batch_no":batch_no},
+				success : function(data){
+					giveAlert(data);
+					location.reload();
+				}
+			});
+		}
+	});
+	$(document).on("click","[id^=editBatchProgram]",function(e){
+		var clicked = e.target.id || this.id;
+		var batch_no = $('#'+clicked).parent().parent().find('td:first').text();
+		var program = $('#'+clicked).parent().parent().find('td:first').next().text();
+		$('#editBatchProgramSpan').html(batch_no);
+		$('#edit_batch_no').val(batch_no);
+		$('#edit_program').val(program);
 	});
 });

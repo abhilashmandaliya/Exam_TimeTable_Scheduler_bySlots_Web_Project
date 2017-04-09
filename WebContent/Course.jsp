@@ -120,7 +120,7 @@
 						<label class="control-label col-sm-4">Course Id</label>
 						<div class="col-sm-6">
 							<input id="edit_course_id" type="text" class="form-control"
-								name="msg" placeholder="Course id">
+								name="msg" placeholder="Course id" readonly>
 						</div>
 					</div>
 					<div class="form-group">
