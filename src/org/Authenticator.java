@@ -17,6 +17,7 @@ public class Authenticator {
 		protectedURLs.add("servlet.SlotServlet");
 		protectedURLs.add("servlet.RoomServlet");
 		protectedURLs.add("servlet.UserServlet");
+		protectedURLs.add("servlet.BatchProgramServlet");
 
 		// jsp
 		protectedURLs.add("org.apache.jsp.Course_jsp");
@@ -26,6 +27,7 @@ public class Authenticator {
 		protectedURLs.add("org.apache.jsp.TimeTable_jsp");
 		protectedURLs.add("org.apache.jsp.UserRegistration_jsp");
 		protectedURLs.add("org.apache.jsp.PasswordReset_jsp");
+		protectedURLs.add("org.apache.jsp.BatchProgram_jsp");
 	}
 
 	private static boolean isProtected(String URL) {

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.Authenticator;
+import org.CustomException;
 import org.FileConfig;
 import org.GeneralDAO;
 import org.ReadFromExcel;
@@ -74,6 +75,8 @@ public class FileUploadServlet extends HttpServlet {
 				while (i.hasNext()) {
 					FileItem fi = (FileItem) i.next();
 					if (!fi.isFormField()) {
+						if (!fi.getName().endsWith(".xlsx"))
+							throw new CustomException("Not .xlsx File !");
 						String fileName = "TYPE_MISMATCH";
 						filePath = FileConfig.INPUT_FILES_PATH;
 						if (fileFor.toLowerCase().equals("slotdetails")) {
@@ -89,7 +92,7 @@ public class FileUploadServlet extends HttpServlet {
 							file = new File(filePath + fileName.substring(fileName.lastIndexOf("\\") + 1));
 						}
 						fi.write(file);
-						if(slotParam=="")
+						if (slotParam == "")
 							ReadFromExcel.read_excel();
 						else
 							ReadFromExcel.read_excel(Integer.parseInt(slotParam));
@@ -106,8 +109,7 @@ public class FileUploadServlet extends HttpServlet {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				response.getWriter().write(
-						"\nSome error occured.\nEnsure that all excel files are closed.\nKindly contact the developers.");
+				response.getWriter().write(e.getMessage());
 			} finally {
 				ReadFromExcel.setErrorCourse();
 				ReadFromExcel.setErrorFlag();

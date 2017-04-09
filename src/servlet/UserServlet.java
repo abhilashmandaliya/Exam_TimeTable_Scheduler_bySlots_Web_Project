@@ -52,11 +52,16 @@ public class UserServlet extends HttpServlet {
 					boolean result = GeneralDAO.registerUser(request.getParameter("uname"),
 							request.getParameter("password"));
 					if (result)
-						System.out.println("success");
+						response.getWriter().write("User registration successful !");
 					else
-						System.out.println("failure");
-				} else if (action.equals("passwordreset")) {
-
+						response.getWriter().write("User already exists !");
+				} else if (action.equals("resetpassword")) {
+					boolean result = GeneralDAO.resetPassword(request.getParameter("uname"),
+							request.getParameter("password"));
+					if (result)
+						response.getWriter().write("Password reset successful !");
+					else
+						response.getWriter().write("Couldn't reset the password !");
 				}
 			} catch (Exception e) {
 

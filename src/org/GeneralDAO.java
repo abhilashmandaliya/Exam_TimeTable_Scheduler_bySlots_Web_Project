@@ -47,6 +47,29 @@ public class GeneralDAO {
 		return cnt > 0;
 	}
 
+	public static boolean resetPassword(String uname, String password) throws ClassNotFoundException, SQLException {
+		int cnt = 0;
+		if (con == null)
+			makeConnection();
+		password = BCrypt.hashpw(password, BCrypt.gensalt());
+		String sql = "UPDATE USERS SET PASSWORD='" + password + "' WHERE UNAME='" + uname + "'";
+		Statement st = con.createStatement();
+		cnt = st.executeUpdate(sql);
+		return cnt > 0;
+	}
+
+	public static ArrayList<String> getUsers() throws ClassNotFoundException, SQLException {
+		ArrayList<String> users = new ArrayList<>();
+		if (con == null)
+			makeConnection();
+		Statement st = con.createStatement();
+		String sql = "SELECT UNAME FROM USERS";
+		ResultSet rs = st.executeQuery(sql);
+		while (rs.next())
+			users.add(rs.getString(1));
+		return users;
+	}
+
 	public static ArrayList<Room> getRooms() throws DAOException, ClassNotFoundException, SQLException {
 		if (con == null)
 			makeConnection();
@@ -153,12 +176,29 @@ public class GeneralDAO {
 		return courses;
 	}
 
+	// check whether course already exists
+
+	public static boolean courseExists(String course_id) throws ClassNotFoundException, SQLException {
+		if (con == null)
+			makeConnection();
+		Statement st = con.createStatement();
+		String sql = "SELECT COURSE_ID FROM COURSE WHERE COURSE_ID='" + course_id + "'";
+		ResultSet rs = st.executeQuery(sql);
+		if (rs.next())
+			return true;
+		return false;
+	}
+
 	// add a new course to database
 	public static void addCourse(String course_id, String course_name, String batch, int no_of_students, String faculty)
 			throws DAOException, ClassNotFoundException {
 		try {
 			if (con == null)
 				makeConnection();
+			/*
+			 * if (courseExists(course_id)) throw new CustomException("Course "
+			 * + course_id + "-" + course_name + " already Exists !");
+			 */
 			String sql = "Insert into Course VALUES('" + course_id + "','" + course_name + "','" + batch + "',"
 					+ no_of_students + ",'" + faculty + "')";
 
@@ -293,7 +333,7 @@ public class GeneralDAO {
 		try {
 			if (con == null)
 				makeConnection();
-			String sql = "Delete from batch_program where batch=" + batch;
+			String sql = "Delete from batch_program where batch='" + batch + "'";
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
@@ -307,7 +347,7 @@ public class GeneralDAO {
 		try {
 			if (con == null)
 				makeConnection();
-			String sql = "UPDATE batch_program SET program='" + program + "' WHERE batch=" + batch;
+			String sql = "UPDATE batch_program SET program='" + program + "' WHERE batch='" + batch + "'";
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {

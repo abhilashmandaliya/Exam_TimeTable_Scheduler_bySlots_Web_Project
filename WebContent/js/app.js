@@ -59,17 +59,15 @@ $(document).ready(function() {
 			type : 'get',
 			data : {'action':'generatett','semester':sem},
 			success : function(data) {
-				var msg = "";
-				if(data=="true")
-					msg = "Timetable Generated Successfully !";
-				else
-					msg = "Warning : Following courses could not be accomodated\n" + data + "\nPlease add more Rooms.";
-				alert(msg);
+				giveAlert(data);
 			}, error : function(data) {
-				alert("Error : "+data);
+				giveAlert(data);
 			}
 		});
 	});
+	function giveAlert(data){
+		alert(data);
+	}
 	$("#downloadTT").click(function(e) {
 		window.location.href='http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet?action=downloadtt';
 	});
@@ -87,7 +85,7 @@ $(document).ready(function() {
 				cache : false,
 				data : form_data,
 				success : function(data){
-					alert("Server Response : "+data);
+					giveAlert(data);
 				}
 			});
 	});
@@ -173,7 +171,7 @@ $(document).ready(function() {
 			data : {"action":"delete","course_id":course_id},
 			success : function(data){
 				alert("Server Response : "+data);
-				$('#'+clicked).parent().parent().hide();
+				location.reload();
 			}
 		});
 	});
@@ -223,7 +221,7 @@ $(document).ready(function() {
 			data : {"action":"delete","room_no":room_no},
 			success : function(data){
 				alert("Server Response : "+data);
-				$('#'+clicked).parent().parent().hide();
+				location.reload();
 			}
 		});
 	});
@@ -250,5 +248,62 @@ $(document).ready(function() {
 				alert(data);
 			}
 		});
+	});
+	$(document).on("click","#resetPassword",function(e){
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/UserServlet',
+			type : 'post',
+			data : {"action":"resetPassword","uname":$('#uname').val(),"password":$('#password').val()},
+			success : function(data){
+				alert(data);
+			}
+		});
+	});
+	$(document).on("click","#mapbatchProgram",function(e){
+		var batch_no = $('#batch_no').val();
+		var program = $('#program').val();
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/BatchProgramServlet',
+			type : 'post',
+			data : {"action":"mapbatchprogram", "batch_no":batch_no, "program":program},
+			success : function(data) {
+				giveAlert(data);
+				location.reload();
+			}
+		})
+	});
+	$(document).on("click","#updateBatchProgram",function(e){
+		var batch_no = $('#edit_batch_no').val();
+		var program = $('#edit_program').val();
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/BatchProgramServlet',
+			type : 'post',
+			data : {"action":"remapbatchprogram","batch_no":batch_no, "program":program},
+			success : function(data){
+				giveAlert(data);
+				location.reload();
+			}
+		});
+	});
+	$(document).on("click","[id^=deleteBatchProgram]",function(e){
+		var clicked = e.target.id || this.id;
+		var batch_no = $(this).attr('batch_program_no');
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/BatchProgramServlet',
+			type : 'post',
+			data : {"action":"removebatchprogram","batch_no":batch_no},
+			success : function(data){
+				giveAlert(data);
+				location.reload();
+			}
+		});
+	});
+	$(document).on("click","[id^=editBatchProgram]",function(e){
+		var clicked = e.target.id || this.id;
+		var batch_no = $('#'+clicked).parent().parent().find('td:first').text();
+		var program = $('#'+clicked).parent().parent().find('td:first').next().text();
+		$('#editBatchProgramSpan').html(batch_no);
+		$('#edit_batch_no').val(batch_no);
+		$('#edit_program').val(program);
 	});
 });

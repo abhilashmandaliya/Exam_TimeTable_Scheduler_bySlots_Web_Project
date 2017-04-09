@@ -71,7 +71,7 @@
 					<label class="control-label col-sm-2">Room No</label>
 					<div class="col-sm-5">
 						<input id="edit_room_no" type="text" class="form-control" name="msg"
-							placeholder="Please enter room number">
+							placeholder="Please enter room number" readonly>
 					</div>
 				</div>
 				<div class="form-group">

@@ -14,23 +14,28 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ReadFromExcel {
-	
+
 	// flag to indicate course already exists
 	private static boolean errorFlag = false;
 	private static String errorCourse = "";
+
 	public static boolean isErrorFlag() {
 		return errorFlag;
 	}
+
 	public static String getErrorCourse() {
 		return errorCourse;
 	}
+
 	public static void setErrorCourse() {
 		ReadFromExcel.errorCourse = "";
 	}
+
 	public static void setErrorFlag() {
 		ReadFromExcel.errorFlag = false;
 	}
-	public static void read_excel() throws IOException, ClassNotFoundException, DAOException, SQLException {
+
+	public static void read_excel() throws IOException, ClassNotFoundException, DAOException, SQLException, CustomException {
 		// String excelFilePath = "ExamData.xlsx";
 		String fileName = "ExamData.xlsx";
 		String filePath = FileConfig.INPUT_FILES_PATH + "examData\\";
@@ -40,7 +45,7 @@ public class ReadFromExcel {
 		Sheet firstSheet = workbook.getSheetAt(0);
 		Iterator<Row> iterator = firstSheet.iterator();
 		iterator.next();
-		String course_id="",course_name = "", batch = "", faculty="";
+		String course_id = "", course_name = "", batch = "", faculty = "";
 		int no_of_students;
 		System.out.println("Working");
 		try {
@@ -61,7 +66,7 @@ public class ReadFromExcel {
 				}
 
 				// int slot_no = Integer.parseInt(queue.removeFirst());
-				
+
 				course_name = queue.removeFirst();
 				course_id = queue.removeFirst();
 				faculty = queue.removeFirst();
@@ -78,17 +83,16 @@ public class ReadFromExcel {
 			GeneralDAO.getCon().rollback();
 			// e.printStackTrace();
 			errorFlag = true;
-			errorCourse = course_id+":"+course_name+":"+batch;
+			errorCourse = course_id + ":" + course_name + ":" + batch;
 			System.out.println("Course already exists.");
 		}
 
 		finally {
 			System.out.println("Working");
 			GeneralDAO.getCon().setAutoCommit(true);
+			workbook.close();
+			inputStream.close();
 		}
-
-		workbook.close();
-		inputStream.close();
 	}
 
 	public static void read_excel(int slot_no) throws IOException, ClassNotFoundException, DAOException, SQLException {

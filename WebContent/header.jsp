@@ -17,6 +17,7 @@
 					<li><a href="Slot.jsp">Slot Details</a></li>
 					<li><a href="Course.jsp">Course Details</a></li>
 					<li><a href="Room.jsp">Room Details</a></li>
+					<li><a href="BatchProgram.jsp">Batch-Program Details</a></li>
 				</ul></li>
 			<li><a href="TimeTable.jsp">TimeTable Management</a></li>
 			<li class="dropdown"><a class="dropdown-toggle"
