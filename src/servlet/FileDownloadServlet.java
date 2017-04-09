@@ -69,7 +69,7 @@ public class FileDownloadServlet extends HttpServlet {
 								return;
 							}
 						}
-						out.write("true");
+						out.write("Timetable is ready to be downloaded !");
 					}
 				} else if (action.toLowerCase().equals("downloadtt")) {
 					response.setContentType("text/html");
