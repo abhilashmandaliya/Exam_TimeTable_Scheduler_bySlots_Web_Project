@@ -142,7 +142,7 @@ public class Room{
 	}
 	public String toString()
 	{
-		return "";
+		return "Room No:"+room_no+"Capacity: "+capacity;
 	}
 	
 	//sorting descending order
@@ -150,7 +150,7 @@ public class Room{
 	{
 		if(this.getCapacity()<other.getCapacity())
 			return 1;
-		else if(this.getCapacity()<other.getCapacity())
+		else if(this.getCapacity()>other.getCapacity())
 			return -1;
 		else return 0;					
 	}

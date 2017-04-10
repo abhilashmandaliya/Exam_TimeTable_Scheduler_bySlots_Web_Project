@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 // This is a general class to deal with database where objects are not required to manipulate database.
@@ -44,13 +45,15 @@ public class GeneralDAO {
 				int room_capacity = rs.getInt("room_capacity");
 				rooms.add(new Room(room_no, room_capacity));
 			}
-
+			
 			Collections.sort(rooms, new RoomComparatorByCapacity());
 
 		} catch (SQLException e) {
 			throw new DAOException(e.getMessage());
 		}
+		System.out.println("Rooms:"+rooms);
 		return rooms;
+		
 	}
 
 	// add new room to database
