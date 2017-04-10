@@ -66,7 +66,7 @@
 				<%
 					Statement st = s.getCon().createStatement();
 					ResultSet rs = st.executeQuery(
-							"select c.course_id,c.course_name,b_p.program from course c, batch_program b_p where c.batch=b_p.batch and c.course_id not in (select course_id from slot)");
+							"select c.course_id,c.course_name,b_p.program from course c, batch_program b_p where c.batch=b_p.batch and c.course_id not in (select course_id from slot) order by c.course_name");
 					int i = 0;
 					while (rs.next()) {
 						out.write("<tr id='row" + i + "'><td>");

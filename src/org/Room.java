@@ -142,7 +142,7 @@ public class Room{
 	}
 	public String toString()
 	{
-		return "";
+		return "Room No:"+room_no+"Capacity: "+capacity;
 	}
 	
 	//sorting descending order
