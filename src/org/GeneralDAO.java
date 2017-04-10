@@ -101,6 +101,7 @@ public class GeneralDAO {
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
+			TransactionStatus.setStatusMessage("Room already Exists !");
 			throw new DAOException(e.getMessage());
 		}
 
@@ -206,7 +207,8 @@ public class GeneralDAO {
 
 			stmt.execute(sql);
 		} catch (SQLException e) {
-			throw new DAOException(e.getMessage());
+			TransactionStatus
+			.setStatusMessage("Course already exists : " + course_id + " - " + course_name);
 		}
 
 	}

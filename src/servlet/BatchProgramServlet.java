@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.Authenticator;
 import org.DAOException;
 import org.GeneralDAO;
+import org.TransactionStatus;
 
 /**
  * Servlet implementation class BatchProgramServlet
@@ -50,29 +51,33 @@ public class BatchProgramServlet extends HttpServlet {
 		if (action != null) {
 			action = action.toLowerCase();
 			try {
-				String responseMessage = "Server Didn't generate any response !";
 				if (action.equals("mapbatchprogram")) {
 					GeneralDAO.addBatch_Program(Integer.parseInt(request.getParameter("batch_no")),
 							request.getParameter("program"));
-					responseMessage = "Mapped Successfully!";
+					TransactionStatus.setStatusMessage("Mapped Successfully!");
 				} else if (action.equals("remapbatchprogram")) {
 					GeneralDAO.updateBatch_Program(Integer.parseInt(request.getParameter("batch_no")),
 							request.getParameter("program"));
-					responseMessage = "Re-Mapped Successfully!";
+					TransactionStatus.setStatusMessage("Re-Mapped Successfully!");
 				} else if (action.equals("removebatchprogram")) {
 					GeneralDAO.deleteBatch_Program(Integer.parseInt(request.getParameter("batch_no")));
-					responseMessage = "Mapping removed Successfully!";
-				}
-				response.getWriter().write(responseMessage);
+					TransactionStatus.setStatusMessage("Mapping removed Successfully!");
+				} else
+					TransactionStatus.setStatusMessage("Invalid request !");
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
-				response.getWriter().write("Invalid Number !");
+				TransactionStatus.setStatusMessage("Invalid Number !");
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (DAOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} finally {
+				if (TransactionStatus.getStatusMessage() == null)
+					TransactionStatus.setDefaultStatusMessage();
+				response.getWriter().write(TransactionStatus.getStatusMessage());
+				TransactionStatus.setStatusMessage(null);
 			}
 		}
 	}

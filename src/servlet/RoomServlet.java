@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.Authenticator;
 import org.DAOException;
 import org.GeneralDAO;
+import org.TransactionStatus;
 
 /**
  * Servlet implementation class RoomServlet
@@ -51,21 +52,25 @@ public class RoomServlet extends HttpServlet {
 			if (action.equals("register")) {
 				GeneralDAO.addRoom(Integer.parseInt(request.getParameter("room_no")),
 						Integer.parseInt(request.getParameter("capacity")));
-				response.getWriter().write("Room added Successfully !");
-			} else if(action.equals("update")) {
+				TransactionStatus.setStatusMessage("Room added Successfully !");
+			} else if (action.equals("update")) {
 				GeneralDAO.updateRoom(Integer.parseInt(request.getParameter("room_no")),
 						Integer.parseInt(request.getParameter("capacity")));
-				response.getWriter().write("Room updated Successfully !");
-			} else if(action.equals("delete")) {
+				TransactionStatus.setStatusMessage("Room updated Successfully !");
+			} else if (action.equals("delete")) {
 				GeneralDAO.deleteRoom(Integer.parseInt(request.getParameter("room_no")));
-				response.getWriter().write("Room deleted Successfully !");
+				TransactionStatus.setStatusMessage("Room deleted Successfully !");
 			} else
-				response.getWriter().write("Invalid request !");
+				TransactionStatus.setStatusMessage("Invalid request !");
 		} catch (NumberFormatException | ClassNotFoundException | DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if (TransactionStatus.getStatusMessage() == null)
+				TransactionStatus.setDefaultStatusMessage();
+			response.getWriter().write(TransactionStatus.getStatusMessage());
+			TransactionStatus.setStatusMessage(null);
 		}
-
 	}
 
 }
