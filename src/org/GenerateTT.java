@@ -37,7 +37,7 @@ public class GenerateTT {
 	// }
 
 	public static void main(String[] args)
-			throws CloneNotSupportedException, SQLException, ClassNotFoundException, DAOException, IOException {
+			throws CloneNotSupportedException, SQLException, ClassNotFoundException, DAOException, IOException, CustomException {
 		// GeneralDAO.deleteAllCourses();
 		// ReadFromExcel.read_excel();
 		// ReadFromExcel.read_excel(1);
@@ -50,6 +50,8 @@ public class GenerateTT {
 		// ReadFromExcel.read_excel(8);
 
 		// storing entire time table in 1 object of TimeTable class.
+		if(GeneralDAO.getRooms().size()<2)
+			throw new CustomException("There must be atleast 2 rooms !");
 		TimeTable TT = new TimeTable();
 		Set<Integer> set = new HashSet<>();// stores batch numbers of
 											// timeinterval2 of odd slots
@@ -141,7 +143,7 @@ public class GenerateTT {
 					continue;
 				}
 				// CASE 3: small and big cases
-
+				
 				// if a course has come here,it means that it's broken in
 				// different chunks
 				tempCourse.setBroken(true);

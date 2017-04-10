@@ -21,6 +21,7 @@ import org.GenerateTT;
 import org.TimeTable;
 import org.GenerateTTEndSem;
 import org.TimeTableEndSem;
+import org.TransactionStatus;
 
 /**
  * Servlet implementation class FileDownloadServlet
@@ -55,21 +56,27 @@ public class FileDownloadServlet extends HttpServlet {
 						if (request.getParameter("semester").equals("insem")) {
 							GenerateTT.main(null);
 							if (GenerateTT.getFailedCourses().size() != 0) {
+								System.out.println("came here ");
 								Iterator<Course> failedCourseIterator = GenerateTT.getFailedCourses().iterator();
+								String message = "Following courses could not be allocated :\n";
 								while (failedCourseIterator.hasNext())
-									out.write(failedCourseIterator.next().toString()+"\n");
-								return;
+									message += (failedCourseIterator.next().toString() + "\n");
+								message += "\nAdd more rooms to Allocate these course.\n\nPartial Timetable will get downloaded.";
+								TransactionStatus.setStatusMessage(message);
 							}
 						} else if (request.getParameter("semester").equals("endsem")) {
 							GenerateTTEndSem.main(null);
 							if (GenerateTTEndSem.getFailedCourses().size() != 0) {
-								Iterator<Course> failedCourseIterator = GenerateTTEndSem.getFailedCourses().iterator();								
+								Iterator<Course> failedCourseIterator = GenerateTTEndSem.getFailedCourses().iterator();
+								String message = "Following courses could not be allocated :\n";
 								while (failedCourseIterator.hasNext())
-									out.write(failedCourseIterator.next().toString());
-								return;
+									message += (failedCourseIterator.next().toString());
+								message += "\nAdd more rooms to Allocate these course.\n\nPartial Timetable will get downloaded.";
+								TransactionStatus.setStatusMessage(message);
 							}
 						}
-						out.write("true");
+						if (TransactionStatus.getStatusMessage() == null)
+							TransactionStatus.setStatusMessage("Timetable is ready to be downloaded !");
 					}
 				} else if (action.toLowerCase().equals("downloadtt")) {
 					response.setContentType("text/html");
@@ -84,10 +91,13 @@ public class FileDownloadServlet extends HttpServlet {
 					fis.close();
 					out.close();
 				}
-				// System.out.println("exiting the program!");
 			} catch (Exception e) {
 				e.printStackTrace();
-				response.getWriter().write("\nSome error occured.\nEnsure that all excel files are closed.\nKindly contact the developers.");
+				TransactionStatus.setStatusMessage(
+						"Some error occured.\nEnsure that all excel files are closed.\nKindly contact the developers.");
+			} finally {
+				response.getWriter().write(TransactionStatus.getStatusMessage());
+				TransactionStatus.setStatusMessage(null);
 			}
 		}
 	}

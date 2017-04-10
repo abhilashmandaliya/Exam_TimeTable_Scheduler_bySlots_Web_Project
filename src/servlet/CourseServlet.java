@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.Authenticator;
 import org.DAOException;
 import org.GeneralDAO;
+import org.TransactionStatus;
 
 /**
  * Servlet implementation class CourseServlet
@@ -52,23 +53,28 @@ public class CourseServlet extends HttpServlet {
 				GeneralDAO.addCourse(request.getParameter("course_id"), request.getParameter("course_name"),
 						request.getParameter("batch"), Integer.parseInt(request.getParameter("no_of_students")),
 						request.getParameter("faculty"));
-				response.getWriter().write("Course Registration Successful !");
+				TransactionStatus.setStatusMessage("Course Registration Successful !");
 			} else if (action.equals("update")) {
 				GeneralDAO.updateCourse(request.getParameter("course_id"), request.getParameter("course_name"),
 						request.getParameter("batch"), Integer.parseInt(request.getParameter("no_of_students")),
 						request.getParameter("faculty"));
-				response.getWriter().write("Course Updated Successfully !");
+				TransactionStatus.setStatusMessage("Course Updated Successfully !");
 			} else if(action.equals("delete")) {
 				GeneralDAO.deleteCourse(request.getParameter("course_id"));
-				response.getWriter().write("Course deleted Successfully !");
+				TransactionStatus.setStatusMessage("Course deleted Successfully !");
 			} else if(action.equals("deleteallcourses")) {
 				GeneralDAO.deleteAllCourses();
-				response.getWriter().write("All Courses deleted Successfully !");
+				TransactionStatus.setStatusMessage("All Courses deleted Successfully !");
 			} else
-				response.getWriter().write("Invalid request !");
+				TransactionStatus.setStatusMessage("Invalid request !");
 		} catch (NumberFormatException | ClassNotFoundException | DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if (TransactionStatus.getStatusMessage() == null)
+				TransactionStatus.setDefaultStatusMessage();
+			response.getWriter().write(TransactionStatus.getStatusMessage());
+			TransactionStatus.setStatusMessage(null);
 		}
 	}
 

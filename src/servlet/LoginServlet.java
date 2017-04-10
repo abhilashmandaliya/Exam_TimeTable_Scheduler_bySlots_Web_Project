@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.GeneralDAO;
+import org.TransactionStatus;
 
 /**
  * Servlet implementation class LoginServlet
@@ -34,7 +35,6 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String action = request.getParameter("action");
-		System.out.println(action);
 		if (action.toLowerCase().equals("logout")) {
 			request.getSession().removeAttribute("user");
 			response.sendRedirect("login.jsp");
@@ -51,13 +51,19 @@ public class LoginServlet extends HttpServlet {
 		String uname = request.getParameter("user");
 		String password = request.getParameter("password");
 		try {
-			if (GeneralDAO.validateUser(uname, password))
+			if (GeneralDAO.validateUser(uname, password)) {
 				request.getSession().setAttribute("user", uname);
-			else
-				response.getWriter().write("false");
+				TransactionStatus.setStatusMessage("true");
+			} else
+				TransactionStatus.setStatusMessage("false");
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if (TransactionStatus.getStatusMessage() == null)
+				TransactionStatus.setDefaultStatusMessage();
+			response.getWriter().write(TransactionStatus.getStatusMessage());
+			TransactionStatus.setStatusMessage(null);
 		}
 	}
 

@@ -15,9 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.Authenticator;
+import org.CustomException;
 import org.FileConfig;
 import org.GeneralDAO;
 import org.ReadFromExcel;
+import org.TransactionStatus;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -74,6 +76,8 @@ public class FileUploadServlet extends HttpServlet {
 				while (i.hasNext()) {
 					FileItem fi = (FileItem) i.next();
 					if (!fi.isFormField()) {
+						if (!fi.getName().endsWith(".xlsx"))
+							throw new CustomException("Not .xlsx File !");
 						String fileName = "TYPE_MISMATCH";
 						filePath = FileConfig.INPUT_FILES_PATH;
 						if (fileFor.toLowerCase().equals("slotdetails")) {
@@ -89,14 +93,12 @@ public class FileUploadServlet extends HttpServlet {
 							file = new File(filePath + fileName.substring(fileName.lastIndexOf("\\") + 1));
 						}
 						fi.write(file);
-						if(slotParam=="")
+						if (slotParam == "")
 							ReadFromExcel.read_excel();
 						else
 							ReadFromExcel.read_excel(Integer.parseInt(slotParam));
-						if (ReadFromExcel.isErrorFlag())
-							response.getWriter().write("Same Course Exist !" + ReadFromExcel.getErrorCourse());
-						else
-							response.getWriter().write("File Uploaded Succesfully !");
+						if (TransactionStatus.getStatusMessage() == null)
+							TransactionStatus.setStatusMessage("File Uploaded Succesfully !");
 					} else {
 						if (fi.getFieldName().equals("file"))
 							fileFor = fi.getString();
@@ -106,11 +108,12 @@ public class FileUploadServlet extends HttpServlet {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				response.getWriter().write(
-						"\nSome error occured.\nEnsure that all excel files are closed.\nKindly contact the developers.");
+				//response.getWriter().write(TransactionStatus.getStatusMessage());
 			} finally {
-				ReadFromExcel.setErrorCourse();
-				ReadFromExcel.setErrorFlag();
+				if (TransactionStatus.getStatusMessage() == null)
+					TransactionStatus.setDefaultStatusMessage();
+				response.getWriter().write(TransactionStatus.getStatusMessage());
+				TransactionStatus.setStatusMessage(null);
 			}
 		}
 	}

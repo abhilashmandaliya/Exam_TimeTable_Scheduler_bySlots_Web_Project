@@ -23,13 +23,52 @@ public class GeneralDAO {
 	public static boolean validateUser(String uname, String password) throws ClassNotFoundException, SQLException {
 		if (con == null)
 			makeConnection();
-		String sql = "select password from users where uname='" + uname + "'";
+		String sql = "SELECT PASSWORD FROM USERS WHERE UNAME='" + uname + "'";
 		ResultSet rs = con.createStatement().executeQuery(sql);
 		if (rs.next()) {
 			if (BCrypt.checkpw(password, rs.getString(1)))
 				return true;
 		}
 		return false;
+	}
+
+	public static boolean registerUser(String uname, String password) throws ClassNotFoundException, SQLException {
+		int cnt = 0;
+		if (con == null)
+			makeConnection();
+		// check whether user is already registered
+		String sql = "SELECT UNAME FROM USERS WHERE UNAME='" + uname + "'";
+		Statement st = con.createStatement();
+		ResultSet rs = st.executeQuery(sql);
+		if (rs.next())
+			return false;
+		password = BCrypt.hashpw(password, BCrypt.gensalt());
+		sql = "INSERT INTO USERS VALUES ( NEXTVAL('user_sequence'),'" + uname + "','" + password + "')";
+		cnt = st.executeUpdate(sql);
+		return cnt > 0;
+	}
+
+	public static boolean resetPassword(String uname, String password) throws ClassNotFoundException, SQLException {
+		int cnt = 0;
+		if (con == null)
+			makeConnection();
+		password = BCrypt.hashpw(password, BCrypt.gensalt());
+		String sql = "UPDATE USERS SET PASSWORD='" + password + "' WHERE UNAME='" + uname + "'";
+		Statement st = con.createStatement();
+		cnt = st.executeUpdate(sql);
+		return cnt > 0;
+	}
+
+	public static ArrayList<String> getUsers() throws ClassNotFoundException, SQLException {
+		ArrayList<String> users = new ArrayList<>();
+		if (con == null)
+			makeConnection();
+		Statement st = con.createStatement();
+		String sql = "SELECT UNAME FROM USERS";
+		ResultSet rs = st.executeQuery(sql);
+		while (rs.next())
+			users.add(rs.getString(1));
+		return users;
 	}
 
 	public static ArrayList<Room> getRooms() throws DAOException, ClassNotFoundException, SQLException {
@@ -65,6 +104,7 @@ public class GeneralDAO {
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
+			TransactionStatus.setStatusMessage("Room already Exists !");
 			throw new DAOException(e.getMessage());
 		}
 
@@ -140,12 +180,29 @@ public class GeneralDAO {
 		return courses;
 	}
 
+	// check whether course already exists
+
+	public static boolean courseExists(String course_id) throws ClassNotFoundException, SQLException {
+		if (con == null)
+			makeConnection();
+		Statement st = con.createStatement();
+		String sql = "SELECT COURSE_ID FROM COURSE WHERE COURSE_ID='" + course_id + "'";
+		ResultSet rs = st.executeQuery(sql);
+		if (rs.next())
+			return true;
+		return false;
+	}
+
 	// add a new course to database
 	public static void addCourse(String course_id, String course_name, String batch, int no_of_students, String faculty)
 			throws DAOException, ClassNotFoundException {
 		try {
 			if (con == null)
 				makeConnection();
+			/*
+			 * if (courseExists(course_id)) throw new CustomException("Course "
+			 * + course_id + "-" + course_name + " already Exists !");
+			 */
 			String sql = "Insert into Course VALUES('" + course_id + "','" + course_name + "','" + batch + "',"
 					+ no_of_students + ",'" + faculty + "')";
 
@@ -153,7 +210,8 @@ public class GeneralDAO {
 
 			stmt.execute(sql);
 		} catch (SQLException e) {
-			throw new DAOException(e.getMessage());
+			TransactionStatus
+			.setStatusMessage("Course already exists : " + course_id + " - " + course_name);
 		}
 
 	}
@@ -239,12 +297,12 @@ public class GeneralDAO {
 		}
 		return batch_program;
 	}
-	
-	//get codes which map to programs
-	public static Map<Integer,String> getBatch_Program() throws DAOException, ClassNotFoundException, SQLException {
+
+	// get codes which map to programs
+	public static Map<Integer, String> getBatch_Program() throws DAOException, ClassNotFoundException, SQLException {
 		if (con == null)
 			makeConnection();
-		Map<Integer,String> batch_program = new HashMap<>();
+		Map<Integer, String> batch_program = new HashMap<>();
 		try {
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("Select * from batch_program order by batch");
@@ -254,8 +312,6 @@ public class GeneralDAO {
 				String program = rs.getString("program");
 				batch_program.put(batch, program);
 			}
-
-			
 
 		} catch (SQLException e) {
 			throw new DAOException(e.getMessage());
@@ -282,7 +338,7 @@ public class GeneralDAO {
 		try {
 			if (con == null)
 				makeConnection();
-			String sql = "Delete from batch_program where batch=" + batch;
+			String sql = "Delete from batch_program where batch='" + batch + "'";
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
@@ -296,7 +352,7 @@ public class GeneralDAO {
 		try {
 			if (con == null)
 				makeConnection();
-			String sql = "UPDATE batch_program SET program='" + program + "' WHERE batch=" + batch;
+			String sql = "UPDATE batch_program SET program='" + program + "' WHERE batch='" + batch + "'";
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
@@ -304,6 +360,5 @@ public class GeneralDAO {
 		}
 
 	}
-
 
 }

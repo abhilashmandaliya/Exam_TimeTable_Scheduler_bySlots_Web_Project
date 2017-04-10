@@ -68,7 +68,7 @@ html,body{
     background-image: url("../images/da_logo.png");
 }
 
-.form-box input{
+.form-box input,select{
     width: 100%;
     padding: 10px;
     text-align: center;
@@ -92,6 +92,11 @@ html,body{
 .form-box input[type="password"]{
     border-radius: 0 0 5px 5px;
     border-top: 0;
+}
+
+.form-box select{
+    border-radius: 0 0 5px 5px;
+    text-align-last:center;
 }
 
 .form-box button.login{
