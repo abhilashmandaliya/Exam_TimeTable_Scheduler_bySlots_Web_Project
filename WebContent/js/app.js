@@ -49,8 +49,6 @@ $(document).ready(function() {
 			success : function(data) {
 				giveAlert(data);
 				window.location.href='http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet?action=downloadtt';
-			}, error : function(data) {
-				giveAlert(data);
 			}
 		});
 	});

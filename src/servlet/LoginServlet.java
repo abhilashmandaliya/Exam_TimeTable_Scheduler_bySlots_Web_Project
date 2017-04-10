@@ -35,7 +35,6 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String action = request.getParameter("action");
-		System.out.println(action);
 		if (action.toLowerCase().equals("logout")) {
 			request.getSession().removeAttribute("user");
 			response.sendRedirect("login.jsp");
