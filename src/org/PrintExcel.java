@@ -320,12 +320,14 @@ public class PrintExcel {
 															// number in Excel
 			Map<Integer, Integer> range = new HashMap<>();// batch_id and range
 															// in Excel
-
+			curr_row += 3;
 			int slot1 = k + 1;
 			int slot2 = k + 2;
 			int slot2_flag = 0;
 
 			// **********checking for first Slot************
+			//curr_row += 1;
+			
 			TimeInterval t1 = temp_store.get(slot1).getT1();
 			TimeInterval t2 = temp_store.get(slot1).getT2();
 			Set<String> set1_c = new HashSet<>();
@@ -343,7 +345,7 @@ public class PrintExcel {
 			}
 
 			// check T2
-			curr_row += 1;
+		//	curr_row += 1;
 			Set<Course> set2 = new HashSet<>();
 			for (ArrayList<OccupationData> od : t2.getMap().values()) {
 
@@ -367,7 +369,7 @@ public class PrintExcel {
 				t1_2 = temp_store.get(slot2).getT1();
 				t2_2 = temp_store.get(slot2).getT2();
 				// check T1
-				curr_row += 1;
+//				curr_row += 1;
 				for (ArrayList<OccupationData> od : t1_2.getMap().values()) {
 
 					for (int hh = 0; hh < od.size(); hh++) {
@@ -379,7 +381,7 @@ public class PrintExcel {
 				}
 
 				// check T2
-				curr_row += 1;
+				//curr_row += 1;
 				for (ArrayList<OccupationData> od : t2_2.getMap().values()) {
 
 					for (int hh = 0; hh < od.size(); hh++) {

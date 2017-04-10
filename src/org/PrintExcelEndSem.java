@@ -151,7 +151,7 @@ public class PrintExcelEndSem extends PrintExcel {
 															// number in Excel
 			Map<Integer, Integer> range = new HashMap<>();// batch_id and range
 															// in Excel
-			curr_row += 2;
+			curr_row += 3;
 			int slot1 = k + 1;
 			// int slot2 = k + 2;
 			// int slot2_flag = 0;
@@ -175,7 +175,7 @@ public class PrintExcelEndSem extends PrintExcel {
 			}
 			// System.out.println("set1"+set1+"for k="+k);
 			// check T2
-			curr_row += 1;
+			//curr_row += 1;
 			Set<Course> set2 = new HashSet<>();
 			for (ArrayList<OccupationData> od : t2.getMap().values()) {
 

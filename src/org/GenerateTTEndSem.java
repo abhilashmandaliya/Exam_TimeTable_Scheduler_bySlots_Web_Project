@@ -38,10 +38,14 @@ public class GenerateTTEndSem {
 	}
 
 	public static void main(String[] args)
-			throws CloneNotSupportedException, SQLException, ClassNotFoundException, DAOException, IOException {
+			throws CloneNotSupportedException, SQLException, ClassNotFoundException, DAOException, IOException, CustomException {
 		// GeneralDAO.deleteAllCourses();
 		// ReadFromExcel.read_excel();
 		// storing entire time table in 1 object of TimeTable class.
+		if(GeneralDAO.getRooms().size()<2){
+			TransactionStatus.setStatusMessage("There must be atleast 2 rooms !");
+			throw new CustomException("");
+		}
 		TimeTableEndSem TT = new TimeTableEndSem();
 		Set<Integer> set = new HashSet<>();// stores batch numbers of
 											// timeinterval2 of odd slots

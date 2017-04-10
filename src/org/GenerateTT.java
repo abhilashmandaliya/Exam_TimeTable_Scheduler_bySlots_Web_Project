@@ -50,8 +50,10 @@ public class GenerateTT {
 		// ReadFromExcel.read_excel(8);
 
 		// storing entire time table in 1 object of TimeTable class.
-		if(GeneralDAO.getRooms().size()<2)
-			throw new CustomException("There must be atleast 2 rooms !");
+		if(GeneralDAO.getRooms().size()<2){
+			TransactionStatus.setStatusMessage("There must be atleast 2 rooms !");
+			throw new CustomException("");
+		}
 		TimeTable TT = new TimeTable();
 		Set<Integer> set = new HashSet<>();// stores batch numbers of
 											// timeinterval2 of odd slots

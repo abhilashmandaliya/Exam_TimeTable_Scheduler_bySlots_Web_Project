@@ -2,6 +2,7 @@ package servlet;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -79,22 +80,27 @@ public class FileDownloadServlet extends HttpServlet {
 							TransactionStatus.setStatusMessage("Timetable is ready to be downloaded !");
 					}
 				} else if (action.toLowerCase().equals("downloadtt")) {
-					response.setContentType("text/html");
 					String fileName = "workbook.xlsx";
 					String filePath = FileConfig.OUTPUT_FILES_PATH;
-					response.setContentType("APPLICATION/OCTET-STREAM");
-					response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 					FileInputStream fis = new FileInputStream(filePath + fileName);
+					response.setContentType("text/html");					
+					response.setContentType("APPLICATION/OCTET-STREAM");
+					response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");					
 					int i;
 					while ((i = fis.read()) != -1)
 						out.write(i);
 					fis.close();
 					out.close();
+					new File(filePath + fileName).delete();
 				}
-			} catch (Exception e) {
+			} catch(FileNotFoundException e){
+				response.sendRedirect("TimeTable.jsp");
+			}
+			catch (Exception e) {
 				e.printStackTrace();
-				TransactionStatus.setStatusMessage(
-						"Some error occured.\nEnsure that all excel files are closed.\nKindly contact the developers.");
+				if (TransactionStatus.getStatusMessage() == null)
+					TransactionStatus.setStatusMessage(
+							"Some error occured.\nEnsure that all excel files are closed.\nKindly contact the developers.");
 			} finally {
 				if (TransactionStatus.getStatusMessage() == null)
 					TransactionStatus.setDefaultStatusMessage();
