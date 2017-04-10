@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.Authenticator;
 import org.GeneralDAO;
+import org.TransactionStatus;
 
 /**
  * Servlet implementation class UserServlet
@@ -52,19 +53,24 @@ public class UserServlet extends HttpServlet {
 					boolean result = GeneralDAO.registerUser(request.getParameter("uname"),
 							request.getParameter("password"));
 					if (result)
-						response.getWriter().write("User registration successful !");
+						TransactionStatus.setStatusMessage("User registration successful !");
 					else
-						response.getWriter().write("User already exists !");
+						TransactionStatus.setStatusMessage("User already exists !");
 				} else if (action.equals("resetpassword")) {
 					boolean result = GeneralDAO.resetPassword(request.getParameter("uname"),
 							request.getParameter("password"));
 					if (result)
-						response.getWriter().write("Password reset successful !");
+						TransactionStatus.setStatusMessage("Password reset successful !");
 					else
-						response.getWriter().write("Couldn't reset the password !");
+						TransactionStatus.setStatusMessage("Couldn't reset the password !");
 				}
 			} catch (Exception e) {
 
+			} finally {
+				if (TransactionStatus.getStatusMessage() == null)
+					TransactionStatus.setDefaultStatusMessage();
+				response.getWriter().write(TransactionStatus.getStatusMessage());
+				TransactionStatus.setStatusMessage(null);
 			}
 		}
 	}

@@ -16,26 +16,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ReadFromExcel {
 
 	// flag to indicate course already exists
-	private static boolean errorFlag = false;
-	private static String errorCourse = "";
 
-	public static boolean isErrorFlag() {
-		return errorFlag;
-	}
-
-	public static String getErrorCourse() {
-		return errorCourse;
-	}
-
-	public static void setErrorCourse() {
-		ReadFromExcel.errorCourse = "";
-	}
-
-	public static void setErrorFlag() {
-		ReadFromExcel.errorFlag = false;
-	}
-
-	public static void read_excel() throws IOException, ClassNotFoundException, DAOException, SQLException, CustomException {
+	public static void read_excel()
+			throws IOException, ClassNotFoundException, DAOException, SQLException, CustomException {
 		// String excelFilePath = "ExamData.xlsx";
 		String fileName = "ExamData.xlsx";
 		String filePath = FileConfig.INPUT_FILES_PATH + "examData\\";
@@ -82,9 +65,9 @@ public class ReadFromExcel {
 		} catch (SQLException e) {
 			GeneralDAO.getCon().rollback();
 			// e.printStackTrace();
-			errorFlag = true;
-			errorCourse = course_id + ":" + course_name + ":" + batch;
-			System.out.println("Course already exists.");
+			if (TransactionStatus.getStatusMessage() == null)
+				TransactionStatus
+						.setStatusMessage("Course already exists : " + course_id + " - " + course_name);
 		}
 
 		finally {
@@ -134,15 +117,10 @@ public class ReadFromExcel {
 		} catch (Exception e) {
 			GeneralDAO.getCon().rollback();
 			// e.printStackTrace();
-			errorFlag = true;
-			errorCourse = course_id;
-			System.out.println("Course already exists in the given slot.");
-		}
-
-		finally {
+			TransactionStatus.setStatusMessage("Course " + course_id + " already exists in the given slot.");
+		} finally {
 			GeneralDAO.getCon().setAutoCommit(true);
 		}
-
 		workbook.close();
 		inputStream.close();
 	}

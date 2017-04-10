@@ -224,7 +224,7 @@ $(document).ready(function() {
 			data : {"user":$('#user').val(),"password":$('#password').val()},
 			success : function(data){
 				if(data=="false"){
-					alert("Wrong Credentials !");
+					giveAlert("Wrong Credentials !");
 					location.reload();
 				} else
 					window.location.href = 'Home.jsp';

@@ -1,10 +1,6 @@
 package servlet;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.Authenticator;
 import org.DAOException;
 import org.Slot;
-import org.TimeTableEndSem;
+import org.TransactionStatus;
 
 /**
  * Servlet implementation class SlotServlet
@@ -39,9 +35,7 @@ public class SlotServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		// response.getWriter().append("Served at:
-		// ").append(request.getContextPath());
-		if(!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
+		if (!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
 			response.sendRedirect("login.jsp");
 	}
 
@@ -52,18 +46,26 @@ public class SlotServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		if(!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
+		if (!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
 			response.sendRedirect("login.jsp");
 		String action = request.getParameter("action");
 		Slot s = (Slot) request.getSession().getAttribute(request.getParameter("slot"));
 		try {
-			if (action.equals("delete"))
-				response.getWriter().write(s.deleteCourseFromDB(request.getParameter("course")));
-			else if (action.equals("add"))
+			if (action.equals("delete")) {
+				s.deleteCourseFromDB(request.getParameter("course"));
+				TransactionStatus.setStatusMessage("Course deleted Successfully !");
+			} else if (action.equals("add")) {
 				s.addCourseToDB(request.getParameter("course"));
+				TransactionStatus.setStatusMessage("Course added Successfully !");
+			}
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if (TransactionStatus.getStatusMessage() == null)
+				TransactionStatus.setDefaultStatusMessage();
+			response.getWriter().write(TransactionStatus.getStatusMessage());
+			TransactionStatus.setStatusMessage(null);
 		}
 	}
 

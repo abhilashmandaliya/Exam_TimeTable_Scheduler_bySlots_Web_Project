@@ -19,6 +19,7 @@ import org.CustomException;
 import org.FileConfig;
 import org.GeneralDAO;
 import org.ReadFromExcel;
+import org.TransactionStatus;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -96,10 +97,8 @@ public class FileUploadServlet extends HttpServlet {
 							ReadFromExcel.read_excel();
 						else
 							ReadFromExcel.read_excel(Integer.parseInt(slotParam));
-						if (ReadFromExcel.isErrorFlag())
-							response.getWriter().write("Same Course Exist !" + ReadFromExcel.getErrorCourse());
-						else
-							response.getWriter().write("File Uploaded Succesfully !");
+						if (TransactionStatus.getStatusMessage() == null)
+							TransactionStatus.setStatusMessage("File Uploaded Succesfully !");
 					} else {
 						if (fi.getFieldName().equals("file"))
 							fileFor = fi.getString();
@@ -109,10 +108,12 @@ public class FileUploadServlet extends HttpServlet {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				response.getWriter().write(e.getMessage());
+				//response.getWriter().write(TransactionStatus.getStatusMessage());
 			} finally {
-				ReadFromExcel.setErrorCourse();
-				ReadFromExcel.setErrorFlag();
+				if (TransactionStatus.getStatusMessage() == null)
+					TransactionStatus.setDefaultStatusMessage();
+				response.getWriter().write(TransactionStatus.getStatusMessage());
+				TransactionStatus.setStatusMessage(null);
 			}
 		}
 	}
