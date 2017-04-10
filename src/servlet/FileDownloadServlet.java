@@ -96,6 +96,8 @@ public class FileDownloadServlet extends HttpServlet {
 				TransactionStatus.setStatusMessage(
 						"Some error occured.\nEnsure that all excel files are closed.\nKindly contact the developers.");
 			} finally {
+				if (TransactionStatus.getStatusMessage() == null)
+					TransactionStatus.setDefaultStatusMessage();
 				response.getWriter().write(TransactionStatus.getStatusMessage());
 				TransactionStatus.setStatusMessage(null);
 			}
