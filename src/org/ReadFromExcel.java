@@ -52,16 +52,17 @@ public class ReadFromExcel {
 
 				course_name = queue.removeFirst();
 				course_id = queue.removeFirst();
-				faculty = queue.removeFirst();
+				faculty = "N/A";
 				no_of_students = Integer.parseInt(queue.removeFirst());
 				batch = queue.removeFirst();
 
-				GeneralDAO.addCourse(course_id, course_name, batch, no_of_students, faculty);
+				GeneralDAO.addCourse(course_id.trim(), course_name.trim(), batch.trim(), no_of_students, faculty);
 				// GeneralDAO.addSlotEntry(slot_no, course_id);
 
-				GeneralDAO.getCon().commit();
+				
 
 			}
+			GeneralDAO.getCon().commit();
 		} catch (SQLException e) {
 			GeneralDAO.getCon().rollback();
 			// e.printStackTrace();
@@ -75,6 +76,7 @@ public class ReadFromExcel {
 			GeneralDAO.getCon().setAutoCommit(true);
 			workbook.close();
 			inputStream.close();
+			new File(filePath+fileName).delete();
 		}
 	}
 
@@ -89,6 +91,7 @@ public class ReadFromExcel {
 		Iterator<Row> iterator = firstSheet.iterator();
 		iterator.next();
 		String course_id = "";
+		String faculty= "";
 		System.out.println("Working");
 		try {
 
@@ -100,29 +103,35 @@ public class ReadFromExcel {
 				Row nextRow = iterator.next();
 				Iterator<Cell> cellIterator = nextRow.cellIterator();
 				LinkedList<String> queue = new LinkedList<>();
+				
 				while (cellIterator.hasNext()) {
 					Cell cell = cellIterator.next();
 					cell.setCellType(Cell.CELL_TYPE_STRING);
 					queue.addLast(cell.getStringCellValue());
-					// System.out.println("Working");
+					 System.out.println("Cell Value: "+cell.getStringCellValue());
 				}
 
 				course_id = queue.removeFirst();
-
-				GeneralDAO.addSlotEntry(slot_no, course_id);
-
-				GeneralDAO.getCon().commit();
+				faculty=queue.removeFirst();
+				
+				GeneralDAO.addSlotEntry(slot_no, course_id.trim());
+				GeneralDAO.updateFaculty(course_id.trim(), faculty.trim());
+				System.out.println(course_id+"hey"+faculty);
+				
 
 			}
+			GeneralDAO.getCon().commit();
 		} catch (Exception e) {
 			GeneralDAO.getCon().rollback();
-			// e.printStackTrace();
+			e.printStackTrace();
 			TransactionStatus.setStatusMessage("Course " + course_id + " already exists in the given slot.");
 		} finally {
 			GeneralDAO.getCon().setAutoCommit(true);
+			workbook.close();
+			inputStream.close();
+			new File(filePath+fileName).delete();
 		}
-		workbook.close();
-		inputStream.close();
+		
 	}
 
 }
