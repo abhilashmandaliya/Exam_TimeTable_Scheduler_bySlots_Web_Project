@@ -43,12 +43,12 @@ $(document).ready(function() {
 	$("#generateAndDownloadTT").click(function(e) {
 		var sem = $('#exam_type').val();
 		$.ajax({
-			url : 'http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet',
+			url : 'FileDownloadServlet',
 			type : 'get',
 			data : {'action':'generatett','semester':sem},
 			success : function(data) {
 				giveAlert(data);
-				window.location.href='http://localhost:8080/Exam_TimeTable_Scheduler_bySlots_Web_Project/FileDownloadServlet?action=downloadtt';
+				window.location.href='FileDownloadServlet?action=downloadtt';
 			}
 		});
 	});

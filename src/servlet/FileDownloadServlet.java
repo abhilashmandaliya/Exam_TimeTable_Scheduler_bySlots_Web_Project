@@ -36,7 +36,9 @@ public class FileDownloadServlet extends HttpServlet {
 	 */
 	public FileDownloadServlet() {
 		super();
+		
 		// TODO Auto-generated constructor stub
+		
 	}
 
 	/**
@@ -46,6 +48,10 @@ public class FileDownloadServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		//FileConfig.PROJECT_NAME = this.getServletContext().getContextPath();
+		//System.out.println("FDS constructed:"+request.getServletContext().getRealPath("/"));
+		//FileConfig.OUTPUT_FILES_PATH = this.getServletContext().getContextPath();
+		//System.out.println("Servlet:"+getServletContext().getRealPath(FileConfig.PROJECT_NAME));
 		if (!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
 			response.sendRedirect("login.jsp");
 		String action = request.getParameter("action");
@@ -81,7 +87,7 @@ public class FileDownloadServlet extends HttpServlet {
 					}
 				} else if (action.toLowerCase().equals("downloadtt")) {
 					String fileName = "workbook.xlsx";
-					String filePath = FileConfig.OUTPUT_FILES_PATH;
+					String filePath = "";//FileConfig.OUTPUT_FILES_PATH;
 					FileInputStream fis = new FileInputStream(filePath + fileName);
 					response.setContentType("text/html");					
 					response.setContentType("APPLICATION/OCTET-STREAM");

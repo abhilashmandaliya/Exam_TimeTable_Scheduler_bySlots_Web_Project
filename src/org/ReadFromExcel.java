@@ -124,7 +124,7 @@ public class ReadFromExcel {
 		} catch (Exception e) {
 			GeneralDAO.getCon().rollback();
 			e.printStackTrace();
-			TransactionStatus.setStatusMessage("Course " + course_id + " already exists in the given slot.");
+			TransactionStatus.setStatusMessage("There are some issues with " + course_id+"\nPlease try again after resolving the issue");
 		} finally {
 			GeneralDAO.getCon().setAutoCommit(true);
 			workbook.close();

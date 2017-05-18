@@ -64,6 +64,7 @@ public class FileUploadServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		if (!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
 			response.sendRedirect("login.jsp");
+		FileConfig.PROJECT_NAME = this.getServletContext().getContextPath();
 		isMultiPart = ServletFileUpload.isMultipartContent(request);
 		if (isMultiPart) {
 			String fileFor = "";

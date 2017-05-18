@@ -1,5 +1,6 @@
 package org;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -453,9 +454,11 @@ public class PrintExcel {
 
 		// saving output to file
 		sheet1.getPrintSetup().setLandscape(true);
+		
 		String fileName = "workbook.xlsx";
 		String filePath = FileConfig.OUTPUT_FILES_PATH;
-		FileOutputStream fileOut = new FileOutputStream(filePath + fileName);
+		//System.out.println("Print Excel:"+filePath+fileName);
+		FileOutputStream fileOut = new FileOutputStream(fileName);
 		wb.write(fileOut);
 		fileOut.close();
 		System.out.println("over");

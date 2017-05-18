@@ -312,7 +312,25 @@ public class GeneralDAO {
 		}
 		return batch_program;
 	}
+	public static Map<Integer, String> getBatch_Program() throws DAOException, ClassNotFoundException, SQLException {
+		if (con == null)
+			makeConnection();
+		Map<Integer, String> batch_program = new HashMap<>();
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("Select * from batch_program");
 
+			while (rs.next()) {
+				int batch = rs.getInt("batch");
+				String program = rs.getString("program");
+				batch_program.put(batch, program);
+			}
+
+		} catch (SQLException e) {
+			throw new DAOException(e.getMessage());
+		}
+		return batch_program;
+	}
 	// add new batch program code to database
 	public static void addBatch_Program(Integer batch, String program) throws DAOException, ClassNotFoundException {
 		try {
