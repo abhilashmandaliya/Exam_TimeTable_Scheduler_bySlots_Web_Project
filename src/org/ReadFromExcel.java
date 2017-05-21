@@ -21,7 +21,8 @@ public class ReadFromExcel {
 			throws IOException, ClassNotFoundException, DAOException, SQLException, CustomException {
 		// String excelFilePath = "ExamData.xlsx";
 		String fileName = "ExamData.xlsx";
-		String filePath = FileConfig.INPUT_FILES_PATH + "examData\\";
+		//String filePath = FileConfig.INPUT_FILES_PATH + "examData\\";
+		String filePath = FileConfig.INPUT_FILES_PATH;
 		FileInputStream inputStream = new FileInputStream(new File(filePath + fileName));
 
 		Workbook workbook = new XSSFWorkbook(inputStream);
@@ -76,14 +77,15 @@ public class ReadFromExcel {
 			GeneralDAO.getCon().setAutoCommit(true);
 			workbook.close();
 			inputStream.close();
-			new File(filePath+fileName).delete();
+			
 		}
 	}
 
 	public static void read_excel(int slot_no) throws IOException, ClassNotFoundException, DAOException, SQLException {
 		// String excelFilePath = "ExamData.xlsx";
 		String fileName = "slot" + (slot_no) + "course.xlsx";
-		String filePath = FileConfig.INPUT_FILES_PATH + "slotData\\";
+		//String filePath = FileConfig.INPUT_FILES_PATH + "slotData\\";
+		String filePath = FileConfig.INPUT_FILES_PATH;
 		FileInputStream inputStream = new FileInputStream(new File(filePath + fileName));
 
 		Workbook workbook = new XSSFWorkbook(inputStream);
@@ -129,7 +131,7 @@ public class ReadFromExcel {
 			GeneralDAO.getCon().setAutoCommit(true);
 			workbook.close();
 			inputStream.close();
-			new File(filePath+fileName).delete();
+			
 		}
 		
 	}

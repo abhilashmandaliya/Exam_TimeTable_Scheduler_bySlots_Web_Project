@@ -458,7 +458,7 @@ public class PrintExcel {
 		String fileName = "workbook.xlsx";
 		String filePath = FileConfig.OUTPUT_FILES_PATH;
 		//System.out.println("Print Excel:"+filePath+fileName);
-		FileOutputStream fileOut = new FileOutputStream(fileName);
+		FileOutputStream fileOut = new FileOutputStream(filePath+fileName);
 		wb.write(fileOut);
 		fileOut.close();
 		System.out.println("over");

@@ -71,21 +71,23 @@ public class FileUploadServlet extends HttpServlet {
 			String slotParam = "";
 			DiskFileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
+			String fileName="";
 			try {
 				List<FileItem> fileItems = upload.parseRequest(request);
 				Iterator<FileItem> i = fileItems.iterator();
+				
 				while (i.hasNext()) {
 					FileItem fi = (FileItem) i.next();
 					if (!fi.isFormField()) {
 						if (!fi.getName().endsWith(".xlsx"))
 							throw new CustomException("Not .xlsx File !");
-						String fileName = "TYPE_MISMATCH";
+							fileName = "TYPE_MISMATCH";
 						filePath = FileConfig.INPUT_FILES_PATH;
 						if (fileFor.toLowerCase().equals("slotdetails")) {
-							filePath += "slotData\\";
+							//filePath += "slotData\\";
 							fileName = "slot" + slotParam + "course.xlsx";
 						} else if (fileFor.toLowerCase().equals("examdetails")) {
-							filePath += "examData\\";
+							//filePath += "examData\\";
 							fileName = "ExamData.xlsx";
 						}
 						if (fileName.lastIndexOf("\\") >= 0) {
@@ -95,9 +97,15 @@ public class FileUploadServlet extends HttpServlet {
 						}
 						fi.write(file);
 						if (slotParam == "")
+							{
 							ReadFromExcel.read_excel();
+							//new File(filePath+fileName).delete();
+							}
 						else
+							{
 							ReadFromExcel.read_excel(Integer.parseInt(slotParam));
+						//	new File(filePath+fileName).delete();
+							}
 						if (TransactionStatus.getStatusMessage() == null)
 							TransactionStatus.setStatusMessage("File Uploaded Succesfully !");
 					} else {
@@ -115,6 +123,8 @@ public class FileUploadServlet extends HttpServlet {
 					TransactionStatus.setDefaultStatusMessage();
 				response.getWriter().write(TransactionStatus.getStatusMessage());
 				TransactionStatus.setStatusMessage(null);
+				new File(filePath+fileName).delete();
+				
 			}
 		}
 	}

@@ -277,9 +277,9 @@ public class PrintExcelEndSem extends PrintExcel {
 		sheet1.getPrintSetup().setLandscape(true);
 		String fileName = "workbook.xlsx";
 		// String filePath = "F:\\exam_timetable\\src\\data\\output\\";
-		//String filePath = FileConfig.OUTPUT_FILES_PATH;
+		String filePath = FileConfig.OUTPUT_FILES_PATH;
 
-		FileOutputStream fileOut = new FileOutputStream(fileName);
+		FileOutputStream fileOut = new FileOutputStream(filePath+fileName);
 		wb.write(fileOut);
 		fileOut.close();
 		System.out.println("over");
