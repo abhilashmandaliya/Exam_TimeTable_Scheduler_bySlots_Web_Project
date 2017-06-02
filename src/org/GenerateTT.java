@@ -118,10 +118,11 @@ public class GenerateTT {
 			}
 			set.removeAll(set);
 			int k = 0;
+			
 			while (slot.slotProcessed())// if all the courses are processed,
 										// then loop breaks.
 			{
-
+				int flag_small=0;//for identifying small course;
 				int flagContinue = 0;
 				int flagContinue2 = 0;
 				Course tempCourse = slot.chosingCourse();// refer slot class for
@@ -149,7 +150,7 @@ public class GenerateTT {
 				// if a course has come here,it means that it's broken in
 				// different chunks
 				tempCourse.setBroken(true);
-
+				System.out.println("intitial k:"+k);
 				if (TimeTable.ifCourseIsBig(tempCourse, array[0])) // assuming
 																	// that
 																	// total
@@ -161,7 +162,7 @@ public class GenerateTT {
 				{
 					// k = p % 2; // k=0,1//just alternating,p->course
 					// sequences(0,1,2,3,..)
-
+					System.out.println("Big COURSE:::"+tempCourse.getCourse_name());
 					// flip k
 					if (k == 0)
 						k = 1;
@@ -170,12 +171,14 @@ public class GenerateTT {
 				} else {
 					k = 1;// this is causing 4-5 times printing in excel if
 							// given wrong value.
+					flag_small=1;
 				}
-
+				System.out.println("k = "+k+" for "+tempCourse.getCourse_name());
 				// always start from k=1 for flag_clash==1
 
 				if (tempCourse.getFlag_clash() == 1)
 					k = 1;
+				System.out.println("final k:"+k);
 				for (; k >= 0; k--) {
 					flag = 0;
 
@@ -340,6 +343,8 @@ public class GenerateTT {
 				}
 
 				p++;
+				if(flag_small==1)
+					k=0;
 			}
 			array[0].print();
 			array[1].print();

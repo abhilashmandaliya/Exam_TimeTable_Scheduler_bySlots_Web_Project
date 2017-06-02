@@ -99,7 +99,7 @@ public class GenerateTTEndSem {
 			while (slot.slotProcessed())// if all the courses are processed,
 										// then loop breaks.
 			{
-
+				int flag_small=0;//for identifying small course;
 				int flagContinue = 0;
 				int flagContinue2 = 0;
 				Course tempCourse = slot.chosingCourse();// refer slot class for
@@ -153,6 +153,7 @@ public class GenerateTTEndSem {
 				} else {
 					k = 0;//// this is causing 4-5 times printing in excel if
 							//// given wrong value.
+					flag_small=1;
 				}
 
 				// always start from k=1 for flag_clash==1
@@ -367,6 +368,8 @@ public class GenerateTTEndSem {
 				}
 
 				p++;
+				if(flag_small==1)
+					k=1;
 			}
 			array[0].print();
 			array[1].print();

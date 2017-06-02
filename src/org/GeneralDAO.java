@@ -86,6 +86,17 @@ public class GeneralDAO {
 			}
 			
 			Collections.sort(rooms, new RoomComparatorByCapacity());
+			ArrayList<Room> second_floor_rooms=new ArrayList<>();
+			for(int i=0;i<rooms.size();i++)
+			{
+				if((rooms.get(i).getRoom_no()/100)==2)
+				{
+					second_floor_rooms.add(rooms.get(i));
+					rooms.remove(i);
+				}
+				
+			}
+			rooms.addAll(second_floor_rooms);
 
 		} catch (SQLException e) {
 			throw new DAOException(e.getMessage());

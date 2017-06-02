@@ -246,13 +246,19 @@ public class TimeTable {
 		return 0;
 	}
 
-	public Room shiftFromTo(int fromRoom, int toRoom, TimeInterval ti, Course check_course, int shift) {
+	public Room shiftFromTo(int fromRoom, int toRoom, TimeInterval ti, Course check_course, int shift,String side) {
 		Room from_room_return = null;
 		// deducting from FromRoom
 		for (OccupationData od : ti.getMap().get(fromRoom)) {
 			if (od.getCourse().getCourse_id() == check_course.getCourse_id()) {
 				from_room_return = od.getRoom();
 				od.setAllocatedStudents(od.getAllocatedStudents() - shift);
+				System.out.println(from_room_return.getLeftStrength()+""+shift);
+				if(side.equals("L"))
+					from_room_return.setLeftStrength(-shift);
+				else if(side.equals("R"))
+					from_room_return.setRightStrength(-shift);
+				System.out.println(from_room_return.getLeftStrength());
 				break;
 			}
 		}
@@ -261,6 +267,12 @@ public class TimeTable {
 		for (OccupationData od : ti.getMap().get(toRoom)) {
 			if (od.getCourse().getCourse_id() == check_course.getCourse_id()) {
 				od.setAllocatedStudents(od.getAllocatedStudents() + shift);
+				Room to_room_return=od.getRoom();
+				if(side.equals("L"))
+					to_room_return.setLeftStrength(shift);
+				else if(side.equals("R"))
+					to_room_return.setRightStrength(shift);
+				System.out.println(to_room_return.getLeftStrength());
 			}
 		}
 		return from_room_return;
@@ -292,8 +304,9 @@ public class TimeTable {
 					continue;
 				}
 				int shift = course.getUnallocated_strength();
-				Room from_room = shiftFromTo(fromRoom, toRoom, ti, check_course, shift);
+				Room from_room = shiftFromTo(fromRoom, toRoom, ti, check_course, shift,side);
 				assignOnLeftRight(course, from_room, shift, slot, ti, side);
+				from_room.setInvigilanceRequired(false);
 				flag_successful = 1;
 				break;
 			}
@@ -315,7 +328,9 @@ public class TimeTable {
 																	// for CASE1
 																	// and CASE2
 		// CASE 1:
-		for (int k = array.length - 1; k >= 0; k--) {
+		System.out.println("Course:"+course.getCourse_name()+" and strength:"+finalChunkStudents);
+		for (int k = array.length - 1; k >= 0; k--) 
+		{
 			flag = 0;
 			if (custom_flag == 1 && k == 0 && slot.getSlot_no() != 1)// K==0
 																		// means
@@ -333,13 +348,15 @@ public class TimeTable {
 			// and timeinterval1 still
 			// requires invigilance as consecutive exams are
 			// prohibited(priority).
-			{
+			{	System.out.println("Course:"+course.getCourse_name()+" Entered CASE 1");
 				if (tryToAdjust(save_ti, course, slot) == 1)
 					return 1;
+				System.out.println("Course:"+course.getCourse_name()+" NOT RETURNED and ti:"+save_ti.getTime_interval());
 				flag = 1;// course has been processed. jump to next course and
 							// dont run below cases.
 				// System.out.println("Room No: "+save_room.getRoom_no()+" is
 				// "+save_room.getInvigilanceRequired());
+				System.out.println("Save room:"+save_room);
 				assignOnLeftRight(course, save_room, finalChunkStudents, slot, save_ti, save_side);
 				save_room.setInvigilanceRequired(false);// no, now invigilance
 														// is not required for
@@ -366,13 +383,14 @@ public class TimeTable {
 				// System.out.println("k: "+k+"i: "+i+"
 				// "+proposedRoom.getRoom_no()+"required:
 				// "+proposedRoom.getInvigilanceRequired()+""+course);
+				System.out.println(proposedRoom.getRoom_no()+" "+proposedRoom.getInvigilanceRequired()+"Right: "+proposedRoom.getRightCapacity()+"Left: "+proposedRoom.getLeftCapacity());
 				if (proposedRoom.checkInvigilanceRequired(course.getFlag_clash(), slot, array[k])) // refer
 																									// Room
 																									// class
 																									// for
 																									// this
 																									// function
-				{
+				{	System.out.println("Entered room for invigilance:"+proposedRoom.getRoom_no());
 					if (left > right) // left side has more strength
 					{
 						if (finalChunkStudents <= proposedRoom.getLeftCapacity())// left
@@ -384,7 +402,7 @@ public class TimeTable {
 						// allocate on left side first as right side can be
 						// saved for future use if big course comes.
 						{
-
+							
 							flag = 1;// course has been processed. jump to next
 										// course and dont run below cases.
 							assignOnLeftRight(course, proposedRoom, finalChunkStudents, slot, array[k], "L");
@@ -403,6 +421,7 @@ public class TimeTable {
 																							// allocate.
 						// Maybe it was too small. Try doing on right side.
 						{
+							
 							flag = 1;// course has been processed. jump to next
 										// course and dont run below cases.
 							assignOnLeftRight(course, proposedRoom, finalChunkStudents, slot, array[k], "R");
@@ -422,6 +441,7 @@ public class TimeTable {
 						if (finalChunkStudents <= proposedRoom.getRightCapacity()) {
 							flag = 1;// course has been processed. jump to next
 										// course and dont run below cases.
+							
 							assignOnLeftRight(course, proposedRoom, finalChunkStudents, slot, array[k], "R");
 							proposedRoom.setInvigilanceRequired(false);// no,
 																		// now
@@ -437,6 +457,7 @@ public class TimeTable {
 							flag = 1;// course has been processed. jump to next
 										// course and dont run below cases.
 							assignOnLeftRight(course, proposedRoom, finalChunkStudents, slot, array[k], "L");
+							
 							proposedRoom.setInvigilanceRequired(false);// no,
 																		// now
 																		// invigilance
@@ -450,10 +471,11 @@ public class TimeTable {
 						}
 					}
 				}
-				if (custom_flag == 0)// it will be 0 if CASE2 is not yet
+				if (custom_flag == 0 || proposedRoom.getInvigilanceRequired()==false)// it will be 0 if CASE2 is not yet
 										// successful.
 				{
 					if (left > right) {
+						
 						if (finalChunkStudents <= proposedRoom.getLeftCapacity()) {
 							save_room = proposedRoom;
 							save_side = "L";
@@ -464,25 +486,31 @@ public class TimeTable {
 							// iterations. No more checking for this
 							// custom_flag==0 statement as we just require first
 							// best case
+							
 						} else if (finalChunkStudents <= proposedRoom.getRightCapacity()) {
 							save_room = proposedRoom;
 							save_side = "R";
 							save_ti = array[k];
 							custom_flag = 1;
+							
 						}
 					} else {
+						
 						if (finalChunkStudents <= proposedRoom.getRightCapacity()) {
 							save_room = proposedRoom;
 							save_side = "R";
 							save_ti = array[k];
 							custom_flag = 1;
+							
 						} else if (finalChunkStudents <= proposedRoom.getLeftCapacity()) {
 							save_room = proposedRoom;
 							save_side = "L";
 							save_ti = array[k];
 							custom_flag = 1;
+							System.out.println("Course:"+course.getCourse_name()+" entered good"+proposedRoom.getRoom_no()+"Left capacity:"+proposedRoom.getLeftCapacity());
 						}
 					}
+					System.out.println("custom flag:"+custom_flag+"for"+proposedRoom);
 				}
 
 			}
@@ -495,6 +523,7 @@ public class TimeTable {
 			save_room.setInvigilanceRequired(false);// no, now invigilance is
 													// not required for this
 													// "room".
+			System.out.println("working custom flag");
 			return flag;
 		}
 		return flag;// both case failed ,returning 0;
@@ -505,7 +534,7 @@ public class TimeTable {
 	// I dont want big courses to alternate to allow smaller courses to fit in
 	// to ensure invigilation
 	public static boolean ifCourseIsBig(Course course, TimeInterval ti) {
-		if (course.getNo_Of_Students() > (0.80) * ti.totalCapacityOfRooms())
+		if (course.getNo_Of_Students() > (0.65) * ti.totalCapacityOfRooms())
 			return true;
 		else
 			return false;

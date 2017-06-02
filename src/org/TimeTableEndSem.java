@@ -245,13 +245,19 @@ public class TimeTableEndSem {
 		return 0;
 	}
 
-	public Room shiftFromTo(int fromRoom, int toRoom, TimeInterval ti, Course check_course, int shift) {
+	public Room shiftFromTo(int fromRoom, int toRoom, TimeInterval ti, Course check_course, int shift,String side) {
 		Room from_room_return = null;
 		// deducting from FromRoom
 		for (OccupationData od : ti.getMap().get(fromRoom)) {
 			if (od.getCourse().getCourse_id() == check_course.getCourse_id()) {
 				from_room_return = od.getRoom();
 				od.setAllocatedStudents(od.getAllocatedStudents() - shift);
+				System.out.println(from_room_return.getLeftStrength()+""+shift);
+				if(side.equals("L"))
+					from_room_return.setLeftStrength(-shift);
+				else if(side.equals("R"))
+					from_room_return.setRightStrength(-shift);
+				System.out.println(from_room_return.getLeftStrength());
 				break;
 			}
 		}
@@ -260,6 +266,12 @@ public class TimeTableEndSem {
 		for (OccupationData od : ti.getMap().get(toRoom)) {
 			if (od.getCourse().getCourse_id() == check_course.getCourse_id()) {
 				od.setAllocatedStudents(od.getAllocatedStudents() + shift);
+				Room to_room_return=od.getRoom();
+				if(side.equals("L"))
+					to_room_return.setLeftStrength(shift);
+				else if(side.equals("R"))
+					to_room_return.setRightStrength(shift);
+				System.out.println(to_room_return.getLeftStrength());
 			}
 		}
 		return from_room_return;
@@ -291,8 +303,9 @@ public class TimeTableEndSem {
 					continue;
 				}
 				int shift = course.getUnallocated_strength();
-				Room from_room = shiftFromTo(fromRoom, toRoom, ti, check_course, shift);
+				Room from_room = shiftFromTo(fromRoom, toRoom, ti, check_course, shift,side);
 				assignOnLeftRight(course, from_room, shift, slot, ti, side);
+				from_room.setInvigilanceRequired(false);
 				flag_successful = 1;
 				break;
 			}
@@ -452,7 +465,7 @@ public class TimeTableEndSem {
 						}
 					}
 				}
-				if (custom_flag == 0)// it will be 0 if CASE2 is not yet
+				if (custom_flag == 0 || proposedRoom.getInvigilanceRequired()==false)// it will be 0 if CASE2 is not yet
 										// successful.
 				{
 					if (left > right) {
@@ -507,7 +520,7 @@ public class TimeTableEndSem {
 	// I dont want big courses to alternate to allow smaller courses to fit in
 	// to ensure invigilation
 	public static boolean ifCourseIsBig(Course course, TimeInterval ti) {
-		if (course.getNo_Of_Students() > (0.80) * ti.totalCapacityOfRooms())
+		if (course.getNo_Of_Students() > (0.65) * ti.totalCapacityOfRooms())
 			return true;
 		else
 			return false;

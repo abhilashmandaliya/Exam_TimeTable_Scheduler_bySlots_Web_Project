@@ -85,20 +85,20 @@ public class Room{
 	//fresh whole allocation is given to CASE 2 only. invigilation just checks rooms with at least 1 student 
 	public boolean checkInvigilanceRequired(int flag_clash,Slot slot,TimeInterval ti)
 	{
-		int flag_big=0;
-		if(flag_clash==1)
-		{   
-			for(Course course:slot.getCourses())
-			{
-				if(TimeTableEndSem.ifCourseIsBig(course,ti )==true)
-				{
-					flag_big=1;
-				}
-			}
-			if(invigilanceRequired==true && flag_big==1)
-				return true;
-				else return false;
-		}
+//		int flag_big=0;
+//		if(flag_clash==1)
+//		{   
+//			for(Course course:slot.getCourses())
+//			{
+//				if(TimeTableEndSem.ifCourseIsBig(course,ti )==true)
+//				{
+//					flag_big=1;
+//				}
+//			}
+//			if(invigilanceRequired==true && flag_big==1)
+//				return true;
+//				else return false;
+//		}
 		if(invigilanceRequired==true && (rightStrength>0 || leftStrength>0))
 		return true;
 		else return false;
