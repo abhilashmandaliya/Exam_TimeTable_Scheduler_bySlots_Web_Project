@@ -101,7 +101,7 @@ public class GeneralDAO {
 		} catch (SQLException e) {
 			throw new DAOException(e.getMessage());
 		}
-		System.out.println("Rooms:"+rooms);
+	//	System.out.println("Rooms:"+rooms);
 		return rooms;
 		
 	}

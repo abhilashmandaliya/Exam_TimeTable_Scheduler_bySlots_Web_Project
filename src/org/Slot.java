@@ -93,7 +93,7 @@ public class Slot {
 	// this method deletes course from database corresponding to this slot
 	public String deleteCourseFromDB(String course_id) throws DAOException {
 		try {
-			System.out.println("cid : " + course_id);
+			//System.out.println("cid : " + course_id);
 			String sql = "Delete from slot where slot_no=" + this.slot_no + " and course_id='" + course_id + "'";
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(sql);

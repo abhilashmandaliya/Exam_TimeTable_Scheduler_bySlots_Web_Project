@@ -45,7 +45,7 @@ public class OccupationData {
 	}
 	public String toString()
 	{
-		return course+"["+allocatedStudents+"]";
+		return course+"["+allocatedStudents+this.side+"]";
 	}
 	public void setAllocatedStudents(int allocatedStudents) {
 		this.allocatedStudents = allocatedStudents;

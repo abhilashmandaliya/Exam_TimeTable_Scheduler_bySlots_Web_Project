@@ -105,7 +105,7 @@ public class TimeInterval {
 	 //have been allocated at that side.
 	 public void smallBigPattern(int j)
 	 {
-		 System.out.println();;
+		// System.out.println();;
 		 for (int i = 0; i < getRooms().size(); i++) // all the default sides to look for in class is big. Setting to small for some.
 			{
 			// System.out.println("Pattern code running for:"+(i+1));

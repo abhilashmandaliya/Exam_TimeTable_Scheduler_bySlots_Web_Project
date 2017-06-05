@@ -95,7 +95,7 @@ public class Course {
 //	}
 	public String toString()
 	{
-		return this.course_id+" "+this.course_name;
+		return this.course_id+" "+this.course_name+" "+this.no_Of_Students;
 	}
 	
 	public void setBroken(boolean value)
@@ -110,5 +110,14 @@ public class Course {
 	}
 	public void setFaculty(String faculty) {
 		this.faculty = faculty;
+	}
+	//sorting in descending order
+	public int compareTo(Course other)
+	{
+		if(this.getNo_Of_Students()<other.getNo_Of_Students())
+			return 1;
+		else if(this.getNo_Of_Students()>other.getNo_Of_Students())
+			return -1;
+		else return 0;					
 	}
 }

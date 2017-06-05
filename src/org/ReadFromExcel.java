@@ -31,7 +31,7 @@ public class ReadFromExcel {
 		iterator.next();
 		String course_id = "", course_name = "", batch = "", faculty = "";
 		int no_of_students;
-		System.out.println("Working");
+	//	System.out.println("Working");
 		try {
 
 			if (GeneralDAO.getCon() == null)
@@ -73,7 +73,7 @@ public class ReadFromExcel {
 		}
 
 		finally {
-			System.out.println("Working");
+			//System.out.println("Working");
 			GeneralDAO.getCon().setAutoCommit(true);
 			workbook.close();
 			inputStream.close();
@@ -94,7 +94,7 @@ public class ReadFromExcel {
 		iterator.next();
 		String course_id = "";
 		String faculty= "";
-		System.out.println("Working");
+		//System.out.println("Working");
 		try {
 
 			if (GeneralDAO.getCon() == null)
@@ -110,7 +110,7 @@ public class ReadFromExcel {
 					Cell cell = cellIterator.next();
 					cell.setCellType(Cell.CELL_TYPE_STRING);
 					queue.addLast(cell.getStringCellValue());
-					 System.out.println("Cell Value: "+cell.getStringCellValue());
+					// System.out.println("Cell Value: "+cell.getStringCellValue());
 				}
 
 				course_id = queue.removeFirst();
@@ -118,7 +118,7 @@ public class ReadFromExcel {
 				
 				GeneralDAO.addSlotEntry(slot_no, course_id.trim());
 				GeneralDAO.updateFaculty(course_id.trim(), faculty.trim());
-				System.out.println(course_id+"hey"+faculty);
+			//	System.out.println(course_id+"hey"+faculty);
 				
 
 			}

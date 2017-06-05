@@ -3,6 +3,7 @@ package org;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -32,7 +33,8 @@ public class GenerateTTEndSem {
 	// return unallocated_map;
 	// }
 	private static ArrayList<Course> failedCourses;
-
+	static ArrayList<Course> buffer_copy;
+	static ArrayList<Course> buffer;
 	public static ArrayList<Course> getFailedCourses() {
 		return failedCourses;
 	}
@@ -96,292 +98,113 @@ public class GenerateTTEndSem {
 			}
 			set.removeAll(set);
 			int k = 1;
+			
+			buffer=new ArrayList<>();
 			while (slot.slotProcessed())// if all the courses are processed,
 										// then loop breaks.
 			{
-				int flag_small=0;//for identifying small course;
-				int flagContinue = 0;
-				int flagContinue2 = 0;
+				
 				Course tempCourse = slot.chosingCourse();// refer slot class for
 															// details
-				System.out.println("Course chosen: " + tempCourse);
-				// MAIN ALGORITHM:
-				// There are 3 cases. Each course visits all the 3 cases. If it
-				// gets allocated in CASE 1, it breaks
-				// the while loop and gives chance to next course. If it doesn't
-				// get allocated in CASE 1,then it tries for
-				// CASE2, If not in even CASE2, then CASE3 will finally allocate
-				// all the students.
-				// (Exceptional case: it just stores number of unallocated
-				// students in unallocated_strength if all the cases fail)
-				// and gives chance to next course.
-
-				// CASE 1: checks for invigilation and CASE 2: tries to allocate
-				// all students in 1 class.
-				if (TT.allocateFullChunk(array, tempCourse, slot) == 1) {
-					continue;
-				}
-				// CASE 3: small and big cases
-
-				// if a course has come here,it means that it's broken in
-				// different chunks
-				tempCourse.setBroken(true);
-
-				if (TimeTableEndSem.ifCourseIsBig(tempCourse, array[0])) // assuming
-																			// that
-																			// total
-																			// capacity
-																			// of
-																			// rooms
-																			// is
-																			// same
-																			// for
-																			// time2
+				buffer.add(new Course(tempCourse));//copy of new course so that initial state is always fresh even if 
+				//source ArrayList in slot class is updated(when course is processed=true).
+				Collections.sort(buffer, new CourseComparatorByCapacity());//reassigning priorities in descending order.
+				System.out.println("Buffer:");
+				for(Course course:buffer)
+					System.out.println(course);
+				//System.out.println("Address of:"+tempCourse.getCourse_name()+""+tempCourse);
+				TimeInterval[] array2=null;
+				
+				buffer_copy=new ArrayList<>();
+//				for(Course course:buffer)
+//				{
+//					Course course_copy=new Course(course);
+//					buffer_copy.add(course_copy);
+//				}
+				Utility1 utility=null;
+				
+				
+				if(true)//Except slot 1,all the slots are getting processed through buffer concept.
 				{
-					// k = p % 2; // k=0,1//just alternating,p->course
-					// sequences(0,1,2,3,..)
-					//
-					// //flip k
-					// if(k==0)
-					// k=0;
-					// else if(k==1)
-					// k=1;
-					if (k == 1)
-						k = 0;
-					else if (k == 0)
-						k = 1;
-				} else {
-					k = 0;//// this is causing 4-5 times printing in excel if
-							//// given wrong value.
-					flag_small=1;
-				}
-
-				// always start from k=1 for flag_clash==1
-
-				if (tempCourse.getFlag_clash() == 1)
-					k = 1;
-				// System.out.println(tempCourse+"flag:
-				// "+tempCourse.getFlag_clash());
-				for (; k <= 1; k++) {
-					flag = 0;
-
-					for (int j = 0; j < (array[k].getRooms().size() + 1); j++)// checking
-																				// for
-																				// number
-																				// of
-																				// cases
-																				// =
-																				// no
-																				// of
-																				// rooms
+					for(Course course:buffer)
 					{
-						System.out.println("j:" + j);
-						// saving state of time1,array[1] and slot. In case,
-						// entire
-						// course is not allocated in one time interval,then it
-						// undo all the operations.
-						TimeInterval save1 = new TimeInterval(array[0]);
-						TimeInterval save2 = new TimeInterval(array[1]);
-						Slot save3 = new Slot(slot);
-						// ArrayList<Room> save5=new ArrayList<>();
-						// for(Room room:array[k].getRooms())
-						// {
-						// save5.add(new Room(room));
-						// }
-						array[k].smallBigPattern(j);// Refer TimeInterval class
-
-						int save4 = 0;
-						for (int i = 0; i < array[k].getRooms().size(); i++) // entering
-																				// room
-																				// for
-																				// time1/time2
-						{
-							System.out.println(tempCourse + "still running" + i);
-							save4 = i;
-							Room proposedRoom = array[k].getRooms().get(i);
-							int left = proposedRoom.getLeftStrength();
-							int right = proposedRoom.getRightStrength();
-							boolean leftGo = false;
-							boolean rightGo = false;
-							boolean tempCheckBigCapacity = array[k].getRooms().get(i).getCheckBigCapacity();// to
-																											// determine
-																											// what
-																											// to
-																											// check-small/big
-							// for this room,if tempCheckBig is true, so it will
-							// check for that side which has bigger capacity
-							if (tempCheckBigCapacity == true) {
-								if (left >= right) {
-									if (proposedRoom.getLeftCapacity() > 0) {
-										leftGo = true;
-									}
-									rightGo = false;
-								} else if (right > left) {
-									leftGo = false;
-									if (proposedRoom.getRightCapacity() > 0) {
-										rightGo = true;
-									}
-								}
-							} else if (tempCheckBigCapacity == false) {
-								if (left >= right) {
-									leftGo = false;
-									if (proposedRoom.getRightCapacity() > 0) {
-										rightGo = true;
-									}
-								} else if (right > left) {
-									if (proposedRoom.getLeftCapacity() > 0) {
-										leftGo = true;
-									}
-									rightGo = false;
-								}
-							}
-
-							if (rightGo) // more students on right side,so fewer
-											// right seats left
-							{
-								if (TT.rightGo(proposedRoom, tempCourse, array[k], slot) == 1) {
-									flag = 1;
-									break;
-								}
-							} else if (leftGo) {
-								if (TT.leftGo(proposedRoom, tempCourse, array[k], slot) == 1) {
-									flag = 1;
-									break;
-								}
-							}
-						}
-
-						// till here course has been allocated in all the rooms
-						// in
-						// time interval 1
-						flagContinue = 0;
-						flagContinue2 = 0;
-						System.out.println("Trespasser: " + tempCourse);
-						if (k == 0 && tempCourse.getUnallocated_strength() > 0) {// course
-																					// still
-																					// has
-																					// some
-																					// unallocated
-																					// students
-																					// in
-																					// above
-							// case, so try other case and undo above operation
-							// array[0].printRooms();
-							array[0] = save1;
-							flagContinue = 1;
-							flagContinue2 = 1;
-							array[1] = save2;
-							slot = save3;
-							tempCourse = slot.chosingCourse();
-
-							// time1.printRooms();
-							// time1.setRooms(save5);
-
-							// send to k0(check same pattern for next time
-							// interval)
-
-						}
-
-						// above pattern could not fit in both the time
-						// intervals,so change the pattern and undo codes
-						if (k == 1 && (save4 == array[k].getRooms().size() - 1)
-								&& (tempCourse.getUnallocated_strength() > 0)) {
-							// undo code;
-							array[0] = save1;
-							array[1] = save2;
-							slot = save3;
-							flagContinue2 = 1;
-							tempCourse = slot.chosingCourse();
-
-							// send to next pattern.
-						}
-
-						//
-						// Below is just for flag_clash==1.
-						// Since there was clashing, we forced it to check for
-						// timeInterval2 first, but unfortunately,it couldn't be
-						// accomodated in timeinterval2 and
-						// now,we want it to go to t1. We reset the loop by k=0.
-						// Although it may go in continuous loop,k=0,1,0,1...
-						// But I have ensured that after k=0, if still
-						// it is unallocated,it breaks the loop and it goes to
-						// failed list in TT.
-						if (k == 1 && (save4 == array[k].getRooms().size() - 1)
-								&& (tempCourse.getUnallocated_strength() > 0) && tempCourse.getFlag_clash() == 1) {
-							array[0] = save1;
-							array[1] = save2;
-							slot = save3;
-							tempCourse = slot.chosingCourse();
-							k = 0;
-
-							break;
-						}
-						// check above comment. This ensures that it finally
-						// terminates after k=0;
-						if (k == 0 && (save4 == array[k].getRooms().size() - 1)
-								&& (tempCourse.getUnallocated_strength() > 0) && tempCourse.getFlag_clash() == 1) {
-							array[0] = save1;
-							array[1] = save2;
-							slot = save3;
-							tempCourse = slot.chosingCourse();
-							TT.setFailed(tempCourse);
-							tempCourse.setProcessed(true);
-							slot.updateProcessCount();
-							flag = 1;
-							flagContinue2 = 0;
-							flagContinue = 0;
-
-							break;
-						}
-
-						// below is for normal stopping after all the (j,i)
-						// combinations are finished. Now, it is still
-						// unallocated, so this is failed
-						// adding it to failed list.
-						if (k == 1 && (save4 == array[k].getRooms().size() - 1)
-								&& (tempCourse.getUnallocated_strength() > 0) && (j == array[k].getRooms().size())) {
-							// undo code;
-							array[0] = save1;
-							array[1] = save2;
-							slot = save3;
-							tempCourse = slot.chosingCourse();
-							TT.setFailed(tempCourse);
-							tempCourse.setProcessed(true);
-							slot.updateProcessCount();
-							flag = 1;
-							flagContinue2 = 0;
-							flagContinue = 0;
-
-							break;
-							// send to next pattern.
-						}
-
-						if (flagContinue2 == 1)
-							continue;
-						if (flag == 1 || flagContinue == 1)
-							break;
+					
+					utility=TT.dynamicAllot(array2, course, slot, TT, 1,0);
+					k=utility.k;//useless in this case.
+					array2=utility.array;//restoring array and slot after processing in above function.
+					slot=utility.slot;
+					//System.out.println("********************");
+					buffer_copy.add(utility.course);// Storing all the courses of this buffer. This buffer_copy contains
+					//Courses when all the courses from buffer have been processed and this needs to be updated to chosingCourse()
+					//so that it choses next prior course.
+//					array2[0].print();
+//					array2[1].print();
 					}
-					if (flagContinue == 1)
-						continue;
-					if (flag == 1)
-						break;
 				}
-
-				p++;
-				if(flag_small==1)
-					k=1;
+				
+				//For first slot, no buffer concept and if a course could not be processed or it lead to alter the existing ti 2
+				//structure, undo it and reallocate it in normal case. below is normal case as for slot1. Check TimeTable class
+				//for CourseIntact. 
+				//NORMAL ALLOTMENT OPTION
+				if(!TT.courseIntact(array, array2)) 
+				{
+					//System.out.println(tempCourse+"finally going to ti2");
+//					if(!TT.courseIntact(array, array2))
+//						k=1;//always gives k=0 if slot is not 1. Basically, I have ruled out alternating k from slot >1
+					
+				Utility1 utility2=TT.dynamicAllot(array, tempCourse, slot, TT, 1,1);// normal case.
+				k=utility2.k;
+				array=utility2.array;
+				slot=utility2.slot;
+				//pass on course
+				//System.out.println("----------"+utility2.course+" "+utility2.course.getProcessed());
+					
+				//updating course in the source ArrayList of Slot class which chosingCourse() uses.
+				for(int n=0;n<slot.getCourses().size();n++)
+					{
+						Course course2=slot.getCourses().get(n);
+							if(course2.getCourse_id().equals(utility2.course.getCourse_id()))
+							{
+								slot.getCourses().set(n, utility2.course);
+								
+							}
+						
+					}
+				}
+				else
+				{//if courseIntact is true, it means our buffer is successfully processed. Now, replace the existing 
+					//timeinterval with new one with updated data.
+					array=array2;
+					
+					//Further, update all the courses from buffer with modified state in buffer_copy to source arraylist
+					//of slot class.
+					for(int n=0;n<slot.getCourses().size();n++)
+					{
+						Course course2=slot.getCourses().get(n);
+						for(Course course3:buffer_copy)
+							if(course2.getCourse_id().equals(course3.getCourse_id()))
+							{
+								slot.getCourses().set(n, course3);
+								
+							}
+						
+					}
+				}
+				slot.updateProcessCount(); //One iteration of while loop processes one course 
+				//fully irrespective of the fact that it has been failed, allocated in one go or in different buffer.
+				
 			}
 			array[0].print();
 			array[1].print();
 			TT.getStore().put(h + 1, new StoreTT(h + 1, array[0], array[1]));
-			System.out.println("It's really painful************");
+			//System.out.println("It's really painful************");
 			Set<Course> set1 = new HashSet<>();
 			for (ArrayList<OccupationData> od : array[0].getMap().values()) {
 				for (int hh = 0; hh < od.size(); hh++) {
 					set1.add(od.get(hh).getCourse());
 				}
 			}
-			System.out.println("set1" + set1 + "for k=" + k);
+			//System.out.println("set1" + set1 + "for k=" + k);
 			// System.out.println(set);
 			if (!array[1].getMap().isEmpty())// if time2 has some courses
 												// allocated
@@ -395,7 +218,7 @@ public class GenerateTTEndSem {
 																				// in
 																				// set
 				{
-					for (int hh = 0; hh < od.size(); hh++) {
+				 	for (int hh = 0; hh < od.size(); hh++) {
 						set.add(Integer.parseInt(od.get(hh).getCourse().getBatch()));
 					}
 				}
