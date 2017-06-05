@@ -54,7 +54,7 @@ public class TimeTableEndSem extends TimeTable{
 		// CASE 1:
 		int k = 0;
 		if (course.getFlag_clash() == 1)
-			k = 1;
+			k = 0;
 		for (; k <= 1; k++) {
 			flag = 0;
 			if (custom_flag == 1 && k == 1 && slot.getSlot_no() != 1)// K==1
@@ -321,7 +321,7 @@ public class TimeTableEndSem extends TimeTable{
 			// always start from k=1 for flag_clash==1
 
 			if (tempCourse.getFlag_clash() == 1)
-				k = 1;
+				k = 0;
 		//	System.out.println(tempCourse+"final k:"+k);
 			for (; k <= 1; k++) {
 				flag = 0;

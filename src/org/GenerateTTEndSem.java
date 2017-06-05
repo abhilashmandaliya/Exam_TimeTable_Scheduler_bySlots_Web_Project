@@ -198,18 +198,18 @@ public class GenerateTTEndSem {
 			array[1].print();
 			TT.getStore().put(h + 1, new StoreTT(h + 1, array[0], array[1]));
 			//System.out.println("It's really painful************");
-			Set<Course> set1 = new HashSet<>();
-			for (ArrayList<OccupationData> od : array[0].getMap().values()) {
-				for (int hh = 0; hh < od.size(); hh++) {
-					set1.add(od.get(hh).getCourse());
-				}
-			}
+//			Set<Course> set1 = new HashSet<>();
+//			for (ArrayList<OccupationData> od : array[0].getMap().values()) {
+//				for (int hh = 0; hh < od.size(); hh++) {
+//					set1.add(od.get(hh).getCourse());
+//				}
+//			}
 			//System.out.println("set1" + set1 + "for k=" + k);
 			// System.out.println(set);
-			if (!array[1].getMap().isEmpty())// if time2 has some courses
+			if (!array[0].getMap().isEmpty())// if time2 has some courses
 												// allocated
-			{
-				for (ArrayList<OccupationData> od : array[1].getMap().values())// stores
+			{System.out.println("Printingggg"+array[0].getMap().size());
+				for (ArrayList<OccupationData> od : array[0].getMap().values())// stores
 																				// all
 																				// the
 																				// batches
@@ -218,6 +218,7 @@ public class GenerateTTEndSem {
 																				// in
 																				// set
 				{
+					System.out.println("Printing"+od.size());
 				 	for (int hh = 0; hh < od.size(); hh++) {
 						set.add(Integer.parseInt(od.get(hh).getCourse().getBatch()));
 					}
