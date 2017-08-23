@@ -122,7 +122,7 @@ public class GenerateTTEndSem {
 //					buffer_copy.add(course_copy);
 //				}
 				Utility1 utility=null;
-				
+				boolean flag_failed_verified=false;
 				
 				if(true)//Except slot 1,all the slots are getting processed through buffer concept.
 				{
@@ -139,6 +139,10 @@ public class GenerateTTEndSem {
 					//so that it choses next prior course.
 //					array2[0].print();
 //					array2[1].print();
+					if(utility.flag_failed==1)
+					{
+						flag_failed_verified=true;
+					}
 					}
 				}
 				
@@ -146,7 +150,7 @@ public class GenerateTTEndSem {
 				//structure, undo it and reallocate it in normal case. below is normal case as for slot1. Check TimeTable class
 				//for CourseIntact. 
 				//NORMAL ALLOTMENT OPTION
-				if(!TT.courseIntact(array, array2)) 
+				if(!TT.courseIntact(array, array2) || flag_failed_verified==true) 
 				{
 					//System.out.println(tempCourse+"finally going to ti2");
 //					if(!TT.courseIntact(array, array2))

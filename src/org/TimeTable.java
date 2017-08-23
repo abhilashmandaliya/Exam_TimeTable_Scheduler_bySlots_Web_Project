@@ -567,7 +567,7 @@ public class TimeTable {
 	// I dont want big courses to alternate to allow smaller courses to fit in
 	// to ensure invigilation
 	public static boolean ifCourseIsBig(Course course, TimeInterval ti) {
-		if (course.getNo_Of_Students() > (0.65) * ti.totalCapacityOfRooms())
+		if (course.getNo_Of_Students() > (1.65) * ti.totalCapacityOfRooms())
 			return true;
 		else
 			return false;
@@ -608,7 +608,7 @@ public class TimeTable {
 		if (TT.allocateFullChunk(array, tempCourse, slot) == 1) {
 			//System.out.println("Allocated full chunk for" + tempCourse);
 			
-			return new Utility1(array,k,tempCourse,slot);
+			return new Utility1(array,k,tempCourse,slot,0);
 		}
 		
 		// CASE 3: small and big cases
@@ -828,12 +828,14 @@ public class TimeTable {
 				//flag_failed means it's coming from normal allotment option from GenrateTT and this normal option can
 				//set a course to failed. As if buffer is allowed, it may set several courses as failed just in testing.
 				//System.out.println(tempCourse+"flag_failed: "+flag_failed);
+				System.out.println("flag failed:"+j);
 				if (k == 0 && flag_failed==1 && (save4 == array[k].getRooms().size() - 1)
 						&& (tempCourse.getUnallocated_strength() > 0) && (j == array[k].getRooms().size())) {
 					// undo code;
 					//System.out.println("breaking for" + tempCourse);
-					//System.out.println("Failinggggggg"+tempCourse);
+					System.out.println("Failinggggggg"+tempCourse.getCourse_name());
 					TT.setFailed(tempCourse);
+					
 					tempCourse.setProcessed(true);
 					//if this course is failed,it's removed from buffer also as it's no more required to check and it's
 					//interfering in normal processing. Buffer always keeps initial states. So, this failing course might
@@ -856,6 +858,13 @@ public class TimeTable {
 					break;
 					// send to next pattern.
 				}
+				
+				if (k == 0 && flag_failed==0 && (save4 == array[k].getRooms().size() - 1)
+						&& (tempCourse.getUnallocated_strength() > 0) && (j == array[k].getRooms().size())) {
+					flag_failed=1;
+					break;
+					// send to next pattern.
+				}
 				// tempCourse = slot.chosingCourse();
 				if (flagContinue2 == 1)
 					continue;
@@ -872,7 +881,7 @@ public class TimeTable {
 		if(flag_small==1)
 			k=0;
 		
-		return new Utility1(array,k,tempCourse,slot);
+		return new Utility1(array,k,tempCourse,slot,flag_failed);
 	}
 
 	//this function compares 2 timeinterval array. It checks that all the allocated courses of old one in ti2 is in new 

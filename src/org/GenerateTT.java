@@ -81,7 +81,7 @@ public class GenerateTT {
 				
 				Course tempCourse = slot.chosingCourse();// refer slot class for
 				// details
-								
+						System.out.println(tempCourse.getCourse_name()+tempCourse.getProcessed());		
 				buffer.add(new Course(tempCourse));//copy of new course so that initial state is always fresh even if 
 				//source ArrayList in slot class is updated(when course is processed=true).
 				Collections.sort(buffer, new CourseComparatorByCapacity());//reassigning priorities in descending order.
@@ -98,7 +98,7 @@ public class GenerateTT {
 //					buffer_copy.add(course_copy);
 //				}
 				Utility1 utility=null;
-				
+				boolean flag_failed_verified=false;
 				if(h!=0)//Except slot 1,all the slots are getting processed through buffer concept.
 				{
 					for(Course course:buffer)
@@ -114,6 +114,10 @@ public class GenerateTT {
 					//so that it choses next prior course.
 //					array2[0].print();
 //					array2[1].print();
+					if(utility.flag_failed==1)
+					{
+						flag_failed_verified=true;
+					}
 					}
 				}
 				
@@ -121,9 +125,11 @@ public class GenerateTT {
 				//structure, undo it and reallocate it in normal case. below is normal case as for slot1. Check TimeTable class
 				//for CourseIntact. 
 				//NORMAL ALLOTMENT OPTION
-				if(h==0 || !TT.courseIntact(array, array2)) 
+				
+				
+				if(h==0 || !TT.courseIntact(array, array2)||flag_failed_verified==true) 
 				{
-					//System.out.println(tempCourse+"finally going to ti2");
+					System.out.println(tempCourse+"finally going to ti2");
 					if(h!=0 && !TT.courseIntact(array, array2))
 						k=0;//always gives k=0 if slot is not 1. Basically, I have ruled out alternating k from slot >1
 					

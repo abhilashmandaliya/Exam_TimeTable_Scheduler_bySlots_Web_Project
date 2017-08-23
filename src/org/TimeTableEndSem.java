@@ -284,7 +284,7 @@ public class TimeTableEndSem extends TimeTable{
 				System.out.println("Allocated full chunk for" + tempCourse);
 				array[0].print();
 				array[1].print();
-				return new Utility1(array,k,tempCourse,slot);
+				return new Utility1(array,k,tempCourse,slot,0);
 			}
 			
 			// CASE 3: small and big cases
@@ -592,6 +592,12 @@ public class TimeTableEndSem extends TimeTable{
 						break;
 						// send to next pattern.
 					}
+					if (k == 0 && flag_failed==0 && (save4 == array[k].getRooms().size() - 1)
+							&& (tempCourse.getUnallocated_strength() > 0) && (j == array[k].getRooms().size())) {
+						flag_failed=1;
+						break;
+						// send to next pattern.
+					}
 					// tempCourse = slot.chosingCourse();
 					if (flagContinue2 == 1)
 						continue;
@@ -608,7 +614,7 @@ public class TimeTableEndSem extends TimeTable{
 			if(flag_small==1)
 				k=1;
 			
-			return new Utility1(array,k,tempCourse,slot);
+			return new Utility1(array,k,tempCourse,slot,flag_failed);
 		}
 		
 		public boolean courseIntact(TimeInterval[] old_array,TimeInterval[] new_array)
