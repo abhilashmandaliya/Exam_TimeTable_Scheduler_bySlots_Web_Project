@@ -77,7 +77,7 @@ public class FileDownloadServlet extends HttpServlet {
 								Iterator<Course> failedCourseIterator = GenerateTTEndSem.getFailedCourses().iterator();
 								String message = "Following courses could not be allocated :\n";
 								while (failedCourseIterator.hasNext())
-									message += (failedCourseIterator.next().toString());
+									message += (failedCourseIterator.next().toString()+"\n");
 								message += "\nAdd more rooms to Allocate these course.\n\nPartial Timetable will get downloaded.";
 								TransactionStatus.setStatusMessage(message);
 							}

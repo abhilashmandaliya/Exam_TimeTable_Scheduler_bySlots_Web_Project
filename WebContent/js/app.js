@@ -1,5 +1,21 @@
 $(document).ready(function() {
 	
+	{		
+		$('[id^=priority').each(function () {	
+			var id = $(this).attr('id');
+			var selected = parseInt($(this).find(":selected").text());
+			$('[id^=priority').each(function(){			
+				if($(this).attr('id') != id) {
+					$(this).find("option").each(function () {
+						if($(this).text() == selected && selected != 0) {
+							$(this).attr('disabled', 'disabled');
+						}
+					});
+				}
+			});
+		});
+	}
+	
 	$("input[type='text']").each(function(e){
 		$(this).val("");
 	});
@@ -25,6 +41,7 @@ $(document).ready(function() {
 			});
 		}
 	});
+	
 	$(document).on("click","[id^=addCourse]",function(e) {
 		$.ajax({
 			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/SlotManagement',
@@ -41,12 +58,19 @@ $(document).ready(function() {
 		});
 	});
 	$("#generateAndDownloadTT").click(function(e) {
+		var name = $("#generateAndDownloadTT").html();
+		$("#generateAndDownloadTT").html("Processing....");
+		$("#generateAndDownloadTT").removeClass("btn-warning");
+		$("#generateAndDownloadTT").addClass("btn-success");
 		var sem = $('#exam_type').val();
 		$.ajax({
 			url : 'FileDownloadServlet',
 			type : 'get',
 			data : {'action':'generatett','semester':sem},
 			success : function(data) {
+				$("#generateAndDownloadTT").html(name);
+				$("#generateAndDownloadTT").removeClass("btn-success");
+				$("#generateAndDownloadTT").addClass("btn-warning");
 				giveAlert(data);
 				window.location.href='FileDownloadServlet?action=downloadtt';
 			}
@@ -215,6 +239,23 @@ $(document).ready(function() {
 			});
 		}
 	});
+	$(document).on("change","[id^=activateRoom]",function(e) {
+		if (confirm("Are you sure you want to change the room status?")) {
+			$.ajax({
+				url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/RoomServlet',
+				type : 'post',
+				data : {
+					'action' : 'activate',
+					'room_no' : $(this).attr('room_no'),
+					'status' : this.checked
+				},
+				success : function(data) {
+					giveAlert(data);
+					location.reload();
+				}
+			});
+		}
+	});
 	$(document).on("click","#login",function(e){
 		$.ajax({
 			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/LoginServlet',
@@ -299,5 +340,58 @@ $(document).ready(function() {
 		$('#editBatchProgramSpan').html(batch_no);
 		$('#edit_batch_no').val(batch_no);
 		$('#edit_program').val(program);
+	});
+	$('#password').keypress(function(e) {
+	    var key = e.which;
+	    if (key == 13) // the enter key code
+	    {
+	      $('#login').click();
+	    }
+	  });
+	{
+		var id, old;
+		$('[id^=priority]').on('focus', function () {
+			id = $(this).attr('id');
+			old = $('#'+id).find(":selected").text();
+		}).change( function(e) {
+			id = $(this).attr('id');
+			var selected = parseInt($('#'+id).find(":selected").text());
+			if(selected != 0) {			
+				$('[id^=priority').each(function () {	
+					if($(this).attr('id') != id) {	
+						$(this).find("option").each(function () {
+							if($(this).text() == selected && parseInt($(this).text()) != 0) {
+								$(this).attr('disabled', 'disabled');
+							}
+						});
+					}
+				});
+			}
+			else {
+				$('[id^=priority').each(function () {
+						$(this).find("option").each(function () {
+							alert(e.old);
+							if($(this).text() == e.old) {							
+								$(this).removeAttr('disabled');
+							}
+						});
+				});
+			}
+		});
+	}
+	$(document).on("change","[id^=priority]",function(e) {
+		$.ajax({
+			url : 'Exam_TimeTable_Scheduler_bySlots_Web_Project/RoomServlet',
+			type : 'post',
+			data : {
+				'action' : 'setpriority',
+				'room_no' : $(this).attr('room_no'),
+				'priority' : $(this).find(":selected").attr('value')
+			},
+			success : function(data) {
+				giveAlert(data);
+				location.reload();
+			}
+		});
 	});
 });

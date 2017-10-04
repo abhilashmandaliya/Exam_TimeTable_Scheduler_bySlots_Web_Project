@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,33 +78,67 @@ public class GeneralDAO {
 		ArrayList<Room> rooms = new ArrayList<>();
 		try {
 			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("Select * from Room order by room_no");
+			ResultSet rs = stmt.executeQuery("Select * from Room where priority!=0 order by priority");
 
 			while (rs.next()) {
 				int room_no = rs.getInt("room_no");
 				int room_capacity = rs.getInt("room_capacity");
 				rooms.add(new Room(room_no, room_capacity));
 			}
-			
-			Collections.sort(rooms, new RoomComparatorByCapacity());
-			ArrayList<Room> second_floor_rooms=new ArrayList<>();
-			for(int i=0;i<rooms.size();i++)
-			{
-				if((rooms.get(i).getRoom_no()/100)==2)
-				{
-					second_floor_rooms.add(rooms.get(i));
-					rooms.remove(i);
-				}
-				
-			}
-			rooms.addAll(second_floor_rooms);
+
+			//Collections.sort(rooms, new RoomComparatorByCapacity());
+			// ArrayList<Room> second_floor_rooms = new ArrayList<>();
+			// for (int i = 0; i < rooms.size(); i++) {
+			// if ((rooms.get(i).getRoom_no() / 100) == 2) {
+			// second_floor_rooms.add(rooms.get(i));
+			// rooms.remove(i);
+			// }
+			//
+			// }
+			// rooms.addAll(second_floor_rooms);
 
 		} catch (SQLException e) {
 			throw new DAOException(e.getMessage());
 		}
-	//	System.out.println("Rooms:"+rooms);
+		// System.out.println("Rooms:"+rooms);
 		return rooms;
-		
+
+	}
+
+	public static ArrayList<RoomUI> getRoomsForUI() throws DAOException, ClassNotFoundException, SQLException {
+		if (con == null)
+			makeConnection();
+		ArrayList<RoomUI> rooms = new ArrayList<>();
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("Select * from Room order by room_no");
+
+			while (rs.next()) {
+				int room_no = rs.getInt("room_no");
+				int room_capacity = rs.getInt("room_capacity");
+				int priority = rs.getInt("priority");
+				rooms.add(new RoomUI(new Room(room_no, room_capacity), rs.getBoolean("is_active"), priority));
+			}
+
+			// Collections.sort(rooms, new RoomComparatorByCapacity());
+			// ArrayList<Room> second_floor_rooms=new ArrayList<>();
+			// for(int i=0;i<rooms.size();i++)
+			// {
+			// if((rooms.get(i).getRoom_no()/100)==2)
+			// {
+			// second_floor_rooms.add(rooms.get(i));
+			// rooms.remove(i);
+			// }
+			//
+			// }
+			// rooms.addAll(second_floor_rooms);
+
+		} catch (SQLException e) {
+			throw new DAOException(e.getMessage());
+		}
+		// System.out.println("Rooms:"+rooms);
+		return rooms;
+
 	}
 
 	// add new room to database
@@ -115,7 +150,7 @@ public class GeneralDAO {
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
-			TransactionStatus.setStatusMessage("Room already Exists !");
+			TransactionStatus.setStatusMessage("Error found! \nPlease check the values.");
 			throw new DAOException(e.getMessage());
 		}
 
@@ -141,6 +176,34 @@ public class GeneralDAO {
 			if (con == null)
 				makeConnection();
 			String sql = "UPDATE Room SET room_capacity=" + capacity + " WHERE room_no=" + room_no;
+			Statement stmt = con.createStatement();
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			throw new DAOException(e.getMessage());
+		}
+
+	}
+
+	// change is_active status of the room
+	public static void activateRoom(int room_no, boolean status) throws DAOException, ClassNotFoundException {
+		try {
+			if (con == null)
+				makeConnection();
+			String sql = "UPDATE Room SET is_active=" + status + " WHERE room_no=" + room_no;
+			Statement stmt = con.createStatement();
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			throw new DAOException(e.getMessage());
+		}
+
+	}
+
+	// change priority of the room
+	public static void prioritizeRoom(int room_no, int priority) throws DAOException, ClassNotFoundException {
+		try {
+			if (con == null)
+				makeConnection();
+			String sql = "UPDATE Room SET priority=" + priority + " WHERE room_no=" + room_no;
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
@@ -214,15 +277,15 @@ public class GeneralDAO {
 			 * if (courseExists(course_id)) throw new CustomException("Course "
 			 * + course_id + "-" + course_name + " already Exists !");
 			 */
-			String sql = "Insert into Course VALUES('" + course_id.trim() + "','" + course_name.trim() + "','" + batch.trim() + "',"
-					+ no_of_students + ",'" + faculty.trim() + "')";
+			String sql = "Insert into Course VALUES('" + course_id.trim() + "','" + course_name.trim() + "','"
+					+ batch.trim() + "'," + no_of_students + ",'" + faculty.trim() + "')";
 
 			Statement stmt = con.createStatement();
 
 			stmt.execute(sql);
 		} catch (SQLException e) {
 			TransactionStatus
-			.setStatusMessage("Course already exists : " + course_id.trim() + " - " + course_name.trim());
+					.setStatusMessage("Course already exists : " + course_id.trim() + " - " + course_name.trim());
 		}
 
 	}
@@ -247,8 +310,9 @@ public class GeneralDAO {
 		try {
 			if (con == null)
 				makeConnection();
-			String sql = "UPDATE course SET course_name='" + course_name.trim() + "',batch='" + batch.trim() + "',no_of_students="
-					+ no_of_students + ",faculty='" + faculty.trim() + "'WHERE course_id='" + course_id.trim() + "'";
+			String sql = "UPDATE course SET course_name='" + course_name.trim() + "',batch='" + batch.trim()
+					+ "',no_of_students=" + no_of_students + ",faculty='" + faculty.trim() + "'WHERE course_id='"
+					+ course_id.trim() + "'";
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
@@ -256,8 +320,8 @@ public class GeneralDAO {
 		}
 
 	}
-	
-	public static void updateFaculty(String course_id,String faculty) throws DAOException, ClassNotFoundException {
+
+	public static void updateFaculty(String course_id, String faculty) throws DAOException, ClassNotFoundException {
 		try {
 			if (con == null)
 				makeConnection();
@@ -269,7 +333,7 @@ public class GeneralDAO {
 		}
 
 	}
-	
+
 	// delete all the courses from database.it clears the database as slot table
 	// also get deleted
 	public static void deleteAllCourses() throws DAOException, ClassNotFoundException {
@@ -302,7 +366,6 @@ public class GeneralDAO {
 		return con;
 	}
 
-	
 	// get codes which map to programs
 	public static Map<Integer, String> getBatchProgram() throws DAOException, ClassNotFoundException, SQLException {
 		if (con == null)
@@ -323,6 +386,7 @@ public class GeneralDAO {
 		}
 		return batch_program;
 	}
+
 	public static Map<Integer, String> getBatch_Program() throws DAOException, ClassNotFoundException, SQLException {
 		if (con == null)
 			makeConnection();
@@ -342,6 +406,7 @@ public class GeneralDAO {
 		}
 		return batch_program;
 	}
+
 	// add new batch program code to database
 	public static void addBatch_Program(Integer batch, String program) throws DAOException, ClassNotFoundException {
 		try {

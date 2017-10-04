@@ -60,6 +60,12 @@ public class RoomServlet extends HttpServlet {
 			} else if (action.equals("delete")) {
 				GeneralDAO.deleteRoom(Integer.parseInt(request.getParameter("room_no")));
 				TransactionStatus.setStatusMessage("Room deleted Successfully !");
+			} else if (action.equals("activate")) {
+				GeneralDAO.activateRoom(Integer.parseInt(request.getParameter("room_no")),Boolean.valueOf(request.getParameter("status")));
+				TransactionStatus.setStatusMessage("Room status updated Successfully !");
+			} else if (action.equals("setpriority")) {
+				GeneralDAO.prioritizeRoom(Integer.parseInt(request.getParameter("room_no")),Integer.parseInt(request.getParameter("priority")));
+				TransactionStatus.setStatusMessage("Room priority updated Successfully !");
 			} else
 				TransactionStatus.setStatusMessage("Invalid request !");
 		} catch (NumberFormatException | ClassNotFoundException | DAOException e) {

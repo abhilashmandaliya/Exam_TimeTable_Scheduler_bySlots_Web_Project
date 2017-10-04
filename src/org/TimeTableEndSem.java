@@ -15,7 +15,7 @@ public class TimeTableEndSem extends TimeTable{
 	public TimeTableEndSem() throws ClassNotFoundException, SQLException, DAOException {
 		super();
 	}
-		// Algortihm cases:
+		// Algorithm cases:
 	// CASE 1: Traverse through all the rooms. In a room, if there is at least 1
 	// student and room still requires
 	// invigilation,then go inside the room.(It may happen that it's possible to
@@ -118,7 +118,7 @@ public class TimeTableEndSem extends TimeTable{
 																									// this
 																									// function
 				{
-					System.out.println(course+" is trying to allocate in room "+proposedRoom);
+				//	System.out.println(course+" is trying to allocate in room "+proposedRoom);
 					if (left > right) // left side has more strength
 					{
 						if (finalChunkStudents <= proposedRoom.getLeftCapacity())// left
@@ -199,7 +199,7 @@ public class TimeTableEndSem extends TimeTable{
 				if (custom_flag == 0 || proposedRoom.getInvigilanceRequired()==false)// it will be 0 if CASE2 is not yet
 										// successful.
 				{
-					System.out.println(course+" is finally trying to allocate in room "+proposedRoom);
+				//	System.out.println(course+" is finally trying to allocate in room "+proposedRoom);
 					if (left > right) {
 						if (finalChunkStudents <= proposedRoom.getLeftCapacity()) {
 							save_room = proposedRoom;
@@ -228,7 +228,7 @@ public class TimeTableEndSem extends TimeTable{
 							save_side = "L";
 							save_ti = array[k];
 							custom_flag = 1;
-							System.out.println("Working");
+							//System.out.println("Working");
 						}
 					}
 				}
@@ -248,7 +248,7 @@ public class TimeTableEndSem extends TimeTable{
 		return flag;// both case failed ,returning 0;
 	}
 
-		public Utility1 dynamicAllot(TimeInterval[] array,Course tempCourse,Slot slot,TimeTable TT,int k,int flag_failed) throws ClassNotFoundException, DAOException, SQLException
+		public Utility1 dynamicAllot(TimeInterval[] array,Course tempCourse_original,Slot slot,TimeTable TT,int k,int flag_failed,String type) throws ClassNotFoundException, DAOException, SQLException
 		{
 			if(array==null)
 			{
@@ -263,10 +263,11 @@ public class TimeTableEndSem extends TimeTable{
 			int flagContinue2 = 0;
 			int flag=0;
 			
-			tempCourse=new Course(tempCourse);//making a new copy as the course given in function is coming from buffer
+			Course tempCourse=new Course(tempCourse_original);//making a new copy as the course given in function is coming from buffer
 			//and I need to keep it fresh.
 			
-			System.out.println("Course chosen: " + tempCourse + "processed is:" + tempCourse.getProcessed());
+			System.out.println("Course chosen: " + tempCourse + "processed is:" + 
+			tempCourse.getProcessed()+"Unallocated strength:"+tempCourse.getUnallocated_strength());
 			// MAIN ALGORITHM:
 			// There are 3 cases. Each course visits all the 3 cases. If it
 			// gets allocated in CASE 1, it breaks
@@ -282,8 +283,9 @@ public class TimeTableEndSem extends TimeTable{
 			// all students in 1 class.
 			if (TT.allocateFullChunk(array, tempCourse, slot) == 1) {
 				System.out.println("Allocated full chunk for" + tempCourse);
-				array[0].print();
-				array[1].print();
+				
+//				array[0].print();
+//				array[1].print();
 				return new Utility1(array,k,tempCourse,slot,0);
 			}
 			
@@ -295,37 +297,43 @@ public class TimeTableEndSem extends TimeTable{
 			//course_backup.setBroken(true);
 			//System.out.println(tempCourse+""+tempCourse.getBroken()+"Working");
 		//	System.out.println("intitial k:"+k);
-			if (TimeTable.ifCourseIsBig(tempCourse, array[0])) // assuming
-																// that
-																// total
-																// capacity
-																// of
-																// rooms is
-																// same
-																// for time2
-			{
-				// k = p % 2; // k=0,1//just alternating,p->course
-				// sequences(0,1,2,3,..)
-				//System.out.println("Big COURSE:::"+tempCourse.getCourse_name());
-				// flip k
-				if (k == 0)
-					k = 1;
-				else if (k == 1)
-					k = 0;
-			} else {
-				k = 0;// this is causing 4-5 times printing in excel if
-						// given wrong value.
-				flag_small=1;
-			}
-		//	System.out.println("k = "+k+" for "+tempCourse.getCourse_name());
+//			if (TimeTable.ifCourseIsBig(tempCourse, array[0])) // assuming
+//																// that
+//																// total
+//																// capacity
+//																// of
+//																// rooms is
+//																// same
+//																// for time2
+//			{
+//				// k = p % 2; // k=0,1//just alternating,p->course
+//				// sequences(0,1,2,3,..)
+//				//System.out.println("Big COURSE:::"+tempCourse.getCourse_name());
+//				// flip k
+//				if (k == 0)
+//					k = 1;
+//				else if (k == 1)
+//					k = 0;
+//			} else {
+//				k = 0;// this is causing 4-5 times printing in excel if
+//						// given wrong value.
+//				flag_small=1;
+//			}
+//		//	System.out.println("k = "+k+" for "+tempCourse.getCourse_name());
 			// always start from k=1 for flag_clash==1
-
-			if (tempCourse.getFlag_clash() == 1)
-				k = 0;
+			
+//			if (tempCourse.getFlag_clash() == 1)
+//				k = 0;
+			k=0;
 		//	System.out.println(tempCourse+"final k:"+k);
 			for (; k <= 1; k++) {
 				flag = 0;
-
+				System.out.println("Initial stage+k:"+k);
+				System.out.println("Array[0]");
+				array[0].print();
+				System.out.println("Array[1]");
+				array[1].print();
+				System.out.println(tempCourse.getUnallocated_strength());
 				for (int j = 0; j < (array[k].getRooms().size() + 1); j++)// checking
 																			// for
 																			// number
@@ -425,8 +433,10 @@ public class TimeTableEndSem extends TimeTable{
 					flagContinue = 0;
 					flagContinue2 = 0;
 					
-					System.out.println(tempCourse+"visiting hhhhhhhhhhh"+tempCourse.getUnallocated_strength());
+				//	System.out.println(tempCourse+"visiting hhhhhhhhhhh"+tempCourse.getUnallocated_strength());
+					System.out.println("TI0");
 					array[0].print();
+					System.out.println("TI");
 					array[1].print();
 					if (k == 0 && tempCourse.getUnallocated_strength() > 0) {// course
 																				// still
@@ -440,6 +450,7 @@ public class TimeTableEndSem extends TimeTable{
 						// array[0].printRooms();
 						//System.out.println("before undo");
 						//System.out.println(tempCourse.getUnallocated_strength());
+				
 						array[0] = save1;
 						flagContinue = 1;
 						flagContinue2 = 1;
@@ -448,6 +459,14 @@ public class TimeTableEndSem extends TimeTable{
 //						System.out.println("After undo");
 //						array[1].print();
 						//see below comment
+						//System.out.println("In second time of big failed course"+GenerateTTEndSem.buffer.size());
+						if(flag_failed==1)
+						{
+							tempCourse=new Course(tempCourse_original);
+						}
+						else{
+							
+						
 						for(int n=0;n<GenerateTTEndSem.buffer.size();n++)
 						{
 							Course course2=GenerateTTEndSem.buffer.get(n);
@@ -458,7 +477,7 @@ public class TimeTableEndSem extends TimeTable{
 								}
 							
 						}
-						
+						}
 						//replacing this address in original buffer_copy also of GenerateTT
 						//reflectChangesToBuffer(tempCourse,array);
 						//System.out.println("flag1: " + tempCourse);
@@ -467,8 +486,8 @@ public class TimeTableEndSem extends TimeTable{
 
 						// send to k0(check same pattern for next time
 						// interval)
-						//System.out.println("after undo");
-						//System.out.println(tempCourse.getUnallocated_strength());
+						System.out.println("after undo");
+						System.out.println(tempCourse.getUnallocated_strength());
 
 					}
 
@@ -482,6 +501,12 @@ public class TimeTableEndSem extends TimeTable{
 						array[1] = save2;
 						slot = save3;
 						flagContinue2 = 1;
+						if(flag_failed==1)
+						{
+							tempCourse=new Course(tempCourse_original);
+						}
+						else{
+							
 						//undo course by replacing it with fresh copy from buffer
 						for(int n=0;n<GenerateTTEndSem.buffer.size();n++)
 						{
@@ -491,7 +516,8 @@ public class TimeTableEndSem extends TimeTable{
 									tempCourse=new Course(course2);
 									break;
 								}
-							
+							 
+						}
 						}
 						//replacing this address in original buffer_copy also of GenerateTT
 						//reflectChangesToBuffer(tempCourse,array);
@@ -519,11 +545,12 @@ public class TimeTableEndSem extends TimeTable{
 					}
 					// check above comment. This ensures that it finally
 					// terminates after k=0;
-					if (k == 0 && flag_failed==1 && (save4 == array[k].getRooms().size() - 1)
+					if (type.equals("normal")&&k == 0 && flag_failed==1 && (save4 == array[k].getRooms().size() - 1)
 							&& (tempCourse.getUnallocated_strength() > 0) && tempCourse.getFlag_clash() == 1) {
 						array[0] = save1;
 						array[1] = save2;
 						slot = save3;
+						System.out.println("IT terminated");
 						//undo course by replacing it with fresh copy from buffer
 						for(int n=0;n<GenerateTTEndSem.buffer.size();n++)
 						{
@@ -561,11 +588,12 @@ public class TimeTableEndSem extends TimeTable{
 					//flag_failed means it's coming from normal allotment option from GenrateTT and this normal option can
 					//set a course to failed. As if buffer is allowed, it may set several courses as failed just in testing.
 					//System.out.println(tempCourse+"flag_failed: "+flag_failed);
-					if (k == 1 && flag_failed==1 && (save4 == array[k].getRooms().size() - 1)
+					if (type.equals("normal")&&k == 1 && flag_failed==1 && (save4 == array[k].getRooms().size() - 1)
 							&& (tempCourse.getUnallocated_strength() > 0) && (j == array[k].getRooms().size())) {
 						// undo code;
 						//System.out.println("breaking for" + tempCourse);
-						//System.out.println("Failinggggggg"+tempCourse);
+						System.out.println("Failinggggggg"+tempCourse);
+						
 						array[0] = save1;
 						array[1] = save2;
 						slot = save3;
@@ -574,6 +602,7 @@ public class TimeTableEndSem extends TimeTable{
 						//if this course is failed,it's removed from buffer also as it's no more required to check and it's
 						//interfering in normal processing. Buffer always keeps initial states. So, this failing course might
 						//be getting priority always.
+ 
 						for(int n=0;n<GenerateTTEndSem.buffer.size();n++)
 						{
 							Course course2=GenerateTTEndSem.buffer.get(n);
@@ -584,6 +613,7 @@ public class TimeTableEndSem extends TimeTable{
 								}
 							
 						}
+						
 						//slot.updateProcessCount();
 					//	System.out.println(tempCourse.getProcessed());
 						flag = 1;
@@ -611,9 +641,9 @@ public class TimeTableEndSem extends TimeTable{
 			}
 
 			//p++;
-			if(flag_small==1)
-				k=1;
-			
+//			if(flag_small==1)
+//				k=1;
+			System.out.println("Ending");
 			return new Utility1(array,k,tempCourse,slot,flag_failed);
 		}
 		

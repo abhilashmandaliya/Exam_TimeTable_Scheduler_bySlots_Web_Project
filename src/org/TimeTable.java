@@ -573,7 +573,7 @@ public class TimeTable {
 			return false;
 	}
 	
-	public Utility1 dynamicAllot(TimeInterval[] array,Course tempCourse,Slot slot,TimeTable TT,int k,int flag_failed) throws ClassNotFoundException, DAOException, SQLException
+	public Utility1 dynamicAllot(TimeInterval[] array,Course tempCourse_original,Slot slot,TimeTable TT,int k,int flag_failed,String type) throws ClassNotFoundException, DAOException, SQLException
 	{
 		if(array==null)
 		{
@@ -588,7 +588,7 @@ public class TimeTable {
 		int flagContinue2 = 0;
 		int flag=0;
 		
-		tempCourse=new Course(tempCourse);//making a new copy as the course given in function is coming from buffer
+		Course tempCourse=new Course(tempCourse_original);//making a new copy as the course given in function is coming from buffer
 		//and I need to keep it fresh.
 		
 		//System.out.println("Course chosen: " + tempCourse + "processed is:" + tempCourse.getProcessed());
@@ -769,6 +769,13 @@ public class TimeTable {
 //					System.out.println("After undo");
 //					array[1].print();
 					//see below comment
+					if(flag_failed==1)
+					{
+						tempCourse=new Course(tempCourse_original);
+					}
+					else{
+						
+					
 					for(int n=0;n<GenerateTT.buffer.size();n++)
 					{
 						Course course2=GenerateTT.buffer.get(n);
@@ -779,7 +786,7 @@ public class TimeTable {
 							}
 						
 					}
-					
+					}
 					//replacing this address in original buffer_copy also of GenerateTT
 					//reflectChangesToBuffer(tempCourse,array);
 					//System.out.println("flag1: " + tempCourse);
@@ -803,6 +810,13 @@ public class TimeTable {
 					array[1] = save2;
 					slot = save3;
 					flagContinue2 = 1;
+					if(flag_failed==1)
+					{
+						tempCourse=new Course(tempCourse_original);
+					}
+					else{
+						
+					
 					//undo course by replacing it with fresh copy from buffer
 					for(int n=0;n<GenerateTT.buffer.size();n++)
 					{
@@ -813,6 +827,7 @@ public class TimeTable {
 								break;
 							}
 						
+					}
 					}
 					//replacing this address in original buffer_copy also of GenerateTT
 					//reflectChangesToBuffer(tempCourse,array);
@@ -829,7 +844,7 @@ public class TimeTable {
 				//set a course to failed. As if buffer is allowed, it may set several courses as failed just in testing.
 				//System.out.println(tempCourse+"flag_failed: "+flag_failed);
 				System.out.println("flag failed:"+j);
-				if (k == 0 && flag_failed==1 && (save4 == array[k].getRooms().size() - 1)
+				if (type.equals("normal")&& k == 0 && flag_failed==1 && (save4 == array[k].getRooms().size() - 1)
 						&& (tempCourse.getUnallocated_strength() > 0) && (j == array[k].getRooms().size())) {
 					// undo code;
 					//System.out.println("breaking for" + tempCourse);
@@ -845,6 +860,7 @@ public class TimeTable {
 						Course course2=GenerateTT.buffer.get(n);
 							if(course2.getCourse_id().equals(tempCourse.getCourse_id()))
 							{
+								
 								GenerateTT.buffer.remove(n);
 								break;
 							}

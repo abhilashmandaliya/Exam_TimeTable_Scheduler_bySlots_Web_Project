@@ -246,6 +246,12 @@ public class PrintExcelEndSem extends PrintExcel {
 					curr_row = curr_row + max;
 					range.put(batch_id, max);
 				}
+				else
+				{
+					line.put(batch_id, curr_row);
+					curr_row = curr_row + 1;
+					range.put(batch_id, 1);
+				}
 
 			}
 			// main allocation in

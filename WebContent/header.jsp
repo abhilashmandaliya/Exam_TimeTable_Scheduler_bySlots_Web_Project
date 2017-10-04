@@ -4,10 +4,12 @@
 	if (!Authenticator.isAuthorized(request.getSession(), this.getClass().getName()))
 		response.sendRedirect("login.jsp");
 %>
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-font">
 	<div class="container-fluid">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="Home.jsp">DA-IICT</a>
+			<a class="navbar-brand" href="Home.jsp">
+				<img style="margin-top:-8px" width="40px" height="40px" src= "images/da_logo.jpg" />
+			</a>
 		</div>
 		<ul class="nav navbar-nav">
 			<li class="dropdown"><a class="dropdown-toggle"

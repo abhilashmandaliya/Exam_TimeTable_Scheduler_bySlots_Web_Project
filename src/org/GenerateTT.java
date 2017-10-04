@@ -104,7 +104,7 @@ public class GenerateTT {
 					for(Course course:buffer)
 					{
 					
-					utility=TT.dynamicAllot(array2, course, slot, TT, 0,0);
+					utility=TT.dynamicAllot(array2, course, slot, TT, 0,0,"buffer");
 					k=utility.k;//useless in this case.
 					array2=utility.array;//restoring array and slot after processing in above function.
 					slot=utility.slot;
@@ -133,7 +133,7 @@ public class GenerateTT {
 					if(h!=0 && !TT.courseIntact(array, array2))
 						k=0;//always gives k=0 if slot is not 1. Basically, I have ruled out alternating k from slot >1
 					
-				Utility1 utility2=TT.dynamicAllot(array, tempCourse, slot, TT, k,1);// normal case.
+				Utility1 utility2=TT.dynamicAllot(array, tempCourse, slot, TT, k,1,"normal");// normal case.
 				k=utility2.k;
 				array=utility2.array;
 				slot=utility2.slot;

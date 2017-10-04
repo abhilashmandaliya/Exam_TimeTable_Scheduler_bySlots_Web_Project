@@ -82,7 +82,7 @@ public class GenerateTTEndSem {
 					if (set2.contains(Integer.parseInt(course.getBatch()))) {
 						course.setSlot1priority(1);
 					}
-					System.out.println(course + " and priority: " + course.getSlot1priority());
+				//	System.out.println(course + " and priority: " + course.getSlot1priority());
 				}
 
 				// System.out.println("set2"+set2);
@@ -126,11 +126,17 @@ public class GenerateTTEndSem {
 				
 				if(true)//Except slot 1,all the slots are getting processed through buffer concept.
 				{
-					for(Course course:buffer)
-					{
 					
-					utility=TT.dynamicAllot(array2, course, slot, TT, 1,0);
-					k=utility.k;//useless in this case.
+					for(Course course:buffer)
+					{//	System.out.println("buffer size:"+buffer.size());
+						//Course course=buffer.get(i);
+						//System.out.println("Going bhaiuiiiiiiiiiiiiiiiiiiiii");
+						//System.out.println(course.hashCode());
+					utility=TT.dynamicAllot(array2, course, slot, TT, 1,0,"buffer");
+					//System.out.println(course.hashCode());
+					//System.out.println(course.getProcessed());
+					//System.out.println("Going bhaiuiiiiiiiiiiiiiiiiiiiii55555555");
+				//	k=utility.k;//useless in this case.
 					array2=utility.array;//restoring array and slot after processing in above function.
 					slot=utility.slot;
 					//System.out.println("********************");
@@ -139,11 +145,16 @@ public class GenerateTTEndSem {
 					//so that it choses next prior course.
 //					array2[0].print();
 //					array2[1].print();
-					if(utility.flag_failed==1)
-					{
-						flag_failed_verified=true;
+					System.out.println(utility.course.getUnallocated_strength());
+						if(utility.flag_failed==1)
+						{
+							System.out.println("Flag Failed is verified");
+							flag_failed_verified=true;
+						//	break;
+						}
+					//	System.out.println(course);
 					}
-					}
+					
 				}
 				
 				//For first slot, no buffer concept and if a course could not be processed or it lead to alter the existing ti 2
@@ -152,12 +163,13 @@ public class GenerateTTEndSem {
 				//NORMAL ALLOTMENT OPTION
 				if(!TT.courseIntact(array, array2) || flag_failed_verified==true) 
 				{
+					
 					//System.out.println(tempCourse+"finally going to ti2");
 //					if(!TT.courseIntact(array, array2))
 //						k=1;//always gives k=0 if slot is not 1. Basically, I have ruled out alternating k from slot >1
-					
-				Utility1 utility2=TT.dynamicAllot(array, tempCourse, slot, TT, 1,1);// normal case.
-				k=utility2.k;
+					//System.out.println("In normal case,"+buffer.get(0).getUnallocated_strength());
+				Utility1 utility2=TT.dynamicAllot(array, tempCourse, slot, TT, 1,1,"normal");// normal case.
+			//	k=utility2.k;
 				array=utility2.array;
 				slot=utility2.slot;
 				//pass on course
@@ -212,7 +224,7 @@ public class GenerateTTEndSem {
 			// System.out.println(set);
 			if (!array[0].getMap().isEmpty())// if time2 has some courses
 												// allocated
-			{System.out.println("Printingggg"+array[0].getMap().size());
+			{//System.out.println("Printingggg"+array[0].getMap().size());
 				for (ArrayList<OccupationData> od : array[0].getMap().values())// stores
 																				// all
 																				// the
@@ -222,7 +234,7 @@ public class GenerateTTEndSem {
 																				// in
 																				// set
 				{
-					System.out.println("Printing"+od.size());
+				//	System.out.println("Printing"+od.size());
 				 	for (int hh = 0; hh < od.size(); hh++) {
 						set.add(Integer.parseInt(od.get(hh).getCourse().getBatch()));
 					}
@@ -236,6 +248,10 @@ public class GenerateTTEndSem {
 
 		System.out.println("Following courses Failed");
 		failedCourses = TT.getFailed();
+		for(Course course:failedCourses)
+		{
+			System.out.println(course.getCourse_name());
+		}
 		excel.createExcelSheet(TT);
 		// Map<Course,Integer> map=GenerateTT.printUnallocatedStudents(TT);
 	}

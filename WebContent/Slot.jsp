@@ -21,30 +21,35 @@
 			crnt_session.setAttribute(String.valueOf(slot_num), s);
 			int cnt = 8;
 		%>
-		<table class="table" id="courseIncluded">
-			<tr>
-				<th>Course Code</th>
-				<th>Course Name</th>
-				<th>Delete</th>
-			</tr>
-			<%
-				s.refreshCourses();
-				ArrayList<Course> courses = s.getCourses();
-				for (int i = 0; i < courses.size(); i++) {
-					out.write("<tr id='row" + i + "'><td>");
-					out.write(courses.get(i).getCourse_id() + "</td><td>" + courses.get(i).getCourse_name() + "</td>");
-					out.write("<td><button slot='" + slot_num + "' course='" + courses.get(i).getCourse_id()
-							+ "' class='btn btn-danger' type='button' id='deleteRow" + i + "'>Delete</button> </td></tr>");
-				}
-			%>
-		</table>
+		<div class="availableSlot">
+			<table class="table" id="courseIncluded">
+				<tr>
+					<th>Course Code</th>
+					<th>Course Name</th>
+					<th>Delete</th>
+				</tr>
+				<%
+					s.refreshCourses();
+					ArrayList<Course> courses = s.getCourses();
+					for (int i = 0; i < courses.size(); i++) {
+						out.write("<tr id='row" + i + "'><td>");
+						out.write(courses.get(i).getCourse_id() + "</td><td>" + courses.get(i).getCourse_name() + "</td>");
+						out.write("<td><button slot='" + slot_num + "' course='" + courses.get(i).getCourse_id()
+								+ "' class='btn btn-danger' type='button' id='deleteRow" + i + "'>Delete</button> </td></tr>");
+					}
+				%>
+			</table>
+		</div>
 		<ul class="pagination">
 			<%
 				for (int i = 1; i <= cnt; i++) {
 					if (i == slot_num)
-						out.write("<li class='active'><a href='/Exam_TimeTable_Scheduler_bySlots_Web_Project/Slot.jsp?slotNo="+(i)+"'>" + i + "</a></li>");
+						out.write(
+								"<li class='active'><a href='/Exam_TimeTable_Scheduler_bySlots_Web_Project/Slot.jsp?slotNo="
+										+ (i) + "'>" + i + "</a></li>");
 					else
-						out.write("<li><a href='/Exam_TimeTable_Scheduler_bySlots_Web_Project/Slot.jsp?slotNo="+(i)+"'>"+ i + "</a></li>");
+						out.write("<li><a href='/Exam_TimeTable_Scheduler_bySlots_Web_Project/Slot.jsp?slotNo=" + (i) + "'>"
+								+ i + "</a></li>");
 				}
 			%>
 		</ul>
@@ -55,7 +60,7 @@
 			<strong>All Courses!</strong> Choose course to add in the current
 			slot.
 		</div>
-		<div class="availableCourse">
+		<div class="availableSlot">
 			<table class="table" id="remainingCourses">
 				<tr>
 					<th>Course Code</th>
