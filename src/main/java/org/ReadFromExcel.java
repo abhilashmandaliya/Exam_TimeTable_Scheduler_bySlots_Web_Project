@@ -7,10 +7,7 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ReadFromExcel {
@@ -44,7 +41,7 @@ public class ReadFromExcel {
 				LinkedList<String> queue = new LinkedList<>();
 				while (cellIterator.hasNext()) {
 					Cell cell = cellIterator.next();
-					cell.setCellType(Cell.CELL_TYPE_STRING);
+					cell.setCellType(CellType.STRING);
 					queue.addLast(cell.getStringCellValue());
 					// System.out.println("Working");
 				}
@@ -108,7 +105,7 @@ public class ReadFromExcel {
 				
 				while (cellIterator.hasNext()) {
 					Cell cell = cellIterator.next();
-					cell.setCellType(Cell.CELL_TYPE_STRING);
+					cell.setCellType(CellType.STRING);
 					queue.addLast(cell.getStringCellValue());
 					// System.out.println("Cell Value: "+cell.getStringCellValue());
 				}

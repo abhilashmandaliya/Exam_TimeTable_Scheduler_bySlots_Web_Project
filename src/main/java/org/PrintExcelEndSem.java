@@ -9,16 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.poi.ss.usermodel.BorderExtent;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.PropertyTemplate;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -32,10 +23,10 @@ public class PrintExcelEndSem extends PrintExcel {
 	public int dostuff(int i, int j, Sheet sheet1, ArrayList<Room> rooms, Workbook wb, int flag2, Row row1, int flag) {
 		merge(i, j, sheet1, rooms);
 		Font font = wb.createFont();
-		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		font.setBold(true);
 		CellStyle temp_style = wb.createCellStyle();
 		temp_style.setFont(font);
-		temp_style.setAlignment(CellStyle.ALIGN_CENTER_SELECTION);
+		temp_style.setAlignment(HorizontalAlignment.CENTER_SELECTION);
 
 		printRooms(i, j, sheet1, rooms);
 		flag2 = 1;
@@ -136,7 +127,7 @@ public class PrintExcelEndSem extends PrintExcel {
 		style[11].setFillBackgroundColor(IndexedColors.RED.getIndex());
 
 		for (int i = 0; i < style.length; i++)
-			style[i].setFillPattern(CellStyle.BIG_SPOTS);
+			style[i].setFillPattern(FillPatternType.BIG_SPOTS);
 		// main work
 		int i = 7;
 		int j = 2;
@@ -274,7 +265,7 @@ public class PrintExcelEndSem extends PrintExcel {
 		}
 		XSSFCellStyle cust_style = wb.createCellStyle();
 		cust_style.setFillBackgroundColor(new XSSFColor(new java.awt.Color(0, 255, 0)));
-		cust_style.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
+		cust_style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		// auto-resizing columns
 		for (int ii = -1; ii < 100; ii++)
 			sheet1.autoSizeColumn(j + ii);
