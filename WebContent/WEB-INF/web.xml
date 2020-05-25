@@ -3,7 +3,7 @@
   <display-name>Exam_TimeTable_Scheduler_bySlots_Web_Project</display-name>
   <servlet>
     <servlet-name>SlotServlet</servlet-name>
-    <servlet-class>servlet.SlotServlet</servlet-class>
+    <servlet-class>edu.daiict.resource.SlotServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>SlotServlet</servlet-name>
@@ -11,7 +11,7 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>FileDownloadServlet</servlet-name>
-    <servlet-class>servlet.FileDownloadServlet</servlet-class>
+    <servlet-class>edu.daiict.resource.FileDownloadServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>FileDownloadServlet</servlet-name>
@@ -19,7 +19,7 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>FileUploadServlet</servlet-name>
-    <servlet-class>servlet.FileUploadServlet</servlet-class>
+    <servlet-class>edu.daiict.resource.FileUploadServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>FileUploadServlet</servlet-name>
@@ -27,7 +27,7 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>CourseServlet</servlet-name>
-    <servlet-class>servlet.CourseServlet</servlet-class>
+    <servlet-class>edu.daiict.resource.CourseServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>CourseServlet</servlet-name>
@@ -35,7 +35,7 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>LoginServlet</servlet-name>
-    <servlet-class>servlet.LoginServlet</servlet-class>
+    <servlet-class>edu.daiict.resource.LoginServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>LoginServlet</servlet-name>
@@ -43,7 +43,7 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>RoomServlet</servlet-name>
-    <servlet-class>servlet.RoomServlet</servlet-class>
+    <servlet-class>edu.daiict.resource.RoomServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>RoomServlet</servlet-name>
@@ -51,7 +51,7 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>UserServlet</servlet-name>
-    <servlet-class>servlet.UserServlet</servlet-class>
+    <servlet-class>edu.daiict.resource.UserServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>UserServlet</servlet-name>
@@ -59,7 +59,7 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>BatchProgramServlet</servlet-name>
-    <servlet-class>servlet.BatchProgramServlet</servlet-class>
+    <servlet-class>edu.daiict.resource.BatchProgramResource</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>BatchProgramServlet</servlet-name>
